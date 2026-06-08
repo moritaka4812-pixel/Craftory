@@ -10,7 +10,7 @@ namespace ResourceMiningGame.Maps
 
         public Map1()
         {
-            MapTiles = new Tiles.Tile[10, 10];
+            MapTiles = new Tiles.Tile[10, 10]; //簡単なタイルを生成
             MapSizeX = 10;
             MapSizeY = 10;
             
