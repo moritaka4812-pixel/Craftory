@@ -28,7 +28,7 @@ namespace ResourceMiningGame.Screens
 
         public override void Update(GameTime gameTime)
         {
-            if (startButton.Update()) // start button was clicked
+            if (startButton.Update(Mouse.GetState(), game.LastMouseState())) // start button was clicked
             {
                 game.ChangeScreen(new LevelSelectScreen(game));
             }

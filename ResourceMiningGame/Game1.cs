@@ -7,7 +7,8 @@ namespace ResourceMiningGame
     {
         private GraphicsDeviceManager _graphics; //manage graphics settings
         private SpriteBatch _spriteBatch; //draw text and images
-        private ScreenBase currentScreen; //showing screen;
+        private ScreenBase currentScreen; //showing screen
+        private MouseState lastMouseState; //マウスの状態を保持
 
         public Game1()
         {
@@ -35,17 +36,24 @@ namespace ResourceMiningGame
         public void ChangeScreen(ScreenBase next)// change the screen. All of the screen will be changed by this same instance method.
         {
             currentScreen = next;
+
+            //マウス状態をリセット
+            lastMouseState = Mouse.GetState();
         }
 
         // GameTime : ゲーム世界の時間情報（前フレームからの経過時間および累計時間）
         // Updateロジックをフレームレートに依存させないために使う。
         protected override void Update(GameTime gameTime) // called every frame to update the internal state of the game.
         {
+            var mouse = Mouse.GetState();  //マウスの状態を保持
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == Microsoft.Xna.Framework.Input.ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape))
                 Exit();
 
             // TODO: Add your update logic here
             currentScreen.Update(gameTime);
+
+            lastMouseState = mouse; //マウス情報の更新
 
             base.Update(gameTime); // use base class method Update().
         }
@@ -58,6 +66,11 @@ namespace ResourceMiningGame
             currentScreen.Draw(_spriteBatch);
 
             base.Draw(gameTime); // use base class method Draw().
+        }
+
+        public MouseState LastMouseState()
+        {
+            return lastMouseState;
         }
     }
 }
