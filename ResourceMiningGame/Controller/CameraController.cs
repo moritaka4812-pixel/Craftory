@@ -12,7 +12,7 @@ namespace ResourceMiningGame.Controller
         public float ZoomDelta { get; private set; }
         public Vector2 DragDelta { get; private set; }
 
-        public void Update(InputManager input)
+        public void Update(InputManager input) //カメラ操作の意図[移動・ズーム・ドラッグ]を更新
         {
             // Zoom
             int scroll = input.Mouse.ScrollDelta();
@@ -33,7 +33,7 @@ namespace ResourceMiningGame.Controller
                 DragDelta = Vector2.Zero;
         }
 
-        public void ApplyToCamera(Camera camera, float dt)
+        public void ApplyToCamera(Camera camera, float dt)　//カメラにUpdateで更新したカメラ操作の意図をcameraに適用する
         {
             camera.ZoomBy(ZoomDelta); //Zoom量だけZoom
 

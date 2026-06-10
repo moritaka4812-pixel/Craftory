@@ -61,8 +61,8 @@ namespace ResourceMiningGame.Screens
         {
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds; //フレーム間の変化量
 
-            controller.Update(game.Input); //入力でカメラコントローラーの状態を更新
-            controller.ApplyToCamera(camera, dt); //カメラの移動を適用
+            controller.Update(game.Input); //入力からカメラの意図[移動・ズーム・ドラッグ]の状態を更新
+            controller.ApplyToCamera(camera, dt); //更新された操作意図をCameraに適用して動かす
 
 
             //セッティングボタンが押されたかの処理
