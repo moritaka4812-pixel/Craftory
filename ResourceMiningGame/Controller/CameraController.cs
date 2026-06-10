@@ -1,7 +1,8 @@
-﻿using Keys = Microsoft.Xna.Framework.Input.Keys;
-using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
-
+﻿using ResourceMiningGame.Core;
 using ResourceMiningGame.Input;
+using SharpDX.XInput;
+using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
+using Keys = Microsoft.Xna.Framework.Input.Keys;
 
 namespace ResourceMiningGame.Controller
 {
@@ -30,6 +31,17 @@ namespace ResourceMiningGame.Controller
                 DragDelta = input.Mouse.PointDelta().ToVector2();
             else
                 DragDelta = Vector2.Zero;
+        }
+
+        public void ApplyToCamera(Camera camera, float dt)
+        {
+            camera.ZoomBy(ZoomDelta); //Zoom量だけZoom
+
+            if (MoveDirection != Vector2.Zero) //キーが押されていたら
+                camera.Move(MoveDirection * 500f * dt / camera.Zoom); //その方向に移動(500fはワールド座標での補正量 1f = 1px)
+
+            if (DragDelta != Vector2.Zero) //マウスがミドルキーを押しながらドラッグされていたら
+                camera.Drag(DragDelta); //カメラ自体がZoomを補正して移動
         }
     }
 }

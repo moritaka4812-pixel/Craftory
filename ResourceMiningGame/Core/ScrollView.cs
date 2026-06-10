@@ -10,8 +10,6 @@ namespace ResourceMiningGame.Core
         public int ContentHeight;　//スクロール出来る範囲の高さ
         public int ScrollY;  //現在のスクロール位置(上座標)
 
-        int scrollSpeed = 10;
-
         public ScrollView(GraphicsDevice device, Rectangle viewRect, int contentHeight)
         {
             this.device = device;

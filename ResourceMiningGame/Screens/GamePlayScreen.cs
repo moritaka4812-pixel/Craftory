@@ -62,14 +62,7 @@ namespace ResourceMiningGame.Screens
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds; //フレーム間の変化量
 
             controller.Update(game.Input); //入力でカメラコントローラーの状態を更新
-
-            camera.ZoomBy(controller.ZoomDelta); //Zoom量だけZoom
-
-            if (controller.MoveDirection != Vector2.Zero) //キーが押されていたら
-                camera.Move(controller.MoveDirection * 500f * dt/ camera.Zoom); //その方向に移動(500fはワールド座標での補正量 1f = 1px)
-            
-            if (controller.DragDelta != Vector2.Zero) //マウスがミドルキーを押しながらドラッグされていたら
-                camera.Drag(controller.DragDelta); //カメラ自体がZoomを補正して移動
+            controller.ApplyToCamera(camera, dt); //カメラの移動を適用
 
 
             //セッティングボタンが押されたかの処理
