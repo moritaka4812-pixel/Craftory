@@ -35,24 +35,15 @@ namespace ResourceMiningGame.Screens
 
         public void LoadContent()
         {
+            var ui = new UIFactory(game); //UIを生成するインスタンス
             map.LoadContent(game.Content); //マップをロード
-            settingsButton = new Button(
-                game.GraphicsDevice,
-                game.Content.Load<Texture2D>("UI/gear"),
-                new Rectangle(760, 20, 32, 32)
-                );
-            settingsButton.SetBackgroundColor(Color.White);
 
-            backButton = new Button(game.GraphicsDevice,
-                game.Content.Load<SpriteFont>("Fonts/MyFont"),
-                new Rectangle(350,350, 350, 100),
-                "back");
+            settingsButton = ui.CreateImageButton(760, 20, 32, 32, "UI/gear"); //セッティングボタンを生成
+            settingsButton.SetBackgroundColor(Color.White); //背景色を再設定
 
-            backToTitleButton = new Button(
-                game.GraphicsDevice,
-                game.Content.Load<SpriteFont>("Fonts/MyFont"),
-                new Rectangle(350, 150, 350, 100),
-                "Back To Title");
+            backButton = ui.CreateTextButton(350, 350, 350, 100, "Back"); //戻るボタンを生成
+
+            backToTitleButton = ui.CreateTextButton(350, 150, 350, 100, "Back To Title"); //タイトルに戻るボタンを生成
 
             pixel = new Texture2D(game.GraphicsDevice, 1, 1); //Draw用のテクスチャ作成
             pixel.SetData(new[] { Color.White });
