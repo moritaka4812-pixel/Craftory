@@ -4,11 +4,9 @@ using ResourceMiningGame.Maps;
 using ResourceMiningGame.Maps.Tiles;
 using ResourceMiningGame.UI;
 using ResourceMiningGame.Controller;
-using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
 using Color = Microsoft.Xna.Framework.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 using Button = ResourceMiningGame.UI.Button;
-using Keys = Microsoft.Xna.Framework.Input.Keys;
 
 namespace ResourceMiningGame.Screens
 {
@@ -30,19 +28,26 @@ namespace ResourceMiningGame.Screens
             map = new Map1();
             tileAnimator = new TileAnimator(map);
             tileSelectionController = new TileSelectionController(map);
+            uiSet = new SetUIElements();
             this.LoadContent();
         }
         public override bool IsTransparent => true;
-        public void LoadContent()
+        public override void LoadContent()
         {
             var ui = new UIFactory(game); //UIを生成するインスタンス
             map.LoadContent(game.Content); //マップをロード
 
             settingsButton = ui.CreateImageButton(760, 20, 32, 32, "UI/gear"); //セッティングボタンを生成
             settingsButton.SetBackgroundColor(Color.White); //背景色を再設定
+            settingsButton.Anchor = UIAnchor.TopRight; //アンカーを指定
+            settingsButton.PaddingX = 10;
+            settingsButton.PaddingY = 10;
+            uiSet.Add(settingsButton);
 
             pixel = new Texture2D(game.GraphicsDevice, 1, 1); //Draw用のテクスチャ作成
             pixel.SetData(new[] { Color.White });
+
+            base.LoadContent();
         }
         public override void Update(GameTime gameTime)
         {

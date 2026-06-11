@@ -4,7 +4,6 @@
 //          スクリーンに表示するための内部座標上に存在する座標。原点はtransformMatrixの影響を受ける
 
 using MyUI = ResourceMiningGame.UI;
-using Color = Microsoft.Xna.Framework.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 using ResourceMiningGame.Core;
@@ -17,13 +16,10 @@ namespace ResourceMiningGame.Screens
         ScrollView scroll; //スクロール画面のための処理クラス
         MyUI.ScrollBar bar; //スクロールバーUI
         List<MyUI.Button> levelButtons; //レベル選択のためのボタンリスト
-        Texture2D white; //１ドットの白テクスチャ
         
 
         public LevelSelectScreen(Game1 game) : base(game)
         {
-            white = new Texture2D(game.GraphicsDevice, 1, 1); //1ドットのテクスチャ作成
-            white.SetData(new[] { Color.White }); //白いテクスチャを割り当て
             var ui = new UIFactory(game); //UI生成インスタンス
 
             scroll = new ScrollView( //スクロール画面を初期化
@@ -32,11 +28,7 @@ namespace ResourceMiningGame.Screens
                 contentHeight: 1000
                 );
 
-            bar = new MyUI.ScrollBar //スクロールバーUIを初期化
-            {
-                BarRect = new Rectangle(50, 100, 20, 500),
-                HandleRect = new Rectangle(50, 100, 20, 80)
-            };
+            bar = new MyUI.ScrollBar(50, 100, 20, 500, 80); //スクロールバーUIを初期化
 
             levelButtons = new List<MyUI.Button>(); //リスト初期化
 
@@ -66,7 +58,7 @@ namespace ResourceMiningGame.Screens
             sb.Begin();
 
             //スクロールバーの描画
-            bar.Draw(sb, white);
+            bar.Draw(sb);
 
             sb.End();
             //GPUのラスタリズ設定のうちにScissorを使って描画範囲を切り抜くように指示する設定

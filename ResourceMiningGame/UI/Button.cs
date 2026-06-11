@@ -1,15 +1,12 @@
 ﻿using Rect = Microsoft.Xna.Framework.Rectangle;
 using Color = Microsoft.Xna.Framework.Color;
-using Input = Microsoft.Xna.Framework.Input;
 using Point = Microsoft.Xna.Framework.Point;
 using MouseInput = ResourceMiningGame.Input.MouseInput;
-using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
 
 namespace ResourceMiningGame.UI
 {
-    public class Button
+    public class Button : UIElement
     {
-        public Rect Rect;
         public string Text;
         public Color TextColor;
         public Color FillColor;
@@ -18,14 +15,12 @@ namespace ResourceMiningGame.UI
         public Color HoverFillColor;
         public Texture2D Icon; //アイコン画像
         public bool IsImageButton = false; //テキストボタンか画像ボタンか
-        private ButtonState prevState = ButtonState.Released;
 
-        Texture2D whiteTex; //１ドットの白テクスチャ
         SpriteFont font; //フォントデータ
 
         public Button(GraphicsDevice device, SpriteFont font, Rect rect, string text) //テキスト付きボタン
         {
-            this.Rect = rect;　//引数受け渡しとテクスチャの初期化
+            this.rect = rect;　//引数受け渡しとテクスチャの初期化
             this.Text = text;
             this.font = font;
             this.TextColor = Color.White;
@@ -40,17 +35,16 @@ namespace ResourceMiningGame.UI
         public Button(GraphicsDevice device, Texture2D icon, Rect rect) //イメージ付きボタン
         {
             this.Icon = icon;
-            this.Rect = rect;
+            this.rect = rect;
             this.FillColor = Color.DarkSlateGray;
             this.BorderColor= Color.White;
             this.NormalFillColor = Color.DarkSlateGray;
             this.HoverFillColor= Color.Gray;
             IsImageButton = true;
-            whiteTex = new Texture2D(device, 1, 1);
-            whiteTex.SetData(new[] { Color.White });
+            Anchor = UIAnchor.TopLeft;
         }
 
-        public bool Update(MouseInput mouse)
+        public override bool Update(MouseInput mouse)
         {
             bool hover = ColorChangeWithHover(mouse.Current.Position); //マウスがRect上にあるなら色を変える
 
@@ -67,7 +61,7 @@ namespace ResourceMiningGame.UI
             return hover && mouse.LeftClicked();
         }
 
-        public void Draw(SpriteBatch sb)
+        public override void Draw(SpriteBatch sb)
         {
             //背景
             sb.Draw(whiteTex, Rect, FillColor);

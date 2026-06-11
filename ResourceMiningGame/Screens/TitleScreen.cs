@@ -13,6 +13,9 @@ namespace ResourceMiningGame.Screens
         {
             var ui = new UIFactory(game);
             startButton = ui.CreateTextButton(300, 400, 200, 80, "Start"); // ボタンを生成
+            startButton.Anchor = UIAnchor.Center;
+            uiSet.Add(startButton);
+            base.LoadContent();
         }
 
         public override void Draw(SpriteBatch spriteBatch)

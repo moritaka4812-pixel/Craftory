@@ -17,7 +17,7 @@ namespace ResourceMiningGame.Screens
             LoadContent();
         }
 
-        private void LoadContent()
+        public override void LoadContent()
         {
             var ui = new UIFactory(game); //UIを作るインスタンスを生成
 
