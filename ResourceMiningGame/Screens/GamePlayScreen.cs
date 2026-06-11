@@ -3,10 +3,12 @@ using ResourceMiningGame.Core;
 using ResourceMiningGame.Maps;
 using ResourceMiningGame.Maps.Tiles;
 using ResourceMiningGame.UI;
+using ResourceMiningGame.Controller;
 using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
 using Color = Microsoft.Xna.Framework.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 using Button = ResourceMiningGame.UI.Button;
+using Keys = Microsoft.Xna.Framework.Input.Keys;
 
 namespace ResourceMiningGame.Screens
 {
@@ -14,104 +16,60 @@ namespace ResourceMiningGame.Screens
     {
         private Texture2D pixel; //Draw用のテクスチャ
         public Tile selectedTile = null; //選択したタイルを格納
-        Camera camera; //カメラの視点移動用
+        Camera camera; //画面表示用のカメラ
+        CameraController controller; //カメラの移動を管理する
+        TileAnimator tileAnimator; //タイルのアニメーションを管理
+        TileSelectionController tileSelectionController; //タイル選択を処理
         IMap map; //マップ情報
         Button settingsButton; //セッティングボタン
-        Button backButton; //バックボタン
-        Button backToTitleButton; //タイトルに戻るボタン
-        bool isSettingsOpen = false; //セッティング状態か
 
-        public GamePlayScreen(Game1 game) : base (game) 
+        public GamePlayScreen(Game1 game) : base(game)
         {
-            camera = new Camera(new Vector2(0f,0f)); //カメラの初期位置
-            map = new Map1(); 
+            camera = new Camera(new Vector2(0f, 0f)); //カメラの初期位置
+            controller = new CameraController();
+            map = new Map1();
+            tileAnimator = new TileAnimator(map);
+            tileSelectionController = new TileSelectionController(map);
             this.LoadContent();
         }
-
+        public override bool IsTransparent => true;
         public void LoadContent()
         {
+            var ui = new UIFactory(game); //UIを生成するインスタンス
             map.LoadContent(game.Content); //マップをロード
-            settingsButton = new Button(
-                game.GraphicsDevice,
-                game.Content.Load<Texture2D>("UI/gear"),
-                new Rectangle(760, 20, 32, 32)
-                );
-            settingsButton.SetBackgroundColor(Color.White);
 
-            backButton = new Button(game.GraphicsDevice,
-                game.Content.Load<SpriteFont>("Fonts/MyFont"),
-                new Rectangle(350,350, 350, 100),
-                "back");
-
-            backToTitleButton = new Button(
-                game.GraphicsDevice,
-                game.Content.Load<SpriteFont>("Fonts/MyFont"),
-                new Rectangle(350, 150, 350, 100),
-                "Back To Title");
+            settingsButton = ui.CreateImageButton(760, 20, 32, 32, "UI/gear"); //セッティングボタンを生成
+            settingsButton.SetBackgroundColor(Color.White); //背景色を再設定
 
             pixel = new Texture2D(game.GraphicsDevice, 1, 1); //Draw用のテクスチャ作成
             pixel.SetData(new[] { Color.White });
         }
         public override void Update(GameTime gameTime)
         {
-            camera.Update(gameTime); //カメラ系のUpdate
+            float dt = (float)gameTime.ElapsedGameTime.TotalSeconds; //フレーム間の変化量
 
-            var mouse = Mouse.GetState(); //ウィンドウ用のマウス位置取得
+            controller.Update(game.Input); //入力からカメラの意図[移動・ズーム・ドラッグ]の状態を更新
+            controller.ApplyToCamera(camera, dt); //更新された操作意図をCameraに適用して動かす
+
 
             //セッティングボタンが押されたかの処理
-            if (settingsButton.Update(Mouse.GetState(), game.LastMouseState()))
+            if (settingsButton.Update(game.Input.Mouse))
             {
-                isSettingsOpen = true;
-            }
-            //セッティングメニューの処理
-            if (isSettingsOpen)
-            {
-                if (backButton.Update(Mouse.GetState(), game.LastMouseState()))
-                {
-                    isSettingsOpen = false;
-                }
-
-                if (backToTitleButton.Update(Mouse.GetState(), game.LastMouseState()))
-                {
-                    game.ChangeScreen(new TitleScreen(game));
-                }
+                game.PushScreen(new GameSettingScreen(game));
             }
 
             //タイル更新(アニメーション)
-            var range = map.GetVisibleRange(camera, game.GraphicsDevice); //画面内のタイルの範囲を取得
-
-            for (int y = range.StartY; y < range.EndY; y++) //画面内のタイルのみ
-            {
-                for (int x = range.StartX; x < range.EndX; x++)
-                {
-                    map.MapTiles[x, y].Update(gameTime); //画面内のタイルのアニメーションを行う
-                }
-            }
+            tileAnimator.UpdateVisibleTiles(gameTime, camera, game.GraphicsDevice);
 
             //左クリックでタイル選択
-            if (mouse.LeftButton == ButtonState.Pressed)
-            {
-                Vector2 screenPos = mouse.Position.ToVector2(); //スクリーン座標を取得
+            selectedTile = tileSelectionController.SelectTile(game.Input.Mouse, camera);
 
-                Matrix inverse = Matrix.Invert(camera.GetViewMatrix()); //カメラ行列の逆行列を取得
-                Vector2 worldPos = Vector2.Transform(screenPos, inverse);　//逆行列でスクリーン座標をワールド座標に変換
-
-                //タイル座標に変換
-                int tileX = (int)(worldPos.X / 16);
-                int tileY = (int)(worldPos.Y / 16);
-
-                //範囲チェック
-                if(tileX >= 0 && tileX < map.MapSizeX && tileY >= 0 && tileY < map.MapSizeY)
-                {
-                    selectedTile = map.GetTile(tileX, tileY);
-                }
-            }
         }
 
         public override void Draw(SpriteBatch sb)
         {
             //ワールド座標での描画
-            sb.Begin(transformMatrix : camera.GetViewMatrix()); //描画座標を指定してDrawをワールド座標基準で描画できるようにする
+            sb.Begin(transformMatrix: camera.GetViewMatrix()); //描画座標を指定してDrawをワールド座標基準で描画できるようにする
 
             var range = map.GetVisibleRange(camera, game.GraphicsDevice); //描画範囲内のレンジを取得
             map.Draw(sb, range); //範囲内のマップをDraw
@@ -135,13 +93,6 @@ namespace ResourceMiningGame.Screens
 
             settingsButton.Draw(sb);
 
-            if (isSettingsOpen)
-            {
-                sb.Draw(pixel, new Rectangle(0, 0, game.GraphicsDevice.Viewport.Width, game.GraphicsDevice.Viewport.Height),
-                    new Color(0, 0, 0, 150));
-                backButton.Draw(sb);
-                backToTitleButton.Draw(sb);
-            }
             sb.End();
         }
     }
