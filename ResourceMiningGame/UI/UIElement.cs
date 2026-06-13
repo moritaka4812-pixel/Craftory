@@ -64,15 +64,15 @@ namespace ResourceMiningGame.UI
                 PaddingY
                 );
             //親の座標を足す(親の左上が原点でないから)
-            pos.X = parent.X + PaddingX;
-            pos.Y = parent.Y + PaddingY;
+            pos.X += parent.X;
+            pos.Y += parent.Y;
             //RelativeX / RelativeYがあれば上書き
             if (RelativeX.HasValue)
-                pos.X = parent.X + (int)(parent.Width * RelativeX) - Width / 2;
+                pos.X = parent.X + (int)(parent.Width * RelativeX.Value) - newWidth / 2;
             if (RelativeY.HasValue)
-                pos.Y = parent.Y + (int)(parent.Height * RelativeY) - Height / 2;
+                pos.Y = parent.Y + (int)(parent.Height * RelativeY.Value) - newHeight / 2;
 
-            rect = new Rect((int)pos.X, (int)pos.Y, rect.Width, rect.Height);
+            rect = new Rect((int)pos.X, (int)pos.Y, newWidth, newHeight);
         }
 
         public abstract void Draw(SpriteBatch sb);
