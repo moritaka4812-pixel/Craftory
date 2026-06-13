@@ -43,6 +43,7 @@ namespace ResourceMiningGame.UI
 
         public override bool Update(MouseInput mouse)
         {
+            if (!Visible) return false;
             bool hover = ColorChangeWithHover(mouse.Current.Position); //マウスがRect上にあるなら色を変える
 
             // クリック瞬間判定（押した瞬間だけtrue）
@@ -51,6 +52,7 @@ namespace ResourceMiningGame.UI
 
         public bool UpdateWithOffset(int offsetX, int offsetY, MouseInput mouse) //画面が移動した時のUpdate処理
         {
+            if (!Visible) return false;
             var pos = new Point(mouse.Current.Position.X - offsetX, mouse.Current.Position.Y - offsetY); //内部の相対座標を計算（ミシンの縫物のイメージ）描画と内部のズレがoffset
             bool hover = ColorChangeWithHover(pos);
 
@@ -60,6 +62,7 @@ namespace ResourceMiningGame.UI
 
         public override void Draw(SpriteBatch sb)
         {
+            if (!Visible) return;
             //背景
             sb.Draw(whiteTex, Rect, FillColor);
             //ボタンの枠

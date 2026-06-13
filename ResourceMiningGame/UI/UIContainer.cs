@@ -1,0 +1,58 @@
+﻿
+using ResourceMiningGame.Input;
+using Color = Microsoft.Xna.Framework.Color;
+
+namespace ResourceMiningGame.UI
+{
+    public class UIContainer : UIElement
+    {
+        public List<UIElement> Children { get; private set; } //コンテナが持つ子
+        public Color? BackgroundColor { get; set; } //背景色
+
+        public UIContainer()
+        {
+            Children = new List<UIElement>();
+            BackgroundColor = null;
+        }
+
+        public void Add(UIElement child) //コンテナに追加
+        {
+            Children.Add(child);
+            child.Parent = this;
+        }
+
+        public void Remove(UIElement child) //コンテナから削除
+        {
+            Children.Remove(child);
+            child.Parent = null;
+        }
+
+        public override bool Update(MouseInput mouse) //コンテナ全体の位置更新
+        {
+            if(!Visible) return false;
+
+            //自分自信のレイアウトを更新
+            this.RecalculateLayout();
+
+            //子のレイアウトを更新
+            foreach (UIElement child in Children)
+            {
+                child.RecalculateLayout();
+                child.Update(mouse);
+            }
+            return false;
+        }
+
+        public override void Draw(SpriteBatch sb) //すべての子要素と背景を描画
+        {
+            if (!Visible) return;
+
+            if (BackgroundColor.HasValue)
+                sb.Draw(whiteTex, rect, BackgroundColor.Value);
+            foreach (UIElement child in Children)
+            {
+                child.Draw(sb);
+            }
+        }
+    }
+}

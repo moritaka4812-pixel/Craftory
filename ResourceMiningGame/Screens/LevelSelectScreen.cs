@@ -28,7 +28,7 @@ namespace ResourceMiningGame.Screens
                 contentHeight: 1000
                 );
 
-            bar = new MyUI.ScrollBar(50, 100, 20, 500, 80); //スクロールバーUIを初期化
+            bar = new MyUI.ScrollBar(50, 100, 20, 500); //スクロールバーUIを初期化
 
             levelButtons = new List<MyUI.Button>(); //リスト初期化
 

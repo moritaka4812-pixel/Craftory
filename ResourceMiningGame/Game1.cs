@@ -2,6 +2,7 @@
 using ResourceMiningGame.Input;
 using ResourceMiningGame.Screens;
 using ResourceMiningGame.UI;
+using Rect = Microsoft.Xna.Framework.Rectangle;
 
 namespace ResourceMiningGame
 {
@@ -89,6 +90,10 @@ namespace ResourceMiningGame
         private void OnClientSizeChanged(object sendeer, EventArgs e) //ウィンドウサイズ変更されたら呼ばれる
         {
             screens.Peek()?.OnWindowSizeChanged( //表示ウィンドウのUI配置関数を呼ぶ
+                GraphicsDevice.Viewport.Width,
+                GraphicsDevice.Viewport.Height
+                );
+            UIElement.RootRect = new Rect(0,0,
                 GraphicsDevice.Viewport.Width,
                 GraphicsDevice.Viewport.Height
                 );

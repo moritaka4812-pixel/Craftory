@@ -7,7 +7,13 @@ namespace ResourceMiningGame.UI
     public abstract class UIElement
     {
         protected Rect rect;
+        //全UIが共有する画面サイズの四角
+        public static Rect RootRect;
         public Rect Rect => rect;
+        //表示するかしないか
+        public bool Visible { get; set; } = true;
+        //UIContainerで親があれば
+        public UIElement? Parent { get; set; } = null;
         //UI更新の時のパディング
         public int PaddingX { get; set; } = 0;
         public int PaddingY { get; set; } = 0;
@@ -30,7 +36,45 @@ namespace ResourceMiningGame.UI
         {
             whiteTex = new Texture2D(device, 1, 1); //白テクスチャをセット
             whiteTex.SetData(new[] { Color.White });
+
+            RootRect = new Rect(0, 0, device.Viewport.Width, device.Viewport.Height); //画面全体の四角
         }
+
+        //親要素の四角上での配置を見て位置を更新する
+        public void RecalculateLayout()
+        {
+            //親がいない場合は画面全体を親とする
+            Rect parent = Parent?.Rect ?? RootRect;
+
+            int newWidth = Width;
+            int newHeight = Height;
+            //サイズ計算
+            if (RelativeWidth.HasValue)
+                newWidth = (int)(parent.Width * RelativeWidth.Value);
+            if (RelativeHeight.HasValue)
+                newHeight = (int)(parent.Height * RelativeHeight.Value);
+            //親の中でのAnchorによる位置計算
+            Vector2 pos = UILayoutManager.GetPositionForAnchor(
+                Anchor,
+                parent.Width,
+                parent.Height,
+                newWidth,
+                newHeight,
+                PaddingX,
+                PaddingY
+                );
+            //親の座標を足す(親の左上が原点でないから)
+            pos.X = parent.X + PaddingX;
+            pos.Y = parent.Y + PaddingY;
+            //RelativeX / RelativeYがあれば上書き
+            if (RelativeX.HasValue)
+                pos.X = parent.X + (int)(parent.Width * RelativeX) - Width / 2;
+            if (RelativeY.HasValue)
+                pos.Y = parent.Y + (int)(parent.Height * RelativeY) - Height / 2;
+
+            rect = new Rect((int)pos.X, (int)pos.Y, rect.Width, rect.Height);
+        }
+
         public abstract void Draw(SpriteBatch sb);
         public abstract bool Update(MouseInput mouse);
     }

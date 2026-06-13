@@ -10,32 +10,31 @@ namespace ResourceMiningGame.UI
         public Rectangle HandleRect; // 映している範囲を示すスクロールバー（つまみ）
         public int HandleHeight; //つまみの高さ
 
-        public ScrollBar(int x, int y, int width, int height, int handleHeight)
+        public ScrollBar(int x, int y, int width, int height)
         {
             rect = new Rectangle(x, y, width, height); //BarRect（映せる画面全体の長形）として扱う
-            HandleHeight = handleHeight;
-
-            HandleRect = new Rectangle(
-                x,
-                y,
-                width,
-                HandleHeight);
         }
         public void Update(int scrollY, int contentHeight, int viewHeight) // スクロールバーの位置を更新
         {
+            if (!Visible) return;
+            //つまみの高さ(長さ)を自動計算
+            HandleHeight = (int)((float)viewHeight / contentHeight * rect.Height);
+            HandleHeight = Math.Max(20, HandleHeight); //最短サイズ
+
             float ratio = (float)scrollY / (contentHeight - viewHeight); // コンテンツのどの位置にスクロールバーがあるか（0~1.0）
             int handleY = rect.Y + (int)(ratio * (rect.Height - HandleRect.Height)); // スクロールバーがコンテンツ全体のどの高さにあるかを計算
 
             HandleRect = new Rectangle(
                 rect.X,
                 handleY,
-                HandleRect.Width,
-                HandleRect.Height
+                rect.Width,
+                HandleHeight
                 );
         }
 
         public override void  Draw(SpriteBatch sb)
         {
+            if (!Visible) return;
             sb.Draw(whiteTex, rect, Color.DarkGray); // BarRect
             sb.Draw(whiteTex, HandleRect, Color.White); //HandleRect
         }
