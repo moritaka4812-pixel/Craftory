@@ -9,14 +9,16 @@ namespace ResourceMiningGame.UI
         public List<UIElement> Children { get; private set; } //コンテナが持つ子
         public Color? BackgroundColor { get; set; } //背景色
 
-        public UIContainer()
+        public UIContainer() : base()
         {
             Children = new List<UIElement>();
             BackgroundColor = null;
         }
 
-        public void Add(UIElement child) //コンテナに追加
+        public virtual void Add(UIElement child) //コンテナに追加
         {
+            child.X += rect.X;
+            child.Y += rect.Y;
             Children.Add(child);
             child.Parent = this;
         }

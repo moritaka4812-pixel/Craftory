@@ -41,7 +41,7 @@ namespace ResourceMiningGame.UI
         }
 
         //親要素の四角上での配置を見て位置を更新する
-        public void RecalculateLayout()
+        public virtual void RecalculateLayout()
         {
             //親がいない場合は画面全体を親とする
             Rect parent = Parent?.Rect ?? RootRect;
@@ -77,5 +77,10 @@ namespace ResourceMiningGame.UI
 
         public abstract void Draw(SpriteBatch sb);
         public abstract bool Update(MouseInput mouse);
+        public virtual bool UpdateWithOffset(int offsetX, int offsetY, MouseInput mouse)
+        {
+            //デフォルトは通常のUpdate
+            return Update(mouse);
+        }
     }
 }

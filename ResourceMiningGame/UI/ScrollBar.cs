@@ -9,12 +9,20 @@ namespace ResourceMiningGame.UI
     {
         public Rectangle HandleRect; // 映している範囲を示すスクロールバー（つまみ）
         public int HandleHeight; //つまみの高さ
+        public int contentHeight; //映せるコンテンツ全体の高さ
 
         public ScrollBar(int x, int y, int width, int height)
         {
             rect = new Rectangle(x, y, width, height); //BarRect（映せる画面全体の長形）として扱う
         }
-        public void Update(int scrollY, int contentHeight, int viewHeight) // スクロールバーの位置を更新
+
+        public void SetContentHeight(int contentHeight, int rectHeight)
+        {
+            this.contentHeight = contentHeight;
+            rect.Height = rectHeight;
+        }
+
+        public void Update(int scrollY, int viewHeight) // スクロールバーの位置を更新
         {
             if (!Visible) return;
             //つまみの高さ(長さ)を自動計算
