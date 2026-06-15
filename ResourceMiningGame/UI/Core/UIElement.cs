@@ -37,7 +37,14 @@ namespace ResourceMiningGame.UI.Core
         public UIAnchor Anchor { get; set; } = UIAnchor.TopLeft;
         protected static Texture2D whiteTex; //全UI共通で利用
 
-        public virtual bool OnWheel(MouseInput mouse, int delta) { return false;  }
+        public virtual bool OnLeftClick(MouseInput mouse) { return false; }
+        public virtual bool OnRightClick(MouseInput mouse) { return false; }
+        public virtual bool OnMiddleClick(MouseInput mouse) { return false; }
+        public virtual bool OnWheel(MouseInput mouse, int delta) { return false; }
+        public virtual bool OnDrag(MouseInput mouse, Point delta) { return false; }
+        public virtual bool OnHover(MouseInput mouse) { return false; }
+
+
         public static void Initialize(GraphicsDevice device)
         {
             whiteTex = new Texture2D(device, 1, 1); //白テクスチャをセット
@@ -88,15 +95,24 @@ namespace ResourceMiningGame.UI.Core
         public virtual bool Update(MouseInput mouse)
         {
             if(!Visible) return false;
-            bool consume = false;
+            bool consumed = false;
+            bool hit = HitTest(mouse.Current.Position);
 
-            //クリック
-            if (HitTest(mouse.Current.Position) && mouse.LeftClicked())
-                consume = true;
+            //左クリック
+            if (hit && mouse.LeftClicked())
+                consumed |= OnLeftClick(mouse);
+
+            //右クリック
+            if (hit && mouse.RightClicked())
+                consumed |= OnRightClick(mouse);
+
+            //中クリック
+            if (hit && mouse.MiddleClicked())
+                consumed |= OnMiddleClick(mouse);
 
             //ホイール
             int wheel = mouse.ScrollDelta();
-            if(wheel != 0 && HitTest(mouse.Current.Position))
+            if(wheel != 0 && hit)
             {
                 bool wheelConsumed = OnWheel(mouse, wheel);
 
@@ -104,7 +120,11 @@ namespace ResourceMiningGame.UI.Core
                     return true;
             }
 
-            return consume;
+            //ホバー
+            if (hit)
+                consumed |= OnHover(mouse);
+
+            return consumed;
         }
 
         public virtual bool UpdateWithOffset(int offsetX, int offsetY, MouseInput mouse)
