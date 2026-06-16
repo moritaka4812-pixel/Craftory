@@ -36,7 +36,15 @@ namespace ResourceMiningGame.UI.Core
         //アンカープロパティ
         public UIAnchor Anchor { get; set; } = UIAnchor.TopLeft;
         protected static Texture2D whiteTex; //全UI共通で利用
-
+        //マウス入力の吸収処理に使う
+        //各インスタンスごとにデリゲードで入力の吸収を設定する時につかう
+        public Func<MouseInput, bool>? OnLeftClickHandler { get; set; }
+        public Func<MouseInput, bool>? OnRightClickHandler { get; set; }
+        public Func<MouseInput, bool>? OnMiddleClickHandler { get; set; }
+        public Func<MouseInput, int, bool>? OnWheelHandler { get; set; }
+        public Func<MouseInput, Point, bool>? OnDragHandler { get; set; }
+        public Func<MouseInput, bool>? OnHoverHandler { get; set;  }
+        //各エレメントごとに設定されるマウス入力吸収設定
         public virtual bool OnLeftClick(MouseInput mouse) { return false; }
         public virtual bool OnRightClick(MouseInput mouse) { return false; }
         public virtual bool OnMiddleClick(MouseInput mouse) { return false; }
@@ -92,7 +100,7 @@ namespace ResourceMiningGame.UI.Core
         }
 
         public abstract void Draw(SpriteBatch sb);
-        public virtual bool Update(MouseInput mouse)
+        public virtual bool Update(MouseInput mouse) //ベースとしてのマウス入力の吸収処理
         {
             if(!Visible) return false;
             bool consumed = false;
@@ -100,29 +108,54 @@ namespace ResourceMiningGame.UI.Core
 
             //左クリック
             if (hit && mouse.LeftClicked())
-                consumed |= OnLeftClick(mouse);
+            {
+                if(OnLeftClickHandler != null) //左クリックの代替デリゲード処理があれば
+                    consumed |= OnLeftClickHandler(mouse);
+                
+                else
+                    consumed |= OnLeftClick(mouse);
+            }
 
             //右クリック
             if (hit && mouse.RightClicked())
-                consumed |= OnRightClick(mouse);
+            {
+                if(OnRightClickHandler != null) //右クリックの代替デリゲード処理があれば
+                    consumed |= OnRightClickHandler(mouse);
+
+                else
+                    consumed |= OnRightClick(mouse);
+            }
 
             //中クリック
             if (hit && mouse.MiddleClicked())
-                consumed |= OnMiddleClick(mouse);
+            {
+                if (OnMiddleClickHandler != null) //中クリックの代替デリゲード処理があれば
+                    consumed |= OnMiddleClickHandler(mouse);
+
+                else
+                    consumed |= OnMiddleClick(mouse);
+            }
 
             //ホイール
             int wheel = mouse.ScrollDelta();
             if(wheel != 0 && hit)
             {
-                bool wheelConsumed = OnWheel(mouse, wheel);
+                if (OnWheelHandler != null) //ホイールの代替デリゲード処理があれば
+                    consumed |= OnWheelHandler(mouse, wheel);
 
-                if (wheelConsumed)
-                    return true;
+                else
+                    consumed |= OnWheel(mouse, wheel);
             }
 
             //ホバー
             if (hit)
-                consumed |= OnHover(mouse);
+            {
+                if (OnHoverHandler != null)
+                    consumed |= OnHoverHandler(mouse);
+
+                else
+                    consumed |= OnHover(mouse);
+            }
 
             return consumed;
         }

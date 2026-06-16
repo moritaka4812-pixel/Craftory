@@ -21,6 +21,7 @@ namespace ResourceMiningGame.GameUI
             panel.RelativeHeight = 1f;
             panel.RelativeWidth = 0.3f;
             panel.IgnoreLayoutX = true;
+            panel.OnLeftClickHandler = (MouseInput) => true;
 
             handleButton = ui.CreateTextButton("T", 0, 0, 20, 40);
 
