@@ -1,5 +1,6 @@
 ﻿using ResourceMiningGame.Input;
 using Color = Microsoft.Xna.Framework.Color;
+using Rect = Microsoft.Xna.Framework.Rectangle;
 
 namespace ResourceMiningGame.UI.Core
 {
@@ -30,20 +31,17 @@ namespace ResourceMiningGame.UI.Core
 
         public override bool Update(MouseInput mouse) //コンテナ全体の位置更新
         {
-            if(!Visible) return false;
+            bool consumed = base.Update(mouse);
 
-            bool clicked = false;
-
-            //自分自信のレイアウトを更新
             this.RecalculateLayout();
 
-            //子のレイアウトを更新
-            foreach (UIElement child in Children)
+            foreach(var child in Children)
             {
                 child.RecalculateLayout();
-                clicked |= child.Update(mouse);
+                consumed |= child.Update(mouse);
             }
-            return clicked;
+
+            return consumed;
         }
 
         public override void Draw(SpriteBatch sb) //すべての子要素と背景を描画

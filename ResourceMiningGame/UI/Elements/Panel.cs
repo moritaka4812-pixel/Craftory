@@ -9,7 +9,7 @@ namespace ResourceMiningGame.UI.Elements
     {
         public Color BackgroundColor { get; set; }
 
-        private UIContainer container;
+        public UIContainer container;
 
         public Panel(int width, int height)
         {
@@ -55,6 +55,11 @@ namespace ResourceMiningGame.UI.Elements
 
             //Panel自身のレイアウト更新
             this.RecalculateLayout();
+
+            container.Width = this.Width;
+            container.Height = this.Height;
+            container.X = this.X;
+            container.Y = this.Y;
 
             container.RecalculateLayout();
             //子要素の更新

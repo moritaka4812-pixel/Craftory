@@ -3,12 +3,13 @@ using Panel = ResourceMiningGame.UI.Elements.Panel;
 using Button = ResourceMiningGame.UI.Elements.Button;
 using ResourceMiningGame.UI.Core;
 using ResourceMiningGame.Input;
+using System.DirectoryServices;
 
 namespace ResourceMiningGame.GameUI
 {
     public class ToolPanel
     {
-        private Panel panel; //UI.Elements.Panel
+        public Panel panel; //UI.Elements.Panel
         private Button handleButton; //取って
         private bool isOpen;
         private float currentX;
@@ -19,11 +20,11 @@ namespace ResourceMiningGame.GameUI
             panel = new Panel(200, 300);
             panel.Anchor = UIAnchor.LeftCenter;
             panel.RelativeHeight = 1f;
-            panel.RelativeWidth = 0.3f;
+            panel.RelativeWidth = 0.35f;
             panel.IgnoreLayoutX = true;
             panel.OnLeftClickHandler = (MouseInput) => true;
 
-            handleButton = ui.CreateTextButton("T", 0, 0, 20, 40);
+            handleButton = ui.CreateTextButton("T", 0, 0, 40, 40);
 
             handleButton.OnClicked += Toggle;
 

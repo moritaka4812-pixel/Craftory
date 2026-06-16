@@ -9,6 +9,7 @@ using Rectangle = Microsoft.Xna.Framework.Rectangle;
 using Button = ResourceMiningGame.UI.Elements.Button;
 using ResourceMiningGame.UI.Core;
 using ResourceMiningGame.GameUI;
+using ResourceMiningGame.UI.Elements;
 
 namespace ResourceMiningGame.Screens
 {
@@ -48,6 +49,15 @@ namespace ResourceMiningGame.Screens
             settingsButton.OnClicked += () => game.PushScreen(new GameSettingScreen(game));
 
             toolPanel = new ToolPanel(ui);
+            var toolScrollList = new ScrollMultiList();
+            toolScrollList.RelativeY = 0.15f;
+            toolScrollList.RelativeHeight = 0.7f;
+            toolScrollList.RelativeWidth = 1f;
+            toolScrollList.Add(ui.CreateTextButton("a", 0, 0, 1, 1));
+            toolScrollList.Add(ui.CreateTextButton("b", 0, 0, 1, 1));
+            toolScrollList.Add(ui.CreateTextButton("c", 0, 0, 1, 1));
+            toolScrollList.Add(ui.CreateTextButton("d", 0, 0, 1, 1));
+            toolPanel.panel.AddChild(toolScrollList);
 
             uiSet.Add(settingsButton);
 
