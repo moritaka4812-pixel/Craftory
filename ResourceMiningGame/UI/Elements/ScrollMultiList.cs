@@ -35,22 +35,20 @@ namespace ResourceMiningGame.UI.Elements
             children.Add(element);
         }
 
+        public override bool OnWheel(MouseInput mouse, int delta)
+        {
+            scrollY -= delta * 20;
+            scrollY = Math.Clamp(scrollY, 0 , GetMaxScroll());
+            return true; //ホイールを吸収
+        }
+
         public override bool Update(MouseInput mouse)
         {
             if (!Visible) return false;
 
             RecalculateLayout();
 
-            bool consumed = false;
-
-            //ホイールスクロール
-            int wheel = mouse.ScrollDelta();
-            if(wheel != 0 && HitTest(mouse.Current.Position))
-            {
-                scrollY -= wheel * 20;
-                scrollY = Math.Clamp(scrollY, 0, GetMaxScroll());
-                consumed = true;
-            }
+            bool consumed = base.Update(mouse); //ホイール処理などを呼ぶ
 
             foreach(var child in children)
             {
@@ -76,7 +74,8 @@ namespace ResourceMiningGame.UI.Elements
             base.RecalculateLayout();
 
             //列数を動的に決めたい場合は
-            //Columns = Math.Max(1, (Rect.Width + SpacingX) / (CellWidth + SpacingX));
+            Columns = Math.Max(1, (Rect.Width + SpacingX) / (CellWidth + SpacingX));
+
             for (int i = 0; i< children.Count; i++)
             {
                 int row = i / Columns;
