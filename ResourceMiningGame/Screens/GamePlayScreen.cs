@@ -79,11 +79,10 @@ namespace ResourceMiningGame.Screens
             uiConsumed |= toolPanel.Update(game.Input.Mouse);
             uiConsumed |= settingsButton.Update(game.Input.Mouse);
 
-            if (isBuildMode)
+            if (isBuildMode && !uiConsumed)
             {
                 UpdateBuildMode(game.Input.Mouse, camera);
                 uiConsumed |= confirmPanel.UpdateWorld(game.Input.Mouse);
-                return;
             }
 
             //UIがホイールの入力を吸収していないときだけカメラ操作

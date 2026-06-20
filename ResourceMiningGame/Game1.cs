@@ -33,6 +33,7 @@ namespace ResourceMiningGame
             // TODO: Add your initialization logic here
             UIElement.Initialize(GraphicsDevice);
             WorldUIElement.Initialize(GraphicsDevice);
+            ContentLoader.Initialize(Content);
             base.Initialize(); // ベースクラス(親クラス)のInitialize()を実行
         }
 

@@ -1,4 +1,5 @@
 ﻿
+
 namespace ResourceMiningGame.Maps.Tiles
 {
     public class TileAnimationInfo
@@ -6,7 +7,11 @@ namespace ResourceMiningGame.Maps.Tiles
         public string TexturePath;
         public int FrameCount;
         public float FrameTime;
-        public int FrameWidth = 32;
-        public int FrameHeight = 32;
+
+        public TileAnimation CreateTileAnimation()
+        {
+            var tex = ContentLoader.LoadTexture(TexturePath);
+            return new TileAnimation(tex, FrameCount, tex.Width / FrameCount, tex.Height, FrameTime);
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using ResourceMiningGame.UI.Elements;
 using Panel = ResourceMiningGame.UI.Elements.Panel;
 using Button = ResourceMiningGame.UI.Elements.Button;
+using Rect = Microsoft.Xna.Framework.Rectangle;
 using ResourceMiningGame.UI.Core;
 using ResourceMiningGame.Input;
 using System.DirectoryServices;
@@ -41,7 +42,7 @@ namespace ResourceMiningGame.GameUI
             list.RelativeHeight = 0.7f;
             list.RelativeWidth = 1f;
 
-            AddBuildButton(ui, list, "Drill", BuildType.Drill);
+            AddBuildButton(ui, list, "Buildings/Drill", BuildType.Drill, 32);
 
             panel.AddChild(list);
 
@@ -50,9 +51,9 @@ namespace ResourceMiningGame.GameUI
             closedX = (float) - panel.RelativeWidth;
         }
 
-        private void AddBuildButton(UIFactory ui, ScrollMultiList list, string label, BuildType type)
+        private void AddBuildButton(UIFactory ui, ScrollMultiList list, string label, BuildType type, int size)
         {
-            var btn = ui.CreateTextButton(label, 0, 0, 1, 1);
+            var btn = ui.CreateImageButtonFrame(label, new Rect(0, 0, size, size));
             btn.OnClicked += () => OnBuildRequested?.Invoke(type);
             list.Add(btn);
         }

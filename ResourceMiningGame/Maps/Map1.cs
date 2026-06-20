@@ -1,6 +1,7 @@
 ﻿using Tiles = ResourceMiningGame.Maps.Tiles;
 using Color = Microsoft.Xna.Framework.Color;
 using Point = Microsoft.Xna.Framework.Point;
+using ResourceMiningGame.Maps.Tiles;
 
 namespace ResourceMiningGame.Maps
 {
@@ -19,33 +20,24 @@ namespace ResourceMiningGame.Maps
             {
                 for(int x = 0; x < MapSizeX; x++)
                 {
-                    MapTiles[x, y] = new Tiles.Tile
-                    (
-                        (x + y) % 3 == 0 ? Tiles.TileType.Copper : Tiles.TileType.Ground, //Type
-                        new Vector2(x * TileSize, y * TileSize) //Position
-                    );
+                    TileType terrain = TileType.stone;
+
+                    //資源生成
+                    ResourceType resource = 
+                        (x + y) % 3 == 0 ? ResourceType.Copper : ResourceType.None;
+
+                    MapTiles[x, y] = new Tile(
+                        terrain,
+                        resource,
+                        new Vector2(x * TileSize, y * TileSize)
+                        );
                 }
             }
         }
 
         public override void LoadContent(ContentManager contentManager)
         {
-            this.contentManager = contentManager;
 
-            for(int y = 0; y < MapSizeY; y++) //マップ全タイルのスプライトシートとアニメーション情報をロード
-            {
-                for(int x = 0; x < MapSizeX; x++)
-                {
-                    var tile = MapTiles[x, y]; //オブジェクト参照でタイルを取得
-                    var info = Tiles.TileRegistry.Data[tile.Type]; //タイルの情報を取得
-
-                    tile.SpriteSheet = contentManager.Load<Texture2D>(info.TexturePath); //各タイルの種類ごとの情報をロード
-                    tile.FrameCount = info.FrameCount;
-                    tile.FrameWidth = info.FrameWidth;
-                    tile.FrameHeight = info.FrameHeight;
-                    tile.FrameTime = info.FrameTime;
-                }
-            }
         }
 
         public override void Update(GameTime gameTime)

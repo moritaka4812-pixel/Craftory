@@ -6,60 +6,37 @@ namespace ResourceMiningGame.Maps.Tiles
     public class Tile
     {
         public TileType Type;
-        public float MiningRate; //資源タイルの採掘速度
+        public ResourceType Resource;
         public bool IsBuildable; //建設可能かどうか
         public Vector2 Position; //タイルの位置（ワールド座標）
 
-        //アニメーション用
-        public Texture2D SpriteSheet; //スプライトシート
-        public int FrameCount; //フレーム数(1ならアニメーションなし)
-        public int FrameWidth; //フレームの幅
-        public int FrameHeight; //フレームの高さ
+        public TileAnimation TerrainAnim;
+        public TileAnimation ResourceAnim;
 
-        public float FrameTime; //1フレームの時間
-        private float timer;
-        private int currentFrame;
 
-        public Tile(TileType Type,　//タイルはType, Positionのみでnew可能
-                    Vector2 Position,
-                    int FrameCount = 1, //その他の初期設定
-                    int FrameWidth = 32,
-                    int FrameHeight = 32,
-                    float FrameTime = 0.25f)
+        public Tile(TileType Type,
+                    ResourceType resource,
+                    Vector2 Position)
         {
             this.Type = Type;
+            this.Resource = resource;
             this.Position = Position;
-            this.FrameCount = FrameCount;
-            this.FrameWidth = FrameWidth;
-            this.FrameHeight = FrameHeight;
-            this.FrameTime = FrameTime;
+            this.IsBuildable = TileRules.Buildable[Type];
+
+            TerrainAnim = TileRegistry.Terrain[Type].CreateTileAnimation();
+            ResourceAnim = ResourceRegistry.Resources[resource]?.CreateTileAnimation();
         }
 
         public void Update(GameTime gameTime)
         {
-            if (FrameCount <= 1) return; //アニメなし
-
-            timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            if(timer >= FrameTime)
-            {
-                timer -= FrameTime;
-                currentFrame = (currentFrame + 1) % FrameCount;
-            }
+            TerrainAnim?.Update(gameTime);
+            ResourceAnim?.Update(gameTime);
         }
 
         public void Draw(SpriteBatch sb)
         {
-            if (SpriteSheet == null) return; //スプライトシートがない
-
-            var source = new Rectangle(
-                currentFrame * FrameWidth,
-                0,
-                FrameWidth,
-                FrameHeight
-             );
-
-            sb.Draw(SpriteSheet, Position, source, Color.White);
+            TerrainAnim?.Draw(sb, Position);
+            ResourceAnim?.Draw(sb, Position);
 
         }
 

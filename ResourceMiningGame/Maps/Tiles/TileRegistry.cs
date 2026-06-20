@@ -5,28 +5,37 @@ namespace ResourceMiningGame.Maps.Tiles
 {
     public static class TileRegistry
     {
-        public static Dictionary<TileType, TileAnimationInfo> Data = //タイル種類ごとのアニメーション情報を保持するDictionary変数を定義
+        public static Dictionary<TileType, TileAnimationInfo> Terrain =
             new Dictionary<TileType, TileAnimationInfo>()
             {
+            {
+                TileType.Ground,
+                new TileAnimationInfo
                 {
-                    TileType.Copper, //各タイルアニメーションデータなどについて格納
-                    new TileAnimationInfo
-                    {
-                        TexturePath = "TileUI/copper",
-                        FrameCount = 8,
-                        FrameTime = 0.25f
-                    }
-                },
-                {
-                    TileType.Ground,
-                    new TileAnimationInfo
-                    {
-                        TexturePath = "TileUI/stone",
-                        FrameCount = 1,
-                        FrameTime = 0.0f
-                    }
-
+                    TexturePath = "TileUI/ground",
+                    FrameCount = 1,
+                    FrameTime = 0f
                 }
+            },
+            {
+                TileType.Road,
+                new TileAnimationInfo
+                {
+                    TexturePath = "TileUI/road",
+                    FrameCount = 1,
+                    FrameTime = 0f
+                }
+            },
+            {
+                TileType.stone,
+                new TileAnimationInfo
+                {
+                    TexturePath = "TileUI/stone",
+                    FrameCount = 1,
+                    FrameTime = 0f
+                }
+            }
             };
     }
+
 }
