@@ -30,12 +30,12 @@ namespace ResourceMiningGame.UI.Setup
                     paddingY: e.PaddingY
                     );
 
-                if (e.RelativeX.HasValue) //相対配置のXの値があれば(中央基準)
-                    e.X = (int)(screenW * e.RelativeX.Value - e.Width / 2);
+                if (e.RelativeX.HasValue) //相対配置のXの値があれば(左上基準)
+                    e.X = (int)(screenW * e.RelativeX.Value);
                 else e.X = (int)pos.X;
 
-                if (e.RelativeY.HasValue) //相対配置のYの値があれば(中央基準)
-                    e.Y = (int)(screenH * e.RelativeY.Value - e.Height / 2);
+                if (e.RelativeY.HasValue) //相対配置のYの値があれば(左上基準)
+                    e.Y = (int)(screenH * e.RelativeY.Value);
                 else e.Y = (int)pos.Y;
             }
         }

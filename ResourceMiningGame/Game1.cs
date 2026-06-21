@@ -110,10 +110,14 @@ namespace ResourceMiningGame
 
         private void OnClientSizeChanged(object sendeer, EventArgs e) //ウィンドウサイズ変更されたら呼ばれる
         {
-            screens.Peek()?.OnWindowSizeChanged( //表示ウィンドウのUI配置関数を呼ぶ
-                GraphicsDevice.Viewport.Width,
-                GraphicsDevice.Viewport.Height
-                );
+            int width = GraphicsDevice.Viewport.Width;
+            int height = GraphicsDevice.Viewport.Height;
+
+            foreach (var screen in screens) //ウィンドウのUI配置関数を呼ぶ
+            { 
+                screen.OnWindowSizeChanged(width, height);
+            }
+
             UIElement.RootRect = new Rect(0,0,
                 GraphicsDevice.Viewport.Width,
                 GraphicsDevice.Viewport.Height
