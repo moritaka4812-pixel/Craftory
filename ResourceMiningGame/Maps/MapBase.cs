@@ -1,5 +1,5 @@
 ﻿
-
+using Point = Microsoft.Xna.Framework.Point;
 using ResourceMiningGame.Core;
 
 namespace ResourceMiningGame.Maps
@@ -9,7 +9,7 @@ namespace ResourceMiningGame.Maps
         public Tiles.Tile[,] MapTiles { get; set; }
         public int MapSizeX { get; set; }
         public int MapSizeY { get; set; }
-        public int TileSize = 16;
+        public int TileSize = 32;
 
         public VisibleTileRange GetVisibleRange(Camera camera, GraphicsDevice graphics) //マップの必要なワールド座標での描画範囲（タイル範囲）を取得
         {
@@ -37,7 +37,24 @@ namespace ResourceMiningGame.Maps
 
         public Tiles.Tile GetTile(int x, int y) //指定されたタイルを返す
         {
-            return MapTiles[x, y];
+            try
+            {
+                return MapTiles[x, y];
+            }
+            catch { return null; }
+        }
+
+        public Point? WorldToTile(Vector2 worldPos)
+        {
+            int tileX = (int)(worldPos.X / TileSize);
+            int tileY = (int)(worldPos.Y / TileSize);
+
+            //範囲外チェック
+            if (tileX < 0 || tileX >= MapSizeX ||
+                tileY < 0 || tileY >= MapSizeY)
+                return null;
+
+            return new Point(tileX, tileY);
         }
 
         public abstract void LoadContent(ContentManager content);

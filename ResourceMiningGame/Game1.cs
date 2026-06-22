@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
+using ResourceMiningGame.GameUI;
 using ResourceMiningGame.Input;
+using ResourceMiningGame.Maps.Tiles;
 using ResourceMiningGame.Screens;
 using ResourceMiningGame.UI.Core;
 using Rect = Microsoft.Xna.Framework.Rectangle;
@@ -31,6 +33,9 @@ namespace ResourceMiningGame
         {
             // TODO: Add your initialization logic here
             UIElement.Initialize(GraphicsDevice);
+            WorldUIElement.Initialize(GraphicsDevice);
+            ContentLoader.Initialize(Content);
+            Tile.Initialize(GraphicsDevice);
             base.Initialize(); // ベースクラス(親クラス)のInitialize()を実行
         }
 
@@ -107,10 +112,14 @@ namespace ResourceMiningGame
 
         private void OnClientSizeChanged(object sendeer, EventArgs e) //ウィンドウサイズ変更されたら呼ばれる
         {
-            screens.Peek()?.OnWindowSizeChanged( //表示ウィンドウのUI配置関数を呼ぶ
-                GraphicsDevice.Viewport.Width,
-                GraphicsDevice.Viewport.Height
-                );
+            int width = GraphicsDevice.Viewport.Width;
+            int height = GraphicsDevice.Viewport.Height;
+
+            foreach (var screen in screens) //ウィンドウのUI配置関数を呼ぶ
+            { 
+                screen.OnWindowSizeChanged(width, height);
+            }
+
             UIElement.RootRect = new Rect(0,0,
                 GraphicsDevice.Viewport.Width,
                 GraphicsDevice.Viewport.Height

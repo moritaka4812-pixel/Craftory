@@ -15,7 +15,7 @@ namespace ResourceMiningGame.Screens
         {
             var ui = new UIFactory(game);
 
-            startButton = ui.CreateRelativeTextButton("Start", relX: 0.5f, relY: 0.8f, relW: 0.4f, relH: 0.2f); // ボタンを生成
+            startButton = ui.CreateRelativeTextButton("Start", relX: 0.3f, relY: 0.8f, relW: 0.4f, relH: 0.2f); // ボタンを生成
             uiSet.Add(startButton);
             titleLabel = ui.CreateRelativeTextLabel("My Resource Mining Game", relX: 0.5f, relY: 0.2f); // タイトルラベルを生成
             uiSet.Add(titleLabel);

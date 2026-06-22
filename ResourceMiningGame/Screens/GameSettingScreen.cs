@@ -32,6 +32,13 @@ namespace ResourceMiningGame.Screens
             backToTitleButton.RelativeY = 0.4f;
             backToTitleButton.RelativeHeight = 0.1f;
             backToTitleButton.RelativeWidth = 0.6f;
+
+            backButton.RecalculateLayout();
+            backToTitleButton.RecalculateLayout();
+
+            uiSet.Add(backButton);
+            uiSet.Add(backToTitleButton);
+
             pixel = new Texture2D(game.GraphicsDevice, 1, 1);
             pixel.SetData(new[] { Color.White });
         }

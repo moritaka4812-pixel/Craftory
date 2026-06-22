@@ -1,66 +1,71 @@
 ﻿using Rectangle = Microsoft.Xna.Framework.Rectangle;
 using Color = Microsoft.Xna.Framework.Color;
+using ResourceMiningGame.Maps.Shadow;
 
 namespace ResourceMiningGame.Maps.Tiles
 {
     public class Tile
     {
         public TileType Type;
-        public float MiningRate; //資源タイルの採掘速度
+        public ResourceType Resource;
         public bool IsBuildable; //建設可能かどうか
         public Vector2 Position; //タイルの位置（ワールド座標）
+        public ITileOccupant? Occupant; //建物やユニットなど
 
-        //アニメーション用
-        public Texture2D SpriteSheet; //スプライトシート
-        public int FrameCount; //フレーム数(1ならアニメーションなし)
-        public int FrameWidth; //フレームの幅
-        public int FrameHeight; //フレームの高さ
+        public List<ShadowSource> ShadowSources;
 
-        public float FrameTime; //1フレームの時間
-        private float timer;
-        private int currentFrame;
+        public bool IsOccupied => Occupant != null;
 
-        public Tile(TileType Type,　//タイルはType, Positionのみでnew可能
-                    Vector2 Position,
-                    int FrameCount = 1, //その他の初期設定
-                    int FrameWidth = 16,
-                    int FrameHeight = 16,
-                    float FrameTime = 0.25f)
+
+        public TileAnimation TerrainAnim;
+        public TileAnimation ResourceAnim;
+
+        public static Texture2D BlockedTex;
+        protected static Texture2D whiteTex;
+        protected static Texture2D blackTex;
+
+
+        public Tile(TileType Type,
+                    ResourceType resource,
+                    Vector2 Position)
         {
             this.Type = Type;
+            this.Resource = resource;
             this.Position = Position;
-            this.FrameCount = FrameCount;
-            this.FrameWidth = FrameWidth;
-            this.FrameHeight = FrameHeight;
-            this.FrameTime = FrameTime;
+            this.IsBuildable = TileRules.Buildable[Type];
+
+            ShadowSources = new List<ShadowSource>();
+            TerrainAnim = TileRegistry.Terrain[Type].CreateTileAnimation();
+            ResourceAnim = ResourceRegistry.Resources[resource]?.CreateTileAnimation();
+        }
+
+        public static void Initialize(GraphicsDevice device)
+        {
+            whiteTex = new Texture2D(device, 1, 1); //白テクスチャをセット
+            whiteTex.SetData(new[] { Color.White });
+
+            blackTex = new Texture2D(device, 1, 1);
+            blackTex.SetData(new[] { Color.Black });
+
+            BlockedTex = ContentLoader.LoadTexture("TileUI/blocked");
         }
 
         public void Update(GameTime gameTime)
         {
-            if (FrameCount <= 1) return; //アニメなし
-
-            timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            if(timer >= FrameTime)
-            {
-                timer -= FrameTime;
-                currentFrame = (currentFrame + 1) % FrameCount;
-            }
+            TerrainAnim?.Update(gameTime);
+            ResourceAnim?.Update(gameTime);
         }
 
         public void Draw(SpriteBatch sb)
         {
-            if (SpriteSheet == null) return; //スプライトシートがない
+            TerrainAnim?.Draw(sb, Position);
+            ResourceAnim?.Draw(sb, Position);
 
-            var source = new Rectangle(
-                currentFrame * FrameWidth,
-                0,
-                FrameWidth,
-                FrameHeight
-             );
-
-            sb.Draw(SpriteSheet, Position, source, Color.White);
-
+            if (!IsBuildable)
+            {
+                sb.Draw(BlockedTex, Position, Color.White);
+                sb.Draw(blackTex, new Rectangle((int)Position.X, (int)Position.Y + 28, 32, 4), Color.Black * 0.4f);
+            }
         }
 
     }

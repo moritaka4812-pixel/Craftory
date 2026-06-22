@@ -1,8 +1,9 @@
-﻿using Rect = Microsoft.Xna.Framework.Rectangle;
+﻿using ResourceMiningGame.UI.Core;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Taskbar;
 using Color = Microsoft.Xna.Framework.Color;
-using Point = Microsoft.Xna.Framework.Point;
 using MouseInput = ResourceMiningGame.Input.MouseInput;
-using ResourceMiningGame.UI.Core;
+using Point = Microsoft.Xna.Framework.Point;
+using Rect = Microsoft.Xna.Framework.Rectangle;
 
 namespace ResourceMiningGame.UI.Elements
 {
@@ -18,7 +19,9 @@ namespace ResourceMiningGame.UI.Elements
         public bool IsImageButton = false; //テキストボタンか画像ボタンか
         public event Action? OnClicked;
 
-        SpriteFont font; //フォントデータ
+        public bool IsToggle { get; set; } = false;
+
+        protected SpriteFont font; //フォントデータ
 
         public Button(GraphicsDevice device, SpriteFont font, Rect rect, string text) //テキスト付きボタン
         {
@@ -87,7 +90,10 @@ namespace ResourceMiningGame.UI.Elements
             //背景
             sb.Draw(whiteTex, Rect, FillColor);
             //ボタンの枠
-            DrawRectangle(sb, Rect, 3, BorderColor);
+            if (IsToggle == false)
+                DrawRectangle(sb, Rect, 3, BorderColor);
+            else
+                DrawRectangle(sb, Rect, 3, Color.Yellow);
 
             if(IsImageButton && Icon != null)
             {
@@ -139,7 +145,7 @@ namespace ResourceMiningGame.UI.Elements
             return hover;
         }
 
-        void DrawRectangle(SpriteBatch sb, Rect rect, int thickness, Color color)
+        protected void DrawRectangle(SpriteBatch sb, Rect rect, int thickness, Color color)
         {
             sb.Draw(whiteTex, new Rect(rect.X, rect.Y, rect.Width, thickness), color); // 上
             sb.Draw(whiteTex, new Rect(rect.X, rect.Y, thickness, rect.Height), color); // 左

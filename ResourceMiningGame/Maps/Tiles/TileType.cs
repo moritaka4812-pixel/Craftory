@@ -3,10 +3,9 @@ namespace ResourceMiningGame.Maps.Tiles
 {
     public enum TileType //タイルのタイプ
     {
+        Ground,
         Road,
-        Buildable,
-        Blocked,
-        Copper,
-        Ground
+        stone,
+        blockedStone
     }
 }

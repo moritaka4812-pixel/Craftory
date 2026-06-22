@@ -1,69 +1,104 @@
 ﻿using ResourceMiningGame.UI.Elements;
 using Panel = ResourceMiningGame.UI.Elements.Panel;
 using Button = ResourceMiningGame.UI.Elements.Button;
+using Rect = Microsoft.Xna.Framework.Rectangle;
+using Color = Microsoft.Xna.Framework.Color;
 using ResourceMiningGame.UI.Core;
 using ResourceMiningGame.Input;
 using System.DirectoryServices;
+using ResourceMiningGame.Maps.Buildings;
 
 namespace ResourceMiningGame.GameUI
 {
-    public class ToolPanel
+    public class ToolPanel : UIElement
     {
         public Panel panel; //UI.Elements.Panel
+        public event Action<BuildType> OnBuildRequested;
         private Button handleButton; //取って
         private bool isOpen;
-        private float currentX;
         private float targetX;
+        private Button? activeButton = null;
+        float openX;
+        float closedX;
 
         public ToolPanel(UIFactory ui)
         {
             panel = new Panel(200, 300);
-            panel.Anchor = UIAnchor.LeftCenter;
             panel.RelativeHeight = 1f;
             panel.RelativeWidth = 0.35f;
-            panel.IgnoreLayoutX = true;
-            panel.OnLeftClickHandler = (MouseInput) => true;
+            panel.RelativeX = -panel.RelativeWidth; //初期の閉じている状態
+            panel.RelativeY = 0f;
+            panel.OnLeftClickHandler = (mouse) => { return true; };
 
             handleButton = ui.CreateTextButton("T", 0, 0, 40, 40);
-
+            panel.AddChild(handleButton);
+            handleButton.RelativeX = 1f;
+            handleButton.RelativeY = 0.50f;
             handleButton.OnClicked += Toggle;
 
             panel.RecalculateLayout();
+            handleButton.RecalculateLayout();
+
+            var list = new ScrollMultiList();
+            list.RelativeY = 0.15f;
+            list.RelativeHeight = 0.7f;
+            list.RelativeWidth = 1f;
+            list.BackgroundColor = new Color(30, 30, 30, 200);
+
+            AddBuildButton(ui, list, "Buildings/drill", BuildType.Drill, 32);
+            AddBuildButton(ui, list, "Buildings/Test", BuildType.Test, 32);
+
+            panel.AddChild(list);
 
             isOpen = false;
-            currentX = -panel.Width;
-            targetX = currentX;
-            panel.X = (int)currentX;
+            openX = 0f;
+            closedX = (float) - panel.RelativeWidth;
+        }
+
+        private void AddBuildButton(UIFactory ui, ScrollMultiList list, string label, BuildType type, int size)
+        {
+            var btn = ui.CreateImageButtonFrame(label, new Rect(0, 0, size, size));
+            btn.OnClicked += () =>
+            {
+                if(activeButton != null)
+                    activeButton.IsToggle = false;
+
+                btn.IsToggle = true;
+                activeButton = btn;
+
+                OnBuildRequested?.Invoke(type);
+            };
+            list.Add(btn);
         }
 
         private void Toggle()
         {
             isOpen = !isOpen;
-            targetX = isOpen ? 0 : -panel.Width;
+            targetX = isOpen ? 0 : (float) -panel.RelativeWidth;
         }
 
-        public bool Update(MouseInput mouse)
+        public override bool Update(MouseInput mouse)
         {
-            //スライドアニメーション
-            currentX = MathHelper.Lerp(currentX, targetX, 0.2f);
-            panel.X = (int)currentX;
-            //取ってボタンの一をパネルの右中央に合わせる
-            handleButton.X = panel.X + panel.Width;
-            handleButton.Y = panel.Y + (panel.Height - handleButton.Height) / 2;
+            base.Update(mouse);
 
-            bool clicked = false;
+            panel.RelativeX = MathHelper.Lerp((float)panel.RelativeX, isOpen ? openX : closedX, 0.2f);
 
-            clicked |= panel.Update(mouse);
-            clicked |= handleButton.Update(mouse);
-
-            //クリックを受け取ったらTrueを返す
-            return clicked;
+            return panel.Update(mouse);
         }
 
-        public void Draw(SpriteBatch sb)
+        public override void Draw(SpriteBatch sb)
         {
             panel.Draw(sb);
-            handleButton.Draw(sb);
+
+        }
+
+        public void ClearActiveButton()
+        {
+            if(activeButton != null)
+            {
+                activeButton.IsToggle = false;
+                activeButton = null;
+            }
         }
     }
 }

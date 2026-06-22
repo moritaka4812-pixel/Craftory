@@ -1,6 +1,9 @@
 ﻿using rect = Microsoft.Xna.Framework.Rectangle;
 using Button = ResourceMiningGame.UI.Elements.Button;
+using Color = Microsoft.Xna.Framework.Color;
+using Rect = Microsoft.Xna.Framework.Rectangle;
 using ResourceMiningGame.UI.Elements;
+using ResourceMiningGame.GameUI;
 
 namespace ResourceMiningGame.UI.Core
 {
@@ -26,6 +29,19 @@ namespace ResourceMiningGame.UI.Core
                 game.GraphicsDevice,
                 game.Content.Load<Texture2D>(file),
                 new rect(x, y, width, height));
+        }
+
+        public Button CreateImageButtonFrame(string file, Rect sourceRect)
+        {
+            var texture = game.Content.Load<Texture2D>(file);
+            var cropped = new Texture2D(game.GraphicsDevice, sourceRect.Width, sourceRect.Height);
+
+            //切り出し
+            Color[] data = new Color[sourceRect.Width * sourceRect.Height];
+            texture.GetData(0, sourceRect, data, 0, data.Length);
+            cropped.SetData(data);
+
+            return new Button(game.GraphicsDevice, cropped, sourceRect);
         }
 
         public Button CreateTextButton(string text, int x, int y, int width, int height)
