@@ -1,5 +1,6 @@
 ﻿using Rectangle = Microsoft.Xna.Framework.Rectangle;
 using Color = Microsoft.Xna.Framework.Color;
+using ResourceMiningGame.Maps.Shadow;
 
 namespace ResourceMiningGame.Maps.Tiles
 {
@@ -10,6 +11,8 @@ namespace ResourceMiningGame.Maps.Tiles
         public bool IsBuildable; //建設可能かどうか
         public Vector2 Position; //タイルの位置（ワールド座標）
         public ITileOccupant? Occupant; //建物やユニットなど
+
+        public List<ShadowSource> ShadowSources;
 
         public bool IsOccupied => Occupant != null;
 
@@ -31,6 +34,7 @@ namespace ResourceMiningGame.Maps.Tiles
             this.Position = Position;
             this.IsBuildable = TileRules.Buildable[Type];
 
+            ShadowSources = new List<ShadowSource>();
             TerrainAnim = TileRegistry.Terrain[Type].CreateTileAnimation();
             ResourceAnim = ResourceRegistry.Resources[resource]?.CreateTileAnimation();
         }

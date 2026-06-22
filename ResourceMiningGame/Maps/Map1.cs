@@ -2,6 +2,7 @@
 using Color = Microsoft.Xna.Framework.Color;
 using Point = Microsoft.Xna.Framework.Point;
 using ResourceMiningGame.Maps.Tiles;
+using ResourceMiningGame.Maps.Shadow;
 
 namespace ResourceMiningGame.Maps
 {
@@ -36,6 +37,15 @@ namespace ResourceMiningGame.Maps
                         resource,
                         new Vector2(x * TileSize, y * TileSize)
                         );
+
+                    if (MapTiles[x, y].IsBuildable == false)
+                    {
+                        MapTiles[x, y].ShadowSources.Add(new ShadowSource
+                        {
+                            Type = ShadowSourceType.BlockedTile,
+                            Strength = 1
+                        });
+                    }
                 }
             }
         }

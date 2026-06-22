@@ -37,7 +37,11 @@ namespace ResourceMiningGame.Maps
 
         public Tiles.Tile GetTile(int x, int y) //指定されたタイルを返す
         {
-            return MapTiles[x, y];
+            try
+            {
+                return MapTiles[x, y];
+            }
+            catch { return null; }
         }
 
         public Point? WorldToTile(Vector2 worldPos)

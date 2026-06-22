@@ -6,6 +6,7 @@ using ResourceMiningGame.GameUI;
 using ResourceMiningGame.Input;
 using ResourceMiningGame.Maps;
 using ResourceMiningGame.Maps.Buildings;
+using ResourceMiningGame.Maps.Shadow;
 using ResourceMiningGame.Maps.Tiles;
 using ResourceMiningGame.Renderer;
 using ResourceMiningGame.ScreenUI;
@@ -48,7 +49,7 @@ namespace ResourceMiningGame.Screens
             camera = new Camera(new Vector2(0f, 0f), game); //カメラの初期位置
             cameraController = new CameraController();
             cameraSystem = new CameraSystem(camera, cameraController);
-            mapManager = new MapManager(new Map1());
+            mapManager = new MapManager(new Map1(), game.GraphicsDevice);
             tileSelectionController = new TileSelectionController(mapManager.Map);
             tileSelectionSystem = new TileSelectionSystem(tileSelectionController);
             tileSelectionRenderer = new TileSelectionRenderer(game.GraphicsDevice);
@@ -280,6 +281,7 @@ namespace ResourceMiningGame.Screens
             buildTargets.Clear();
             invalidTargets.Clear();
             toolPanel.ClearActiveButton();
+            mapManager.shadowGenerator.MarkDirty();
         }
 
         public void CancelBuild()

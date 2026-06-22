@@ -1,6 +1,7 @@
 ﻿
 using ResourceMiningGame.Core;
 using ResourceMiningGame.Maps.Buildings;
+using ResourceMiningGame.Maps.Shadow;
 using ResourceMiningGame.Maps.Tiles;
 using Point = Microsoft.Xna.Framework.Point;
 
@@ -11,12 +12,15 @@ namespace ResourceMiningGame.Maps
         public IMap Map { get; set; }
         public List<BuildingInstance> Buildings { get; private set; }
         private TileAnimator tileAnimator;
+        public MapShadowGenerator shadowGenerator {  get; private set; }
 
-        public MapManager(IMap map)
+        public MapManager(IMap map, GraphicsDevice graphics)
         {
             Map = map;
             Buildings = new();
             tileAnimator = new TileAnimator(map);
+            shadowGenerator = new MapShadowGenerator(map, graphics);
+
         }
 
         public void AddBuilding(BuildType type, Point tilePos)
@@ -27,6 +31,11 @@ namespace ResourceMiningGame.Maps
             {
                 var tile = Map.GetTile(pos.X, pos.Y);
                 tile.Occupant = building;
+                tile.ShadowSources.Add(new ShadowSource
+                {
+                    Type = ShadowSourceType.Building,
+                    Strength = 2
+                });
             }
 
             Buildings.Add(building);
@@ -52,6 +61,7 @@ namespace ResourceMiningGame.Maps
         {
             var range = Map.GetVisibleRange(camera, sb.GraphicsDevice);
             Map.Draw(sb, range);
+            shadowGenerator.Draw(sb);
 
             foreach (var b in Buildings)
                 b.Draw(sb, camera);
