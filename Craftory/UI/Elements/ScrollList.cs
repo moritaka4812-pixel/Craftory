@@ -77,8 +77,8 @@ namespace Craftory.UI.Elements
         {
             if (!Visible) return;
 
-            Disp.WriteLine($"ScrollList Rect = {rect}");
-            sb.Draw(whiteTex, rect, Color.Red * 0.2f);
+            //Disp.WriteLine($"ScrollList Rect = {rect}");
+            //sb.Draw(whiteTex, rect, Color.Red * 0.2f);
 
 
             BeginClip(sb);
