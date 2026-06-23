@@ -86,6 +86,7 @@ namespace Craftory.GameUI
             list.Clear();
             foreach (var pair in resourceManager.GetAll())
             {
+                if(pair.Key == ResourceType.None) continue;
                 var label = new TextLabel(font, $"{pair.Key}: {pair.Value}", new Rect(0, 0, 1, 1));
                 list.Add(label);
             }

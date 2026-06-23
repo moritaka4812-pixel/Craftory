@@ -25,7 +25,7 @@ namespace Craftory.Maps
 
         public void AddBuilding(BuildType type, Point tilePos)
         {
-            var building = new BuildingInstance(type, tilePos);
+            var building = BuildingRegistry.Data[type].Create(tilePos);
             
             foreach(var pos in building.OccupiedTiles)
             {

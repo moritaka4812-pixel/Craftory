@@ -4,6 +4,7 @@ namespace Craftory.Maps.Buildings
 {
     public static class BuildingRegistry
     {
+
         public static Dictionary<BuildType, BuildingInfo> Data =
             new()
             {
@@ -18,7 +19,7 @@ namespace Craftory.Maps.Buildings
                         FrameCount = 8,
                         FrameTime = 0.2f,
                         SizeInTiles = new Point(2,2),
-                        WorkSpeed = 10000
+                        WorkSpeed = 10000,
                     }
                 },
                 {
@@ -32,7 +33,8 @@ namespace Craftory.Maps.Buildings
                         FrameCount = 9,
                         FrameTime = 0.2f,
                         SizeInTiles = new Point(1,1),
-                        WorkSpeed = 1.0f
+                        WorkSpeed = 0.25f,
+                        Create = pos => new Drill(pos)
                     }
                 }
             };
