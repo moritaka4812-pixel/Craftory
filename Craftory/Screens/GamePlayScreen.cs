@@ -32,9 +32,9 @@ namespace Craftory.Screens
         TileSelectionController tileSelectionController; //タイル選択を処理
         TileSelectionSystem tileSelectionSystem;
         TileSelectionRenderer tileSelectionRenderer;
-        MapManager mapManager; //マップ情報などを管理
         Button settingsButton; //セッティングボタン
         ToolPanel toolPanel; //左に表示されるツールパネル
+        InformationPanel informationPanel; //右に表示される情報パネル
         public BuildModeController buildModeController;
 
         public GamePlayScreen(Game1 game) : base(game)
@@ -42,8 +42,8 @@ namespace Craftory.Screens
             camera = new Camera(new Vector2(0f, 0f), game); //カメラの初期位置
             cameraController = new CameraController();
             cameraSystem = new CameraSystem(camera, cameraController);
-            mapManager = new MapManager(new Map1(), game.GraphicsDevice);
-            tileSelectionController = new TileSelectionController(mapManager.Map);
+            GameCore.Instance.MapManager.MapSet(new Map1(), game.GraphicsDevice);
+            tileSelectionController = new TileSelectionController(GameCore.Instance.MapManager.Map);
             tileSelectionSystem = new TileSelectionSystem(tileSelectionController);
             tileSelectionRenderer = new TileSelectionRenderer(game.GraphicsDevice);
             uiSet = new SetUIElements();
@@ -53,12 +53,12 @@ namespace Craftory.Screens
         public override void LoadContent()
         {
             var ui = new UIFactory(game); //UIを生成するインスタンス
-            mapManager.Map.LoadContent(game.Content); //マップをロード
+            GameCore.Instance.MapManager.Map.LoadContent(game.Content); //マップをロード
 
-            var builder = new GamePlayUIScreenBuilder(game, this, camera);
-            (settingsButton, toolPanel) = builder.BuildUI();
+            var builder = new GamePlayUIScreenBuilder(game, this, camera, GameCore.Instance.ResourceManager);
+            (settingsButton, toolPanel, informationPanel) = builder.BuildUI();
 
-            buildModeController = new BuildModeController(mapManager, toolPanel, game, camera, this);
+            buildModeController = new BuildModeController(GameCore.Instance.MapManager, toolPanel, game, camera, this);
 
             uiSet.Add(settingsButton);
 
@@ -75,11 +75,12 @@ namespace Craftory.Screens
             bool uiConsumed = false;
             uiConsumed |= toolPanel.Update(game.Input.Mouse);
             uiConsumed |= settingsButton.Update(game.Input.Mouse);
+            uiConsumed |= informationPanel.Update(game.Input.Mouse);
 
             if (buildModeController.IsActive && !uiConsumed)
             {
                 uiConsumed |= buildModeController.confirmPanel.UpdateWorld(game.Input.Mouse);
-                if(!uiConsumed)
+                if (!uiConsumed)
                     buildModeController.Update(game.Input.Mouse, camera);
 
             }
@@ -88,12 +89,12 @@ namespace Craftory.Screens
             if (!uiConsumed)
                 cameraSystem.Update(game, dt);
 
-                //UIが入力を吸収していないときだけタイル操作
+            //UIが入力を吸収していないときだけタイル操作
             if (!uiConsumed)
                 tileSelectionSystem.Update(game.Input.Mouse, camera);
 
             //タイル更新(アニメーション)
-            mapManager.Update(gameTime, camera, game.GraphicsDevice);
+            GameCore.Instance.MapManager.Update(gameTime, camera, game.GraphicsDevice);
 
         }
 
@@ -101,9 +102,9 @@ namespace Craftory.Screens
         {
             //ワールド座標での描画
             sb.Begin(transformMatrix: camera.GetViewMatrix()); //描画座標を指定してDrawをワールド座標基準で描画できるようにする
-            
-            var range = mapManager.Map.GetVisibleRange(camera, game.GraphicsDevice); //描画範囲内のレンジを取得
-            mapManager.Draw(sb, camera); //範囲内のマップをDraw
+
+            var range = GameCore.Instance.MapManager.Map.GetVisibleRange(camera, game.GraphicsDevice); //描画範囲内のレンジを取得
+            GameCore.Instance.MapManager.Draw(sb, camera); //範囲内のマップをDraw
 
             // 選択タイルのハイライト
             tileSelectionRenderer.Draw(sb, tileSelectionSystem.SelectedTile);
@@ -116,13 +117,20 @@ namespace Craftory.Screens
             sb.End();
 
             //UIの描画（スクリーン座標）
-            sb.Begin();
+            var raster = new RasterizerState() { ScissorTestEnable = true };
+
+            sb.Begin(SpriteSortMode.Deferred,
+                     BlendState.AlphaBlend,
+                     SamplerState.PointClamp,
+                     DepthStencilState.None,
+                     raster);
 
             toolPanel.Draw(sb);
-
             settingsButton.Draw(sb);
+            informationPanel.Draw(sb);
 
             sb.End();
+
         }
 
     }

@@ -14,7 +14,7 @@ namespace Craftory.Maps
         private TileAnimator tileAnimator;
         public MapShadowGenerator shadowGenerator {  get; private set; }
 
-        public MapManager(IMap map, GraphicsDevice graphics)
+        public void MapSet(IMap map, GraphicsDevice graphics)
         {
             Map = map;
             Buildings = new();
@@ -25,7 +25,7 @@ namespace Craftory.Maps
 
         public void AddBuilding(BuildType type, Point tilePos)
         {
-            var building = new BuildingInstance(type, tilePos);
+            var building = BuildingRegistry.Data[type].Create(tilePos);
             
             foreach(var pos in building.OccupiedTiles)
             {

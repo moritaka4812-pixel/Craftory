@@ -5,6 +5,7 @@ using Craftory.Maps.Tiles;
 using Craftory.Screens;
 using Craftory.UI.Core;
 using Rect = Microsoft.Xna.Framework.Rectangle;
+using Craftory.Core;
 
 namespace Craftory
 {
@@ -15,13 +16,15 @@ namespace Craftory
         private Stack<ScreenBase> screens = new Stack<ScreenBase>(); //表示する画面のスタック
         public InputManager Input { get; private set; } //入力の状態を管理
 
+        public static GameCore Core { get; private set; }
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this); //グラフィック設定を管理するオブジェクトを生成（ゲーム内で一度のみ生成）
             Content.RootDirectory = "Content"; // コンテントディレクトリのルートを指定
             IsMouseVisible = true; // マウスカーソルを表示
             Input = new InputManager(); //インプット管理をするインスタンスを生成
-
+            Core = new GameCore();
             Window.AllowUserResizing = true; //ウィンドウサイズを変更可能に
             _graphics.PreferredBackBufferWidth = 800; //最小画面横幅
             _graphics.PreferredBackBufferHeight = 600; //最小画面縦幅

@@ -17,7 +17,7 @@ namespace Craftory.Screens
 
             startButton = ui.CreateRelativeTextButton("Start", relX: 0.3f, relY: 0.8f, relW: 0.4f, relH: 0.2f); // ボタンを生成
             uiSet.Add(startButton);
-            titleLabel = ui.CreateRelativeTextLabel("My Resource Mining Game", relX: 0.5f, relY: 0.2f); // タイトルラベルを生成
+            titleLabel = ui.CreateRelativeTextLabel("Craftory", relX: 0.5f, relY: 0.2f); // タイトルラベルを生成
             uiSet.Add(titleLabel);
             base.LoadContent();
         }
@@ -26,7 +26,7 @@ namespace Craftory.Screens
         {
             spriteBatch.Begin(); // spriteBatchで描画
             startButton.Draw(spriteBatch); // スタートボタンを描画
-            titleLabel.Draw(spriteBatch); //タイトルラベルを描画
+            titleLabel.DrawCenter(spriteBatch); //タイトルラベルを描画
             spriteBatch.End(); // Batchの設定を送信して終了
         }
 

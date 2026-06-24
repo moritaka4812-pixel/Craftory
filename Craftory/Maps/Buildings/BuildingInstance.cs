@@ -14,6 +14,8 @@ namespace Craftory.Maps.Buildings
         public List<Point> OccupiedTiles { get; private set; }
         public TileAnimation Anim;
 
+        protected float timer = 0f;
+
         public BuildingInstance(BuildType type, Point tilePosition)
         {
             Type = type;
