@@ -32,7 +32,7 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/MyFont.spritefont
 
-#begin Resource/Ore/CopperOre.png
+#begin Items/Ore/CopperOre.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -42,19 +42,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Resource/Ore/CopperOre.png
-
-#begin Resource/Tile/copper.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Resource/Tile/copper.png
+/build:Items/Ore/CopperOre.png
 
 #begin TileUI/Blocked.png
 /importer:TextureImporter
@@ -67,6 +55,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:TileUI/Blocked.png
+
+#begin TileUI/Resources/Copper.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:TileUI/Resources/Copper.png
 
 #begin TileUI/Stone.png
 /importer:TextureImporter
