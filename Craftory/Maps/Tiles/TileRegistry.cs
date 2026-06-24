@@ -12,7 +12,7 @@ namespace Craftory.Maps.Tiles
                 TileType.Ground,
                 new TileAnimationInfo
                 {
-                    TexturePath = "TileUI/ground",
+                    TexturePath = "TileUI/Ground",
                     FrameCount = 1,
                     FrameTime = 0f
                 }
@@ -21,7 +21,7 @@ namespace Craftory.Maps.Tiles
                 TileType.Road,
                 new TileAnimationInfo
                 {
-                    TexturePath = "TileUI/road",
+                    TexturePath = "TileUI/Road",
                     FrameCount = 1,
                     FrameTime = 0f
                 }
@@ -30,7 +30,7 @@ namespace Craftory.Maps.Tiles
                 TileType.stone,
                 new TileAnimationInfo
                 {
-                    TexturePath = "TileUI/stone",
+                    TexturePath = "TileUI/Stone",
                     FrameCount = 1,
                     FrameTime = 0f
                 }
@@ -39,7 +39,7 @@ namespace Craftory.Maps.Tiles
                     TileType.blockedStone,
                     new TileAnimationInfo()
                     {
-                        TexturePath = "TileUI/stone",
+                        TexturePath = "TileUI/Stone",
                         FrameCount = 1,
                         FrameTime = 0f
                     }

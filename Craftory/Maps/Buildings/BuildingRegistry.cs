@@ -9,24 +9,10 @@ namespace Craftory.Maps.Buildings
             new()
             {
                 {
-                    BuildType.Test,
-                    new BuildingInfo()
-                    {
-                        TexturePath = "Buildings/Test",
-                        Type = BuildType.Test,
-                        Width = 2,
-                        Height = 2,
-                        FrameCount = 8,
-                        FrameTime = 0.2f,
-                        SizeInTiles = new Point(2,2),
-                        WorkSpeed = 10000,
-                    }
-                },
-                {
                     BuildType.Drill,
                     new BuildingInfo()
                     {
-                        TexturePath = "Buildings/drill",
+                        TexturePath = "Buildings/Miner/Drill",
                         Type = BuildType.Drill,
                         Width = 1,
                         Height = 1,

@@ -15,7 +15,7 @@ namespace Craftory.Maps.Resource
                 ResourceType.Copper,
                 new TileAnimationInfo
                 {
-                    TexturePath = "Resource/copper",
+                    TexturePath = "Resource/Tile/Copper",
                     FrameCount = 1,
                     FrameTime = 0f
                 }
