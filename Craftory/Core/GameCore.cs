@@ -7,14 +7,14 @@ namespace Craftory.Core
     {
         public static GameCore Instance { get; private set; }
         public MapManager MapManager;
-        public ResourceManager ResourceManager;
+        public ItemManager ItemManager;
 
         public GameCore()
         {
             Instance = this;
 
             MapManager = new MapManager();
-            ResourceManager = new ResourceManager();
+            ItemManager = new ItemManager();
         }
     }
 }

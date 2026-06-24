@@ -2,17 +2,17 @@
 
 namespace Craftory.Maps.Resource
 {
-    public static class ResourceRegistry
+    public static class TileResourceRegistry
     {
-        public static Dictionary<ResourceType, TileAnimationInfo> Resources =
-            new Dictionary<ResourceType, TileAnimationInfo>()
+        public static Dictionary<TileResourceType, TileAnimationInfo> Resources =
+            new Dictionary<TileResourceType, TileAnimationInfo>()
             {
             {
-                ResourceType.None,
+                TileResourceType.None,
                 null
             },
             {
-                ResourceType.Copper,
+                TileResourceType.Copper,
                 new TileAnimationInfo
                 {
                     TexturePath = "Resource/Tile/Copper",

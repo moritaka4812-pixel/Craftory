@@ -1,6 +1,6 @@
 ﻿namespace Craftory.Maps.Resource
 {
-    public enum ResourceType
+    public enum TileResourceType
     {
         None,
         Copper,

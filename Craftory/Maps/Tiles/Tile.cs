@@ -8,7 +8,7 @@ namespace Craftory.Maps.Tiles
     public class Tile
     {
         public TileType Type;
-        public ResourceType Resource;
+        public TileResourceType Resource;
         public bool IsBuildable; //建設可能かどうか
         public Vector2 Position; //タイルの位置（ワールド座標）
         public ITileOccupant? Occupant; //建物やユニットなど
@@ -27,7 +27,7 @@ namespace Craftory.Maps.Tiles
 
 
         public Tile(TileType Type,
-                    ResourceType resource,
+                    TileResourceType resource,
                     Vector2 Position)
         {
             this.Type = Type;
@@ -37,7 +37,7 @@ namespace Craftory.Maps.Tiles
 
             ShadowSources = new List<ShadowSource>();
             TerrainAnim = TileRegistry.Terrain[Type].CreateTileAnimation();
-            ResourceAnim = ResourceRegistry.Resources[resource]?.CreateTileAnimation();
+            ResourceAnim = TileResourceRegistry.Resources[resource]?.CreateTileAnimation();
         }
 
         public static void Initialize(GraphicsDevice device)

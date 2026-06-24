@@ -21,9 +21,9 @@ namespace Craftory.Maps.Buildings
 
                 var tile = GameCore.Instance.MapManager.Map.GetTile(TilePosition.X, TilePosition.Y);
 
-                if(tile.Resource != Resource.ResourceType.None)
+                if(tile.Resource != Resource.TileResourceType.None)
                 {
-                    GameCore.Instance.ResourceManager.Add(tile.Resource, 1);
+                    //GameCore.Instance.ResourceManager.Add(tile.Resource, 1);
                 }
             }
         }

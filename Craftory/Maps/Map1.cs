@@ -30,8 +30,8 @@ namespace Craftory.Maps
                     else
                         terrain = TileType.stone;
                     //資源生成
-                    ResourceType resource = 
-                        (x + y) % 3 == 0 ? ResourceType.Copper : ResourceType.None;
+                    TileResourceType resource = 
+                        (x + y) % 3 == 0 ? TileResourceType.Copper : TileResourceType.None;
 
                     MapTiles[x, y] = new Tile(
                         terrain,

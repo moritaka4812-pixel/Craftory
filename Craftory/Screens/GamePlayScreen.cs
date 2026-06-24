@@ -55,7 +55,7 @@ namespace Craftory.Screens
             var ui = new UIFactory(game); //UIを生成するインスタンス
             GameCore.Instance.MapManager.Map.LoadContent(game.Content); //マップをロード
 
-            var builder = new GamePlayUIScreenBuilder(game, this, camera, GameCore.Instance.ResourceManager);
+            var builder = new GamePlayUIScreenBuilder(game, this, camera);
             (settingsButton, toolPanel, informationPanel) = builder.BuildUI();
 
             buildModeController = new BuildModeController(GameCore.Instance.MapManager, toolPanel, game, camera, this);
