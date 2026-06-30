@@ -7,19 +7,40 @@ namespace Craftory.Maps.Buildings.Conveyors
     public class Conveyor : BuildingInstance
     {
         public ConveyorTile TileLogic { get; private set; }
-        public BuildingDirection Direction { get; private set; }
 
-        public Conveyor(Point pos, BuildingDirection dir) : 
-            base(BuildType.Conveyor, pos, dir)
+        public Conveyor(BuildType type, Point pos, BuildingDirection dir) : 
+            base(type, pos, dir)
         {
-            Direction = dir;
+            InitDirections(dir);
 
-            var info = BuildingRegistry.Data[BuildType.Conveyor];
-            Anim = info.CreateTileAnimation(dir);
-
-            TileLogic = new ConveyorTile(WorkSpeed);
+            TileLogic = new ConveyorTile(WorkSpeed, this);
 
             SetNextTile();
+
+            TileLogic.InitializeTileStart();
+        }
+
+        protected virtual void InitDirections(BuildingDirection dir)
+        {
+            OutDirections[TilePosition] = new List<BuildingDirection> { dir };
+            InDirections[TilePosition] = new List<BuildingDirection> { GetInDirectionFromOut(dir) };
+        }
+
+        protected virtual BuildingDirection GetInDirectionFromOut(BuildingDirection outDir)
+        {
+            return outDir switch
+            {
+                BuildingDirection.Up => BuildingDirection.Down,
+                BuildingDirection.Right => BuildingDirection.Left,
+                BuildingDirection.Down => BuildingDirection.Up,
+                BuildingDirection.Left => BuildingDirection.Right,
+                _ => BuildingDirection.None
+            };
+        }
+
+        public virtual BuildingDirection GetDirectionForItem(ConveyorItem item)
+        {
+            return OutDirections[TilePosition][0];
         }
 
         public override void UpdateLogic(GameTime gameTime)
@@ -30,12 +51,12 @@ namespace Craftory.Maps.Buildings.Conveyors
         public override void Draw(SpriteBatch sb, Camera camera)
         {
             //建物描画
-            DrawRotated(sb);
+            DrawRotated(sb, TilePosition, Color.White);
         }
 
-        private void SetNextTile()
+        protected virtual void SetNextTile()
         {
-            var nextPos = Direction switch
+            var nextPos = OutDirections[TilePosition][0] switch
             {
                 BuildingDirection.Right => new Point(TilePosition.X + 1, TilePosition.Y),
                 BuildingDirection.Left => new Point(TilePosition.X - 1, TilePosition.Y),
@@ -48,30 +69,33 @@ namespace Craftory.Maps.Buildings.Conveyors
             if (tile?.Occupant is Conveyor nextConveyor)
             {
                 TileLogic.SetNextTile(nextConveyor.TileLogic);
+
+                TileLogic.InitializeTileStart();
             }
         }
 
-        private void DrawRotated(SpriteBatch sb)
+        public override void DrawRotated(SpriteBatch sb, Point tilePos, Color tint)
         {
             var tex = Anim.Texture;
             var frame = Anim.GetCurrentFrameRect();
 
-            float rotation = Direction switch
+            float rotation = OutDirections[tilePos][0] switch
             {
                 BuildingDirection.Right => 0f,
                 BuildingDirection.Down => MathF.PI / 2,
                 BuildingDirection.Left => MathF.PI,
                 BuildingDirection.Up => -MathF.PI / 2,
+                _ => 0f
             };
 
             Vector2 origin = new(tex.Width / Anim.FrameCount / 2f, tex.Height / 2f);
-            Vector2 pos = TilePosition.ToVector2() * 32 + origin;
+            Vector2 pos = tilePos.ToVector2() * 32 + origin;
 
             sb.Draw(
                 tex,
                 pos,
                 frame,
-                Color.White,
+                tint,
                 rotation,
                 origin,
                 1f,
@@ -85,28 +109,49 @@ namespace Craftory.Maps.Buildings.Conveyors
             SetNextTile();
         }
 
-        public Point GetNextPosition()
+        public virtual IEnumerable<Point> GetNextPositions()
         {
-            return Direction switch
+            foreach (var dir in OutDirections[TilePosition])
             {
-                BuildingDirection.Right => new Point(TilePosition.X + 1, TilePosition.Y),
-                BuildingDirection.Left => new Point(TilePosition.X - 1, TilePosition.Y),
-                BuildingDirection.Up => new Point(TilePosition.X, TilePosition.Y - 1),
-                BuildingDirection.Down => new Point(TilePosition.X, TilePosition.Y + 1),
-                _ => TilePosition
-            };
+                yield return dir switch
+                {
+                    BuildingDirection.Right => new Point(TilePosition.X + 1, TilePosition.Y),
+                    BuildingDirection.Left => new Point(TilePosition.X - 1, TilePosition.Y),
+                    BuildingDirection.Up => new Point(TilePosition.X, TilePosition.Y - 1),
+                    BuildingDirection.Down => new Point(TilePosition.X, TilePosition.Y + 1),
+                    _ => TilePosition
+                };
+            }
         }
 
-        public Point GetBackPosition()
+        public virtual Point GetNextPosition()
         {
-            return Direction switch
+            return GetNextPositions().First();
+        }
+
+        public virtual IEnumerable<Point> GetBackPositions()
+        {
+            foreach (var dir in InDirections[TilePosition])
             {
-                BuildingDirection.Right => new Point(TilePosition.X - 1, TilePosition.Y),
-                BuildingDirection.Left => new Point(TilePosition.X + 1, TilePosition.Y),
-                BuildingDirection.Up => new Point(TilePosition.X, TilePosition.Y + 1),
-                BuildingDirection.Down => new Point(TilePosition.X, TilePosition.Y - 1),
-                _ => TilePosition
-            };
+                yield return dir switch
+                {
+                    BuildingDirection.Right => new Point(TilePosition.X - 1, TilePosition.Y),
+                    BuildingDirection.Left => new Point(TilePosition.X + 1, TilePosition.Y),
+                    BuildingDirection.Up => new Point(TilePosition.X, TilePosition.Y + 1),
+                    BuildingDirection.Down => new Point(TilePosition.X, TilePosition.Y - 1),
+                    _ => TilePosition
+                };
+            }
+        }
+
+        public virtual Point GetBackPosition()
+        {
+            return GetBackPositions().First();
+        }
+
+        public virtual Vector2 GetItemPosition(Vector2 worldPos, float local, ConveyorItem item)
+        {
+            return TileLogic.DefaultCalculate(worldPos, local, item.currentDirection);
         }
     }
 }

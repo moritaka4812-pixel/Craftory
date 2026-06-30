@@ -1,6 +1,7 @@
 ﻿using Point = Microsoft.Xna.Framework.Point;
 using Craftory.Maps.Buildings.Miners;
 using Craftory.Maps.Buildings.Conveyors;
+using SharpDX.Direct3D11;
 
 namespace Craftory.Maps.Buildings
 {
@@ -25,7 +26,7 @@ namespace Craftory.Maps.Buildings
                         FrameTime = 0.2f,
                         SizeInTiles = new Point(1,1),
                         WorkSpeed = 0.25f,
-                        Create = (pos, dir) => new Drill(pos)
+                        Create = (pos, dir) => new Drill(BuildType.Drill, pos)
                     }
                 },
                 {
@@ -43,9 +44,28 @@ namespace Craftory.Maps.Buildings
                         FrameTime = 0.25f,
                         SizeInTiles = new Point(1,1),
                         WorkSpeed = 1.0f,
-                        Create = (pos, dir) => new Conveyor(pos, dir)
+                        Create = (pos, dir) => new Conveyor(BuildType.Conveyor, pos, dir)
+                    }
+                },
+                {
+                    BuildType.ConveyorRightCurve,
+                    new BuildingInfo()
+                    {
+                        TexturePaths = new()
+                        {
+                            { BuildingDirection.None, "Buildings/Conveyor/ConveyorRightCurve" }
+                        },
+                        Type = BuildType.ConveyorRightCurve,
+                        Width = 1,
+                        Height = 1,
+                        FrameCount = 5,
+                        FrameTime = 0.25f,
+                        SizeInTiles = new Point(1,1),
+                        WorkSpeed = 1.0f,
+                        Create = (pos, OutDir) => new ConveyorRightCurve(BuildType.ConveyorRightCurve, pos, OutDir)
                     }
                 }
+
             };
 
         public static void LoadTextures()

@@ -74,7 +74,7 @@ namespace Craftory.Maps
             //アイテム
             foreach(var b in Buildings)
                 if(b is Conveyor conveyor)
-                    conveyor.TileLogic.Draw(sb, new Vector2(conveyor.TilePosition.X * 32, conveyor.TilePosition.Y * 32), conveyor.Direction);
+                    conveyor.TileLogic.Draw(sb, new Vector2(conveyor.TilePosition.X * 32, conveyor.TilePosition.Y * 32));
 
             //その他の建物
             foreach (var b in Buildings)

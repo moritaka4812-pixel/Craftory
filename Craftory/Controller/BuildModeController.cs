@@ -146,18 +146,17 @@ namespace Craftory.Controller
         {
             var info = BuildingRegistry.Data[currentBuildType];
             var previewAnim = info.CreateTileAnimation(direction);
-
+            
+            
             foreach (var origin in buildTargets)
             {
-                Vector2 worldPos = new Vector2(origin.X * 32, origin.Y * 32);
-
-                DrawPreviewRotated(sb, previewAnim, worldPos, direction, Color.White * 0.5f);
+                var instance = info.Create(origin, direction);
+                DrawPreviewRotated(sb, instance, Color.White * 0.5f);
             }
             foreach (var origin in invalidTargets)
             {
-                Vector2 worldPos = new Vector2(origin.X * 32, origin.Y * 32);
-
-                DrawPreviewRotated(sb, previewAnim, worldPos, direction, Color.White * 0.5f);
+                var instance = info.Create(origin, direction);
+                DrawPreviewRotated(sb, instance, Color.Red * 0.5f);
             }
             confirmPanel.DrawWorld(sb);
         }
@@ -214,41 +213,9 @@ namespace Craftory.Controller
             }
         }
 
-        private void DrawPreviewRotated(SpriteBatch sb, TileAnimation anim, Vector2 worldPos, BuildingDirection dir, Color color)
+        private void DrawPreviewRotated(SpriteBatch sb, BuildingInstance instance, Color color)
         {
-            var tex = anim.Texture;
-            var frame = anim.GetCurrentFrameRect();
-
-            float rotation = dir switch
-            {
-                BuildingDirection.Right => 0f,
-                BuildingDirection.Down => MathF.PI / 2,
-                BuildingDirection.Left => MathF.PI,
-                BuildingDirection.Up => -MathF.PI / 2,
-                _ => 0f
-            };
-
-            // スプライト中心
-            Vector2 origin = new(frame.Width / 2f, frame.Height / 2f);
-
-            // タイル左上 + origin = スプライト中心のワールド座標
-            Vector2 pos = worldPos + origin;
-
-            // ピクセルスナップは pos に対して行う
-            pos.X = (float)Math.Floor(pos.X);
-            pos.Y = (float)Math.Floor(pos.Y);
-
-            sb.Draw(
-                tex,
-                pos,
-                frame,
-                color,
-                rotation,
-                origin,
-                1f,
-                SpriteEffects.None,
-                0f
-            );
+            instance.DrawRotated(sb, instance.TilePosition, color);
         }
 
         private void RotateDirection()

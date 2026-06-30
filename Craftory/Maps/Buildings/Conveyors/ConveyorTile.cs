@@ -18,15 +18,24 @@ namespace Craftory.Maps.Buildings.Conveyors
 
         float minDistance = 0.5f;
 
-        public ConveyorTile(float speed)
+        public Conveyor ownerConveyor;
+
+        public ConveyorTile(float speed, Conveyor ownerConveyor)
         {
             this.speed = speed;
+            this.ownerConveyor = ownerConveyor;
         }
         public void SetNextTile(ConveyorTile next)
         {
             this.nextTile = next;
             if (next != null)
+            {
                 next.backTile = this;
+
+                InitializeTileStart();
+
+                next.InitializeTileStart();
+            }
         }
 
         public void InitializeTileStart()
@@ -39,9 +48,17 @@ namespace Craftory.Maps.Buildings.Conveyors
 
         public void Update(GameTime time)
         {
+            foreach (var item in Items)
+                UpdateDirection(item);
+
             UpdatePosition(time);
             CheckDistance();
             TryMoveToNextTile();
+        }
+
+        public void UpdateDirection(ConveyorItem item)
+        {
+            item.currentDirection = ownerConveyor.GetDirectionForItem(item);
         }
 
         public void UpdatePosition(GameTime time)
@@ -82,6 +99,7 @@ namespace Craftory.Maps.Buildings.Conveyors
 
             if (first.GlobalPosition >= tileEnd)
             {
+
                 if (nextTile != null && nextTile.TryAccept(first))
                 {
                     Items.RemoveAt(0);
@@ -90,6 +108,7 @@ namespace Craftory.Maps.Buildings.Conveyors
                 {
                     first.GlobalPosition = tileEnd;
                 }
+                
             }
         }
 
@@ -100,20 +119,23 @@ namespace Craftory.Maps.Buildings.Conveyors
                 IsFull = true;
                 return false;
             }
+            item.pastTile = this;
+            item.pastOutDir = item.currentDirection;
             IsFull = false;
+
             item.GlobalPosition = TileStart;
             Items.Add(item);
             return true;
         }
 
-        public void Draw(SpriteBatch sb, Vector2 worldPos, BuildingDirection dir)
+        public void Draw(SpriteBatch sb, Vector2 worldPos)
         {
             // 後ろから前へ描画
             for (int i = Items.Count - 1; i >= 0; i--)
             {
                 var item = Items[i];
                 float local = item.GlobalPosition - TileStart; // 0 ~ 1
-                Vector2 pos = CalculateItemPosition(worldPos, local, dir);
+                Vector2 pos = ownerConveyor.GetItemPosition(worldPos, local, item);
 
                 sb.Draw(
                     ItemRegistry.Data[item.Type].Texture,
@@ -130,7 +152,7 @@ namespace Craftory.Maps.Buildings.Conveyors
         }
 
 
-        private Vector2 CalculateItemPosition(Vector2 worldPos, float pos, BuildingDirection dir)
+        public Vector2 DefaultCalculate(Vector2 worldPos, float pos, BuildingDirection dir)
         {
             const float tileSize = 32f;
             const float itemSize = 24f;

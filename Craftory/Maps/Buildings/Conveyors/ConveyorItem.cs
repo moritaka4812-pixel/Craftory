@@ -7,5 +7,9 @@ namespace Craftory.Maps.Buildings.Conveyors
     {
         public ItemType Type;
         public float GlobalPosition; // 1.0ごとにタイル移動を表す
+        public BuildingDirection currentDirection;
+
+        public ConveyorTile pastTile;
+        public BuildingDirection pastOutDir;
     }
 }

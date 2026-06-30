@@ -6,6 +6,6 @@ namespace Craftory.Maps.Buildings
         None,
         Drill,
         Conveyor,
-        ConveyorCurve
+        ConveyorRightCurve
     }
 }
