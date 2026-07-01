@@ -62,8 +62,27 @@ namespace Craftory.Maps.Buildings
                         FrameTime = 0.25f,
                         SizeInTiles = new Point(1,1),
                         WorkSpeed = 1.0f,
-                        Create = (pos, OutDir) => new ConveyorRightCurve(BuildType.ConveyorRightCurve, pos, OutDir)
+                        Create = (pos, inDir) => new ConveyorRightCurve(BuildType.ConveyorRightCurve, pos, inDir)
                     }
+                },
+                {
+                    BuildType.ConveyorLeftCurve,
+                    new BuildingInfo()
+                    {
+                        TexturePaths = new()
+                        {
+                            {BuildingDirection.None, "Buildings/Conveyor/ConveyorLeftCurve" }
+                        },
+                        Type = BuildType.ConveyorLeftCurve,
+                        Width = 1,
+                        Height = 1,
+                        FrameCount = 5,
+                        FrameTime = 0.25f,
+                        SizeInTiles = new Point(1,1),
+                        WorkSpeed = 1.0f,
+                        Create = (pos, inDir) => new ConveyorLeftCurve(BuildType.ConveyorLeftCurve, pos, inDir)
+                    }
+
                 }
 
             };
