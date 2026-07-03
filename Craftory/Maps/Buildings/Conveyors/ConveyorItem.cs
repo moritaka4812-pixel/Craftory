@@ -11,5 +11,6 @@ namespace Craftory.Maps.Buildings.Conveyors
 
         public ConveyorTile pastTile;
         public BuildingDirection pastOutDir;
+        public float arrivalTime;
     }
 }

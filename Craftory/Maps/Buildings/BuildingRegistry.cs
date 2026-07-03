@@ -82,7 +82,24 @@ namespace Craftory.Maps.Buildings
                         WorkSpeed = 1.0f,
                         Create = (pos, inDir) => new ConveyorLeftCurve(BuildType.ConveyorLeftCurve, pos, inDir)
                     }
-
+                },
+                {
+                    BuildType.ConveyorRightMerge,
+                    new BuildingInfo()
+                    {
+                        TexturePaths = new ()
+                        {
+                            { BuildingDirection.None, "Buildings/Conveyor/ConveyorRightMerge" }
+                        },
+                        Type = BuildType.ConveyorRightMerge,
+                        Width = 1,
+                        Height = 1,
+                        FrameCount = 5,
+                        FrameTime = 0.25f,
+                        SizeInTiles = new Point(1,1),
+                        WorkSpeed = 1.0f,
+                        Create = (pos, outDir) => new ConveyorRightMerge(BuildType.ConveyorRightMerge, pos, outDir)
+                    }
                 }
 
             };

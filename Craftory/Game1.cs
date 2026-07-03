@@ -83,6 +83,8 @@ namespace Craftory
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == Microsoft.Xna.Framework.Input.ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape))
                 Exit();
 
+            GameCore.Instance.Update(gameTime);
+
             // TODO: Add your update logic here
             screens.Peek().Update(gameTime); //最も後から追加されたスクリーンをUpdate()
 

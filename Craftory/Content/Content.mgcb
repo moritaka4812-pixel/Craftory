@@ -25,6 +25,30 @@
 /processorParam:TextureFormat=Color
 /build:Buildings/Conveyor/ConveyorLeftCurve.png
 
+#begin Buildings/Conveyor/ConveyorLeftMerge.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Buildings/Conveyor/ConveyorLeftMerge.png
+
+#begin Buildings/Conveyor/ConveyorMerge.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Buildings/Conveyor/ConveyorMerge.png
+
 #begin Buildings/Conveyor/ConveyorRightCurve.png
 /importer:TextureImporter
 /processor:TextureProcessor

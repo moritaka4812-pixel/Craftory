@@ -11,19 +11,26 @@ namespace Craftory.Maps.Buildings.Conveyors
         public Conveyor(BuildType type, Point pos, BuildingDirection dir) : 
             base(type, pos, dir)
         {
-            InitDirections(dir);
+            InitDirections(new List<BuildingDirection> { dir });
 
             TileLogic = new ConveyorTile(WorkSpeed, this);
 
-            SetNextTile();
-
             TileLogic.InitializeTileStart();
+
+            InitializeConnections();
         }
 
-        protected virtual void InitDirections(BuildingDirection dir)
+        protected virtual void InitDirections(List<BuildingDirection> outdir)
         {
-            OutDirections[TilePosition] = new List<BuildingDirection> { dir };
-            InDirections[TilePosition] = new List<BuildingDirection> { GetInDirectionFromOut(dir) };
+            OutDirections[TilePosition] = new List<BuildingDirection> { outdir[0] };
+            InDirections[TilePosition] = new List<BuildingDirection> { GetInDirectionFromOut(outdir[0]) };
+        }
+
+        public virtual void InitializeConnections()
+        {
+            var tile = GameCore.Instance.MapManager.Map.GetTile(GetNextPosition().X, GetNextPosition().Y);
+            if(tile?.Occupant is  Conveyor nextConveyor)
+                TileLogic.SetNextTile(nextConveyor.TileLogic);
         }
 
         protected virtual BuildingDirection GetInDirectionFromOut(BuildingDirection outDir)
@@ -54,25 +61,6 @@ namespace Craftory.Maps.Buildings.Conveyors
             DrawRotated(sb, TilePosition, Color.White);
         }
 
-        protected virtual void SetNextTile()
-        {
-            var nextPos = OutDirections[TilePosition][0] switch
-            {
-                BuildingDirection.Right => new Point(TilePosition.X + 1, TilePosition.Y),
-                BuildingDirection.Left => new Point(TilePosition.X - 1, TilePosition.Y),
-                BuildingDirection.Up => new Point(TilePosition.X, TilePosition.Y - 1),
-                BuildingDirection.Down => new Point(TilePosition.X, TilePosition.Y + 1),
-                _ => TilePosition
-            };
-
-            var tile = GameCore.Instance.MapManager.Map.GetTile(nextPos.X, nextPos.Y);
-            if (tile?.Occupant is Conveyor nextConveyor)
-            {
-                TileLogic.SetNextTile(nextConveyor.TileLogic);
-
-                TileLogic.InitializeTileStart();
-            }
-        }
 
         public override void DrawRotated(SpriteBatch sb, Point tilePos, Color tint)
         {
@@ -106,7 +94,7 @@ namespace Craftory.Maps.Buildings.Conveyors
 
         public void RefreshNextTile()
         {
-            SetNextTile();
+            InitializeConnections();
         }
 
         public virtual IEnumerable<Point> GetNextPositions()
@@ -151,7 +139,48 @@ namespace Craftory.Maps.Buildings.Conveyors
 
         public virtual Vector2 GetItemPosition(Vector2 worldPos, float local, ConveyorItem item)
         {
-            return TileLogic.DefaultCalculate(worldPos, local, item.currentDirection);
+            return DefaultCalculate(worldPos, local, item.currentDirection);
+        }
+
+        public virtual void SetOutDir(ConveyorItem item)
+        {
+            item.pastOutDir = this.OutDirections[TilePosition][0];
+        }
+
+        public Vector2 DefaultCalculate(Vector2 worldPos, float pos, BuildingDirection dir)
+        {
+            const float tileSize = 32f;
+            const float itemSize = 24f;
+            const float centerOffset = (tileSize - itemSize) / 2f; //タイル中央への補正
+
+            // アイテム中心を返す
+            Vector2 centerPos = dir switch
+            {
+                BuildingDirection.Right => new Vector2(
+                    worldPos.X + pos * tileSize,
+                    worldPos.Y + tileSize / 2f
+                ),
+
+                BuildingDirection.Left => new Vector2(
+                    worldPos.X + (1 - pos) * tileSize,
+                    worldPos.Y + tileSize / 2f
+                ),
+
+                BuildingDirection.Up => new Vector2(
+                    worldPos.X + tileSize / 2f,
+                    worldPos.Y + (1 - pos) * tileSize
+                ),
+
+                BuildingDirection.Down => new Vector2(
+                    worldPos.X + tileSize / 2f,
+                    worldPos.Y + pos * tileSize
+                ),
+
+                _ => worldPos + new Vector2(tileSize / 2f, tileSize / 2f)
+            };
+
+            var drawPos = centerPos - new Vector2(itemSize / 2f, itemSize / 2f);
+            return drawPos;
         }
     }
 }

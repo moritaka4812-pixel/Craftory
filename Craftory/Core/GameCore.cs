@@ -8,6 +8,7 @@ namespace Craftory.Core
         public static GameCore Instance { get; private set; }
         public MapManager MapManager;
         public ItemManager ItemManager;
+        public float Time { get; private set; } = 0f;
 
         public GameCore()
         {
@@ -15,6 +16,11 @@ namespace Craftory.Core
 
             MapManager = new MapManager();
             ItemManager = new ItemManager();
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            Time += (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
     }
 }

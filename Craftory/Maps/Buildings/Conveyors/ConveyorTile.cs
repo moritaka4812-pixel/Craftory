@@ -12,6 +12,8 @@ namespace Craftory.Maps.Buildings.Conveyors
         public List<ConveyorItem> Items { get; private set; } = new();
         public ConveyorTile nextTile { get; private set; } = null;
         public ConveyorTile backTile { get; private set; } = null;
+        public List<ConveyorTile> inputTiles { get; private set; } = new List<ConveyorTile>(); //Merge用
+        public List<ConveyorTile> outputTiles { get; private set; } = new List<ConveyorTile>(); //Split用
         public bool IsFull { get; private set; } = false;
         public float speed;
         public float TileStart; //このタイルの開始距離
@@ -38,6 +40,31 @@ namespace Craftory.Maps.Buildings.Conveyors
             }
         }
 
+        public void SetNextTiles(List<ConveyorTile> nexts)
+        {
+            outputTiles = nexts;
+            nextTile = nexts.Count == 1 ? nexts[0] : null;
+
+            InitializeTileStart();
+
+            foreach (var next in nexts)
+            {
+                next.backTile = this;
+                next.InitializeTileStart();
+            }
+        }
+
+        public void SetBackTiles(List<ConveyorTile> backs)
+        {
+            inputTiles = backs;
+            backTile = backs.Count == 1 ? backs[0] : null;
+
+            foreach (var back in backs)
+            {
+                back.nextTile = this;
+            }
+        }
+
         public void InitializeTileStart()
         {
             if (backTile == null)
@@ -53,6 +80,19 @@ namespace Craftory.Maps.Buildings.Conveyors
 
             UpdatePosition(time);
             CheckDistance();
+            TryMoveToNextTile();
+        }
+
+        public void UpdateMerge(GameTime time)
+        {
+            foreach (var item in Items)
+                UpdateDirection(item);
+
+            UpdatePosition(time);
+            CheckDistance();
+
+            TryAcceptMerge();
+
             TryMoveToNextTile();
         }
 
@@ -99,9 +139,11 @@ namespace Craftory.Maps.Buildings.Conveyors
 
             if (first.GlobalPosition >= tileEnd)
             {
+                first.arrivalTime = GameCore.Instance.Time;
 
                 if (nextTile != null && nextTile.TryAccept(first))
                 {
+                    ownerConveyor.SetOutDir(first);
                     Items.RemoveAt(0);
                 }
                 else
@@ -120,12 +162,39 @@ namespace Craftory.Maps.Buildings.Conveyors
                 return false;
             }
             item.pastTile = this;
-            item.pastOutDir = item.currentDirection;
             IsFull = false;
 
             item.GlobalPosition = TileStart;
             Items.Add(item);
             return true;
+        }
+
+        public void TryAcceptMerge()
+        {
+            if (inputTiles.Count <= 1) return;
+
+            var candidates = new List<ConveyorItem>();
+
+            foreach( var tile in inputTiles)
+            {
+                if (tile.Items.Count == 0) continue;
+
+                var first = tile.Items[0];
+                float tileEnd = tile.TileStart + 1f;
+
+                if (first.GlobalPosition >= tileEnd)
+                    candidates.Add(first);
+            }
+
+            if (candidates.Count == 0) return;
+
+            candidates.Sort((a, b) => a.arrivalTime.CompareTo(b.arrivalTime));
+
+            var item = candidates[0];
+
+            item.pastTile.Items.Remove(item);
+
+            TryAccept(item);
         }
 
         public void Draw(SpriteBatch sb, Vector2 worldPos)
@@ -149,44 +218,6 @@ namespace Craftory.Maps.Buildings.Conveyors
                     0f
                 );
             }
-        }
-
-
-        public Vector2 DefaultCalculate(Vector2 worldPos, float pos, BuildingDirection dir)
-        {
-            const float tileSize = 32f;
-            const float itemSize = 24f;
-            const float centerOffset = (tileSize - itemSize) / 2f; //タイル中央への補正
-            float visualOffset = 0.97f;
-
-            // アイテム中心を返す
-            Vector2 centerPos = dir switch
-            {
-                BuildingDirection.Right => new Vector2(
-                    worldPos.X + pos * tileSize,
-                    worldPos.Y + tileSize / 2f
-                ),
-
-                BuildingDirection.Left => new Vector2(
-                    worldPos.X + (1 - pos) * tileSize,
-                    worldPos.Y + tileSize / 2f
-                ),
-
-                BuildingDirection.Up => new Vector2(
-                    worldPos.X + tileSize / 2f,
-                    worldPos.Y + (1 - pos) * tileSize
-                ),
-
-                BuildingDirection.Down => new Vector2(
-                    worldPos.X + tileSize / 2f,
-                    worldPos.Y + pos * tileSize
-                ),
-
-                _ => worldPos + new Vector2(tileSize / 2f, tileSize / 2f)
-            };
-
-            var drawPos = centerPos - new Vector2(itemSize / 2f, itemSize / 2f);
-            return drawPos;
         }
     }
 }

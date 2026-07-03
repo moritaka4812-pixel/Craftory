@@ -12,10 +12,10 @@ namespace Craftory.Maps.Buildings.Conveyors
         {
         }
 
-        protected override void InitDirections(BuildingDirection inDir)
+        protected override void InitDirections(List<BuildingDirection> inDir)
         {
-            InDirections[TilePosition] = new List<BuildingDirection> { inDir };
-            OutDirections[TilePosition] = new List<BuildingDirection> { GetOutDirectionFromIn(inDir) };
+            InDirections[TilePosition] = new List<BuildingDirection> { inDir[0] };
+            OutDirections[TilePosition] = new List<BuildingDirection> { GetOutDirectionFromIn(inDir[0]) };
         }
 
         protected BuildingDirection GetOutDirectionFromIn(BuildingDirection inDir)
