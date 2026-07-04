@@ -46,6 +46,7 @@ namespace Craftory.GameUI
             AddBuildButton(ui, list, "Buildings/Conveyor/ConveyorRightCurve", BuildType.ConveyorRightCurve, 32);
             AddBuildButton(ui, list, "Buildings/Conveyor/ConveyorLeftCurve", BuildType.ConveyorLeftCurve, 32);
             AddBuildButton(ui, list, "Buildings/Conveyor/ConveyorRightMerge", BuildType.ConveyorRightMerge, 32);
+            AddBuildButton(ui, list, "Buildings/Conveyor/ConveyorLeftMerge", BuildType.ConveyorLeftMerge, 32);
 
             panel.AddChild(list);
             

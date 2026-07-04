@@ -139,7 +139,8 @@ namespace Craftory.Maps.Buildings.Conveyors
 
             if (first.GlobalPosition >= tileEnd)
             {
-                first.arrivalTime = GameCore.Instance.Time;
+                if(first.arrivalTime == null)
+                    first.arrivalTime = GameCore.Instance.Time;
 
                 if (nextTile != null && nextTile.TryAccept(first))
                 {
@@ -161,7 +162,13 @@ namespace Craftory.Maps.Buildings.Conveyors
                 IsFull = true;
                 return false;
             }
+
+            if (Items.Count == 1 && Items[0].GlobalPosition - TileStart < 0.5f) //まだアイテムが半分を過ぎていない
+                return false;
+
             item.pastTile = this;
+            item.arrivalTime = null;
+
             IsFull = false;
 
             item.GlobalPosition = TileStart;
@@ -188,7 +195,7 @@ namespace Craftory.Maps.Buildings.Conveyors
 
             if (candidates.Count == 0) return;
 
-            candidates.Sort((a, b) => a.arrivalTime.CompareTo(b.arrivalTime));
+            candidates.Sort((a, b) => Nullable.Compare(a.arrivalTime, b.arrivalTime));
 
             var item = candidates[0];
 
