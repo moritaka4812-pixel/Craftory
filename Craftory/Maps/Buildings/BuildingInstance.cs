@@ -2,11 +2,13 @@
 using Craftory.Maps.Tiles;
 using Point = Microsoft.Xna.Framework.Point;
 using Color = Microsoft.Xna.Framework.Color;
+using Craftory.Maps.Buildings.Conveyors;
 
 namespace Craftory.Maps.Buildings
 {
     public class BuildingInstance : ITileOccupant
     {
+        protected int outputIndex = 0; //出力方向のラウンドロビンキャッシュ
         public BuildType Type { get; private set; }     // 建物の種類
         public Point TilePosition { get; private set; } //タイル座標
         public Point SizeInTiles { get; private set; }  //タイル単位の大きさ
@@ -107,6 +109,51 @@ namespace Craftory.Maps.Buildings
                     yield return new Point(TilePosition.X + dx, TilePosition.Y + dy);
                 }
             }
+        }
+
+        protected  List<(IItemAcceptor acceptor, BuildingDirection fromDir)> GetOutputAcceptors()
+        {
+            var list = new List<(IItemAcceptor, BuildingDirection)>();
+
+            foreach(var tilePos in GetOccupiedTiles())
+            {
+                foreach(var dir in OutDirections[tilePos])
+                {
+                    var nextPos = tilePos + dir.GetPoint();
+                    var tile = GameCore.Instance.MapManager.Map.GetTile(nextPos.X, nextPos.Y);
+
+                    if(tile?.Occupant is IItemAcceptor acceptor)
+                    {
+                        list.Add((acceptor, dir.GetOpposite()));
+                    }
+                }
+            }
+
+            return list;
+        }
+
+        protected bool TryOutputFair(ConveyorItem item)
+        {
+            var outputs = GetOutputAcceptors();
+
+            if (outputs.Count == 0)
+                return false;
+
+            int count = outputs.Count;
+
+            for(int i=0; i< count; i++)
+            {
+                var idx = (outputIndex + i) % count;
+                var (acceptor, dir) = outputs[idx];
+
+                if(acceptor.TryAccept(item, dir))
+                {
+                    outputIndex = (idx + 1) % count;
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

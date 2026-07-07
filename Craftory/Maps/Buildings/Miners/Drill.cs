@@ -33,12 +33,12 @@ namespace Craftory.Maps.Buildings.Miners
 
                 if(tile.Resource != Resource.TileResourceType.None)
                 {
-                    TryOutputToConveyor(tile.Resource);
+                    TryOutputToAcceptor(tile.Resource);
                 }
             }
         }
 
-        private void TryOutputToConveyor(Resource.TileResourceType type)
+        private void TryOutputToAcceptor(Resource.TileResourceType type)
         {
             var dirs = new (int x, int y, BuildingDirection dir)[]
             {
@@ -62,8 +62,8 @@ namespace Craftory.Maps.Buildings.Miners
                     {
                         var item = new ConveyorItem { Type = itemType };
 
-                        if (acceptor.TryAccept(item, dir.dir.GetOpposite()))
-                            return; // 最初に受け取ってくれたAcceptorに渡して終了
+                        if (TryOutputFair(item))
+                            return; // 受け取ってくれたAcceptorに渡して終了
                     }
                 }
             }

@@ -1,4 +1,5 @@
-﻿
+﻿using Point = Microsoft.Xna.Framework.Point;
+
 namespace Craftory.Maps.Buildings
 {
     public enum BuildingDirection
@@ -22,6 +23,27 @@ namespace Craftory.Maps.Buildings
                 BuildingDirection.Down => BuildingDirection.Up,
                 _ => BuildingDirection.None
             };
+        }
+
+        public static Point GetPoint(this BuildingDirection dir)
+        {
+            switch (dir)
+            {
+                case BuildingDirection.Right:
+                    return new Point(1, 0);
+
+                case BuildingDirection.Left:
+                    return new Point(-1, 0);
+
+                case BuildingDirection.Up:
+                    return new Point(0, -1);
+
+                case BuildingDirection.Down:
+                    return new Point(0, 1);
+
+                default:
+                    return new Point(0, 0);
+            }
         }
     }
 }
