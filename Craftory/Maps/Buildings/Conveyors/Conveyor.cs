@@ -4,7 +4,7 @@ using Color = Microsoft.Xna.Framework.Color;
 
 namespace Craftory.Maps.Buildings.Conveyors
 {
-    public class Conveyor : BuildingInstance
+    public class Conveyor : BuildingInstance, IItemAcceptor
     {
         public ConveyorTile TileLogic { get; private set; }
 
@@ -181,6 +181,67 @@ namespace Craftory.Maps.Buildings.Conveyors
 
             var drawPos = centerPos - new Vector2(itemSize / 2f, itemSize / 2f);
             return drawPos;
+        }
+
+        //IItemAcceptorの実装
+        public bool CanAccept(ConveyorItem item, BuildingDirection fromDir)
+        {
+            foreach(var dir in InDirections[TilePosition])
+            {
+                if (dir == fromDir)
+                {
+                    return TileLogic.CanAcceptItem();
+                }
+            }
+            return false;
+        }
+
+        public bool TryAccept(ConveyorItem item, BuildingDirection fromDir)
+        {
+            if(!CanAccept(item, fromDir))
+            {
+                return false;
+            }
+
+            return TileLogic.TryAccept(item);
+        }
+
+        public IEnumerable<BuildingDirection> GetInputDirections()
+        {
+            foreach(var dir in InDirections[TilePosition])
+            {
+                yield return dir;
+            }
+        }
+
+        public IEnumerable<BuildingDirection> GetOutputDirections()
+        {
+            foreach (var dir in OutDirections[TilePosition])
+            {
+                yield return dir;
+            }
+        }
+
+        public bool HasSpace()
+        {
+            return TileLogic.HasSpace();
+        }
+
+        public bool IsFull()
+        {
+            return TileLogic.IsFull;
+        }
+
+        public bool CanPreviewAccept(ConveyorItem item, BuildingDirection fromDir)
+        {
+            foreach(var dir in InDirections[TilePosition])
+            {
+                if (dir == fromDir)
+                {
+                    return TileLogic.CanPreviewAccept(item);
+                }
+            }
+            return false;
         }
     }
 }

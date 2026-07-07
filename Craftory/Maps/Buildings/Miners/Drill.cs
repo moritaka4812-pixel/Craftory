@@ -40,24 +40,31 @@ namespace Craftory.Maps.Buildings.Miners
 
         private void TryOutputToConveyor(Resource.TileResourceType type)
         {
-            var dirs = new (int x, int y)[]
+            var dirs = new (int x, int y, BuildingDirection dir)[]
             {
-                (1,0), (-1,0), (0,1), (0,-1)
+                (1,0, BuildingDirection.Right),
+                (-1,0, BuildingDirection.Left),
+                (0,1, BuildingDirection.Down), 
+                (0,-1, BuildingDirection.Up)
             };
 
             var itemType = ResourceToItemConvertor.Convert(type);
 
-            foreach(var dir in dirs)
+
+            foreach (var tilePos in GetOccupiedTiles())
             {
-                var nextPos = new Point(TilePosition.X + dir.x, TilePosition.Y + dir.y);
-                var tile = GameCore.Instance.MapManager.Map.GetTile(nextPos.X, nextPos.Y);
-
-                if(tile?.Occupant is Conveyor conveyor)
+                foreach (var dir in dirs)
                 {
-                    var item = new ConveyorItem { Type = itemType, GlobalPosition = 0f };
+                    var nextPos = new Point(TilePosition.X + dir.x, TilePosition.Y + dir.y);
+                    var tile = GameCore.Instance.MapManager.Map.GetTile(nextPos.X, nextPos.Y);
 
-                    if (conveyor.TileLogic.TryAccept(item))
-                        return; // 最初に受け取ってくれたコンベアに渡して終了
+                    if (tile?.Occupant is IItemAcceptor acceptor)
+                    {
+                        var item = new ConveyorItem { Type = itemType };
+
+                        if (acceptor.TryAccept(item, dir.dir.GetOpposite()))
+                            return; // 最初に受け取ってくれたAcceptorに渡して終了
+                    }
                 }
             }
         }

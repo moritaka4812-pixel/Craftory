@@ -204,6 +204,34 @@ namespace Craftory.Maps.Buildings.Conveyors
             TryAccept(item);
         }
 
+        public bool CanAcceptItem()
+        {
+            if (Items.Count >= 2)
+                return false;
+
+            if (Items.Count == 1 && Items[0].GlobalPosition - TileStart < 0.5f)
+                return false;
+
+            return true;
+        }
+
+        public bool HasSpace()
+        {
+            if (Items.Count >= 2)
+                return false;
+
+            if (Items.Count == 1 && Items[0].GlobalPosition - TileStart < 0.5f)
+                return false;
+
+            return true;
+        }
+
+        public bool CanPreviewAccept(ConveyorItem item)
+        {
+            return HasSpace();
+        }
+
+
         public void Draw(SpriteBatch sb, Vector2 worldPos)
         {
             // 後ろから前へ描画

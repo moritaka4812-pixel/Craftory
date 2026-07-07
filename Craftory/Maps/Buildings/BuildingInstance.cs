@@ -97,5 +97,16 @@ namespace Craftory.Maps.Buildings
                 0f
             );
         }
+
+        public IEnumerable<Point> GetOccupiedTiles()
+        {
+            for(int dx = 0; dx < SizeInTiles.X; dx++)
+            {
+                for (int dy = 0; dy < SizeInTiles.Y; dy++)
+                {
+                    yield return new Point(TilePosition.X + dx, TilePosition.Y + dy);
+                }
+            }
+        }
     }
 }
