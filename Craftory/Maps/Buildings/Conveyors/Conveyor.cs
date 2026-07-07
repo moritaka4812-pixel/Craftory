@@ -92,7 +92,7 @@ namespace Craftory.Maps.Buildings.Conveyors
             );
         }
 
-        public void RefreshNextTile()
+        public void RefreshConnection()
         {
             InitializeConnections();
         }

@@ -1,5 +1,6 @@
 ﻿using Craftory.Maps.Tiles;
 using Point = Microsoft.Xna.Framework.Point;
+using Color = Microsoft.Xna.Framework.Color;
 
 namespace Craftory.Maps.Buildings
 {
@@ -35,5 +36,27 @@ namespace Craftory.Maps.Buildings
                 for(int y = 0; y < SizeInTiles.Y; y++)
                     yield return new Point(origin.X + x, origin.Y + y);
         }
+
+        public void DrawPreview(SpriteBatch sb, Point tilePos, BuildingDirection dir, Color color)
+        {
+            var anim = CreateTileAnimation(dir);
+            var frame = anim.GetCurrentFrameRect();
+            var tex = anim.Texture;
+
+            float rotation = dir switch
+            {
+                BuildingDirection.Right => 0f,
+                BuildingDirection.Down => MathF.PI / 2,
+                BuildingDirection.Left => MathF.PI,
+                BuildingDirection.Up => -MathF.PI / 2,
+                _ => 0f
+            };
+
+            Vector2 origin = new(tex.Width / anim.FrameCount / 2f, tex.Height / 2f);
+            Vector2 pos = tilePos.ToVector2() * 32 + origin;
+
+            sb.Draw(tex, pos, frame, color, rotation, origin, 1f, SpriteEffects.None, 0f);
+        }
+
     }
 }

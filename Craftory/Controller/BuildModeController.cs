@@ -150,13 +150,11 @@ namespace Craftory.Controller
             
             foreach (var origin in buildTargets)
             {
-                var instance = info.Create(origin, direction);
-                DrawPreviewRotated(sb, instance, Color.White * 0.5f);
+                info.DrawPreview(sb, origin, direction, Color.White * 0.5f);
             }
             foreach (var origin in invalidTargets)
             {
-                var instance = info.Create(origin, direction);
-                DrawPreviewRotated(sb, instance, Color.Red * 0.5f);
+                info.DrawPreview(sb, origin, direction, Color.Red * 0.5f);
             }
             confirmPanel.DrawWorld(sb);
         }

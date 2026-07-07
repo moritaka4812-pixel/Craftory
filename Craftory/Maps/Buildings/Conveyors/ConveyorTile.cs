@@ -2,6 +2,7 @@
 using Craftory.Core;
 using Craftory.Item;
 using Craftory.Maps.Shadow;
+using System.Diagnostics;
 using System.DirectoryServices;
 using Color = Microsoft.Xna.Framework.Color;
 
@@ -71,6 +72,24 @@ namespace Craftory.Maps.Buildings.Conveyors
                 TileStart = 0f;
             else
                 TileStart = backTile.TileStart + 1f;
+        }
+
+        public void InitializeMergeTileStart()
+        {
+            if(inputTiles.Count == 0)
+            {
+                //Debug.WriteLine("inputTiles.Count == 0");
+                TileStart = 0f;
+                return;
+            }
+
+            //foreach (var t in inputTiles)
+            //    Debug.WriteLine($"inputTile {t.ownerConveyor.GetType().Name} TileStart={t.TileStart}");
+
+            float minStart = inputTiles.Min(t => t.TileStart);
+            TileStart = minStart + 1f;
+
+            //Debug.WriteLine($"Merge TileStart={TileStart}");
         }
 
         public void Update(GameTime time)
@@ -198,10 +217,12 @@ namespace Craftory.Maps.Buildings.Conveyors
             candidates.Sort((a, b) => Nullable.Compare(a.arrivalTime, b.arrivalTime));
 
             var item = candidates[0];
+            var source = item.pastTile;
 
-            item.pastTile.Items.Remove(item);
-
-            TryAccept(item);
+            //Debug.WriteLine($"source.TileStart={source.TileStart}, merge.TileStart={TileStart}, item.Global={item.GlobalPosition}");
+           
+            if(TryAccept(item))
+                item.pastTile.Items.Remove(item);
         }
 
         public bool CanAcceptItem()

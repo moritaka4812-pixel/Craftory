@@ -89,33 +89,65 @@ namespace Craftory.Maps
                 (1,0), (-1,0), (0,1), (0,-1)
             };
 
-            foreach(var d in dirs)
+            foreach (var d in dirs)
             {
                 var npos = new Point(pos.X + d.x, pos.Y + d.y);
                 var tile = Map.GetTile(npos.X, npos.Y);
 
-                if(tile?.Occupant is Conveyor c)
+                if (tile?.Occupant is Conveyor c)
                 {
                     bool changed = false;
 
-                    if (c.GetNextPosition() == pos)
+                    // 出力側の更新
+                    if (c is ISplitConveyor split)
                     {
-                        c.RefreshNextTile();
-                        changed = true;
-                       
+                        foreach (var nextPos in split.GetNextPositions())
+                        {
+                            if (nextPos == pos)
+                            {
+                                c.RefreshConnection();
+                                changed = true;
+                                break;
+                            }
+                        }
                     }
-                    if (c.GetBackPosition() == pos)
+                    else
                     {
-                        c.RefreshNextTile();
-                        changed = true;
+                        // 通常の1出力
+                        if (c.GetNextPosition() == pos)
+                        {
+                            c.RefreshConnection();
+                            changed = true;
+                        }
                     }
 
+
+                    // ★ 入力側の更新（Merge は複数の入力を持つのでループで判定）
+                    foreach (var backPos in c.GetBackPositions())  // ← IEnumerable<Point> をループ
+                    {
+                        if (backPos == pos)
+                        {
+                            c.RefreshConnection();
+                            changed = true;
+                            break;
+                        }
+                    }
+
+                    // ★ 接続が変わったなら TileStart を再計算
                     if (changed)
                     {
                         c.TileLogic.InitializeTileStart();
+
+                        // Merge の場合は inputTiles を使って TileStart を再計算
+                        if (c is IMergeConveyor merge)
+                        {
+                            merge.InitializeMergeTileStart();
+                        }
                     }
                 }
             }
         }
+
     }
 }
+

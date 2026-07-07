@@ -1,9 +1,11 @@
-﻿using System.Runtime.CompilerServices;
+﻿using Craftory.Core;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Point = Microsoft.Xna.Framework.Point;
 
 namespace Craftory.Maps.Buildings.Conveyors
 {
-    public class ConveyorLeftMerge : Conveyor
+    public class ConveyorLeftMerge : Conveyor, IMergeConveyor
     {
         public ConveyorLeftMerge(BuildType type, Point pos, BuildingDirection outDir)
             : base (type, pos, outDir)
@@ -15,10 +17,36 @@ namespace Craftory.Maps.Buildings.Conveyors
             TileLogic.UpdateMerge(gameTime);
         }
 
+        public void InitializeMergeTileStart()
+        {
+            TileLogic.InitializeMergeTileStart();
+        }
+
         protected override void InitDirections(List<BuildingDirection> outDir)
         {
             OutDirections[TilePosition] = new List<BuildingDirection> { outDir[0] };
             InDirections[TilePosition] = GetInDirectionFromOut(outDir[0]);
+        }
+
+        public override void InitializeConnections()
+        {
+            //Debug.WriteLine("Merge InitializeConnections called");
+            var backs = new List<ConveyorTile>();
+
+            foreach(var pos in GetBackPosition()) 
+            {
+                var tile = GameCore.Instance.MapManager.Map.GetTile(pos.X, pos.Y);
+                if (tile?.Occupant is Conveyor c)
+                    backs.Add(c.TileLogic);
+            }
+
+            TileLogic.SetBackTiles(backs);
+
+            TileLogic.InitializeMergeTileStart();
+
+            base.InitializeConnections();
+
+            
         }
 
         protected new List<BuildingDirection> GetInDirectionFromOut(BuildingDirection outDir)
@@ -39,10 +67,10 @@ namespace Craftory.Maps.Buildings.Conveyors
             {
                 yield return Indir switch
                 {
-                    BuildingDirection.Right => new Point(TilePosition.X - 1, TilePosition.Y),
-                    BuildingDirection.Left => new Point(TilePosition.X + 1, TilePosition.Y),
-                    BuildingDirection.Up => new Point(TilePosition.X, TilePosition.Y + 1),
-                    BuildingDirection.Down => new Point(TilePosition.X, TilePosition.Y - 1),
+                    BuildingDirection.Right => new Point(TilePosition.X + 1, TilePosition.Y),
+                    BuildingDirection.Left => new Point(TilePosition.X - 1, TilePosition.Y),
+                    BuildingDirection.Up => new Point(TilePosition.X, TilePosition.Y - 1),
+                    BuildingDirection.Down => new Point(TilePosition.X, TilePosition.Y + 1),
                     _ => TilePosition
                 };
             }
