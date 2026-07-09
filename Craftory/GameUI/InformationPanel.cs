@@ -32,7 +32,7 @@ namespace Craftory.GameUI
             panel.RelativeWidth = 0.25f;
             panel.RelativeHeight = 0.6f;
             panel.RelativeX = 1f;
-            panel.RelativeY = 0.2f;
+            panel.RelativeY = 0.1f;
 
             list = new ScrollList(PositionMode.Relative, spacing: 10);
             list.RelativeX = 0;
