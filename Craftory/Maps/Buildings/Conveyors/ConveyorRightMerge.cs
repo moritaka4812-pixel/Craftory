@@ -5,7 +5,7 @@ using Point = Microsoft.Xna.Framework.Point;
 
 namespace Craftory.Maps.Buildings.Conveyors
 {
-    public class ConveyorRightMerge : Conveyor, IMergeConveyor
+    public class ConveyorRightMerge : Conveyor, IItemAcceptor, IMergeConveyor
     {
         public ConveyorRightMerge(BuildType type, Point pos, BuildingDirection outDir)
             : base(type, pos, outDir)

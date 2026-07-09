@@ -123,10 +123,10 @@ namespace Craftory.Maps.Buildings.Conveyors
             {
                 yield return dir switch
                 {
-                    BuildingDirection.Right => new Point(TilePosition.X - 1, TilePosition.Y),
-                    BuildingDirection.Left => new Point(TilePosition.X + 1, TilePosition.Y),
-                    BuildingDirection.Up => new Point(TilePosition.X, TilePosition.Y + 1),
-                    BuildingDirection.Down => new Point(TilePosition.X, TilePosition.Y - 1),
+                    BuildingDirection.Right => new Point(TilePosition.X + 1, TilePosition.Y),
+                    BuildingDirection.Left => new Point(TilePosition.X - 1, TilePosition.Y),
+                    BuildingDirection.Up => new Point(TilePosition.X, TilePosition.Y - 1),
+                    BuildingDirection.Down => new Point(TilePosition.X, TilePosition.Y + 1),
                     _ => TilePosition
                 };
             }

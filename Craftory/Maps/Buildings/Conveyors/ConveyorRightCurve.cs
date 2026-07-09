@@ -5,7 +5,7 @@ using Color = Microsoft.Xna.Framework.Color;
 
 namespace Craftory.Maps.Buildings.Conveyors
 {
-    public class ConveyorRightCurve : Conveyor
+    public class ConveyorRightCurve : Conveyor, IItemAcceptor
     {
         public ConveyorRightCurve(BuildType type, Point pos, BuildingDirection inDir)
             :base(type, pos, inDir)
@@ -46,10 +46,10 @@ namespace Craftory.Maps.Buildings.Conveyors
         {
             return InDirections[TilePosition][0] switch
             {
-                BuildingDirection.Right => new Point(TilePosition.X - 1, TilePosition.Y),
-                BuildingDirection.Left => new Point(TilePosition.X + 1, TilePosition.Y),
-                BuildingDirection.Up => new Point(TilePosition.X, TilePosition.Y + 1),
-                BuildingDirection.Down => new Point(TilePosition.X, TilePosition.Y - 1),
+                BuildingDirection.Right => new Point(TilePosition.X + 1, TilePosition.Y),
+                BuildingDirection.Left => new Point(TilePosition.X - 1, TilePosition.Y),
+                BuildingDirection.Up => new Point(TilePosition.X, TilePosition.Y - 1),
+                BuildingDirection.Down => new Point(TilePosition.X, TilePosition.Y + 1),
                 _ => TilePosition
             };
         }
