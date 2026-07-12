@@ -2,6 +2,7 @@
 using Craftory.Maps.Resource;
 using Craftory.UI.Core;
 using Craftory.UI.Elements;
+using Craftory.Item;
 using Panel = Craftory.UI.Elements.Panel;
 using Rect = Microsoft.Xna.Framework.Rectangle;
 using Color = Microsoft.Xna.Framework.Color;
@@ -17,7 +18,6 @@ namespace Craftory.GameUI
         private TextLabel infoLabel;
         private Button handleButton;
 
-        private ResourceManager resourceManager;
         private SpriteFont font;
 
         private bool isOpen;
@@ -25,15 +25,14 @@ namespace Craftory.GameUI
         private float openX;
         private float closedX;
 
-        public InformationPanel(UIFactory ui, ResourceManager manager)
+        public InformationPanel(UIFactory ui)
         {
-            resourceManager = manager;
 
             panel = new Panel(200, 300);
             panel.RelativeWidth = 0.25f;
             panel.RelativeHeight = 0.6f;
             panel.RelativeX = 1f;
-            panel.RelativeY = 0.2f;
+            panel.RelativeY = 0.1f;
 
             list = new ScrollList(PositionMode.Relative, spacing: 10);
             list.RelativeX = 0;
@@ -84,9 +83,9 @@ namespace Craftory.GameUI
 
             // ★ リストを構築
             list.Clear();
-            foreach (var pair in resourceManager.GetAll())
+            foreach (var pair in Game1.Core.ItemManager.GetAll())
             {
-                if(pair.Key == ResourceType.None) continue;
+                if(pair.Key == ItemType.None) continue;
                 var label = new TextLabel(font, $"{pair.Key}: {pair.Value}", new Rect(0, 0, 1, 1));
                 list.Add(label);
             }

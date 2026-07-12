@@ -6,6 +6,8 @@ using Craftory.Screens;
 using Craftory.UI.Core;
 using Rect = Microsoft.Xna.Framework.Rectangle;
 using Craftory.Core;
+using Craftory.Item;
+using Craftory.Maps.Buildings;
 
 namespace Craftory
 {
@@ -38,6 +40,8 @@ namespace Craftory
             UIElement.Initialize(GraphicsDevice);
             WorldUIElement.Initialize(GraphicsDevice);
             ContentLoader.Initialize(Content);
+            ItemRegistry.LoadTextures();
+            BuildingRegistry.LoadTextures();
             Tile.Initialize(GraphicsDevice);
             base.Initialize(); // ベースクラス(親クラス)のInitialize()を実行
         }
@@ -78,6 +82,8 @@ namespace Craftory
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == Microsoft.Xna.Framework.Input.ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape))
                 Exit();
+
+            GameCore.Instance.Update(gameTime);
 
             // TODO: Add your update logic here
             screens.Peek().Update(gameTime); //最も後から追加されたスクリーンをUpdate()

@@ -6,9 +6,9 @@ using Craftory.Maps;
 using Craftory.Input;
 using Craftory.Core;
 using Craftory.Maps.Tiles;
-using Craftory.Maps.Buildings;
 using Craftory.Screens;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.Intrinsics;
 
 namespace Craftory.Controller
 {
@@ -18,6 +18,7 @@ namespace Craftory.Controller
 
         private WorldUIFactory worldui;
 
+        private Camera camera;
         private ToolPanel toolPanel;
         private MapManager mapManager;
         private BuildType currentBuildType;
@@ -28,26 +29,31 @@ namespace Craftory.Controller
         private Vector2 confirmButtonWorldPos;
         private BuildPlacementValidator validator;
         private Point? lastDragOrigin = null;
+        private BuildingDirection direction;
 
         public WorldPanel confirmPanel;
 
         public BuildModeController(MapManager mapManager, ToolPanel toolPanel, Game1 game, Camera camera, GamePlayScreen screen)
         {
+            this.camera = camera;
             this.mapManager = mapManager;
             this.toolPanel = toolPanel;
 
             this.worldui = new WorldUIFactory(game, camera);
 
-            confirmPanel = worldui.CreateWorldPanel(80, 40);
+            confirmPanel = worldui.CreateWorldPanel(120, 40);
 
             var okButton = worldui.CreateWorldTextButton("o", 0, 0, 40, 40);
             var cancelButton = worldui.CreateWorldTextButton("x", 40, 0, 40, 40);
+            var rotateButton = worldui.CreateWorldTextButton("R", 80, 0, 40, 40);
 
             okButton.LeftClicked += () => screen.buildModeController.Confirm();
             cancelButton.LeftClicked += () => screen.buildModeController.Cancel();
+            rotateButton.LeftClicked += RotateDirection;
 
             confirmPanel.AddChild(okButton);
             confirmPanel.AddChild(cancelButton);
+            confirmPanel.AddChild(rotateButton);
         }
 
         public void Start(BuildType type)
@@ -57,6 +63,7 @@ namespace Craftory.Controller
             buildTargets.Clear();
             invalidTargets.Clear();
             confirmPanel.Visible = false;
+            direction = BuildingDirection.Up;
             previewOccupied = new bool[mapManager.Map.MapSizeX, mapManager.Map.MapSizeY];
             previewOwner = new List<Point>[mapManager.Map.MapSizeX, mapManager.Map.MapSizeY];
             for (int x = 0; x < mapManager.Map.MapSizeX; x++)
@@ -79,7 +86,7 @@ namespace Craftory.Controller
         {
             if (buildTargets.Count == 0) return;
             foreach (var target in buildTargets)
-                mapManager.AddBuilding(currentBuildType, target);
+                mapManager.AddBuilding(currentBuildType, target, direction);
 
             confirmPanel.Visible = false;
             IsActive = false;
@@ -89,7 +96,7 @@ namespace Craftory.Controller
             mapManager.shadowGenerator.MarkDirty();
         }
 
-        public void Update(MouseInput mouse, Camera camera)
+        public void Update(MouseInput mouse)
         {
             var worldPos = camera.ScreenToWorld(mouse.Current.Position.ToVector2());
             if (confirmPanel.HitTestWorld(worldPos)) return;
@@ -138,19 +145,16 @@ namespace Craftory.Controller
         public void Draw(SpriteBatch sb)
         {
             var info = BuildingRegistry.Data[currentBuildType];
-            var previewAnim = info.CreateTileAnimation();
-
+            var previewAnim = info.CreateTileAnimation(direction);
+            
+            
             foreach (var origin in buildTargets)
             {
-                Vector2 worldPos = new Vector2(origin.X * 32, origin.Y * 32);
-
-                previewAnim.Draw(sb, worldPos, Color.White * 0.5f);
+                info.DrawPreview(sb, origin, direction, Color.White * 0.5f);
             }
             foreach (var origin in invalidTargets)
             {
-                Vector2 worldPos = new Vector2(origin.X * 32, origin.Y * 32);
-
-                previewAnim.Draw(sb, worldPos, Color.Red * 0.4f);
+                info.DrawPreview(sb, origin, direction, Color.Red * 0.5f);
             }
             confirmPanel.DrawWorld(sb);
         }
@@ -207,5 +211,21 @@ namespace Craftory.Controller
             }
         }
 
+        private void DrawPreviewRotated(SpriteBatch sb, BuildingInstance instance, Color color)
+        {
+            instance.DrawRotated(sb, instance.TilePosition, color);
+        }
+
+        private void RotateDirection()
+        {
+            direction = direction switch
+            {
+                BuildingDirection.Up => BuildingDirection.Right,
+                BuildingDirection.Right => BuildingDirection.Down,
+                BuildingDirection.Down => BuildingDirection.Left,
+                BuildingDirection.Left => BuildingDirection.Up,
+                _ => BuildingDirection.Up
+            };
+        }
     }
 }

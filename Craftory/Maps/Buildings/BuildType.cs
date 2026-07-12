@@ -4,7 +4,11 @@ namespace Craftory.Maps.Buildings
     public enum BuildType
     {
         None,
-        Test,
-        Drill
+        Drill,
+        Conveyor,
+        ConveyorRightCurve,
+        ConveyorLeftCurve,
+        ConveyorRightMerge,
+        ConveyorLeftMerge
     }
 }

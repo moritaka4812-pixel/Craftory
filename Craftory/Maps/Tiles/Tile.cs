@@ -2,13 +2,14 @@
 using Color = Microsoft.Xna.Framework.Color;
 using Craftory.Maps.Shadow;
 using Craftory.Maps.Resource;
+using Craftory.Core;
 
 namespace Craftory.Maps.Tiles
 {
     public class Tile
     {
         public TileType Type;
-        public ResourceType Resource;
+        public TileResourceType Resource;
         public bool IsBuildable; //建設可能かどうか
         public Vector2 Position; //タイルの位置（ワールド座標）
         public ITileOccupant? Occupant; //建物やユニットなど
@@ -27,7 +28,7 @@ namespace Craftory.Maps.Tiles
 
 
         public Tile(TileType Type,
-                    ResourceType resource,
+                    TileResourceType resource,
                     Vector2 Position)
         {
             this.Type = Type;
@@ -37,7 +38,7 @@ namespace Craftory.Maps.Tiles
 
             ShadowSources = new List<ShadowSource>();
             TerrainAnim = TileRegistry.Terrain[Type].CreateTileAnimation();
-            ResourceAnim = ResourceRegistry.Resources[resource]?.CreateTileAnimation();
+            ResourceAnim = TileResourceRegistry.Resources[resource]?.CreateTileAnimation();
         }
 
         public static void Initialize(GraphicsDevice device)
@@ -59,13 +60,16 @@ namespace Craftory.Maps.Tiles
 
         public void Draw(SpriteBatch sb)
         {
+            int tileY = (int)(Position.Y / 32);
             TerrainAnim?.Draw(sb, Position);
             ResourceAnim?.Draw(sb, Position);
 
             if (!IsBuildable)
             {
                 sb.Draw(BlockedTex, Position, Color.White);
-                sb.Draw(blackTex, new Rectangle((int)Position.X, (int)Position.Y + 28, 32, 4), Color.Black * 0.4f);
+                sb.Draw(blackTex,
+                    new Rectangle((int)Position.X, (int)Position.Y + 28, 32, 4),
+                    Color.Black * 0.4f);
             }
         }
 

@@ -7,14 +7,20 @@ namespace Craftory.Core
     {
         public static GameCore Instance { get; private set; }
         public MapManager MapManager;
-        public ResourceManager ResourceManager;
+        public ItemManager ItemManager;
+        public float Time { get; private set; } = 0f;
 
         public GameCore()
         {
             Instance = this;
 
             MapManager = new MapManager();
-            ResourceManager = new ResourceManager();
+            ItemManager = new ItemManager();
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            Time += (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
     }
 }

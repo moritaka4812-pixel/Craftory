@@ -14,9 +14,9 @@ namespace Craftory.Maps
 
         public Map1()
         {
-            MapTiles = new Tiles.Tile[10, 10]; //簡単なタイルを生成
-            MapSizeX = 10;
-            MapSizeY = 10;
+            MapTiles = new Tiles.Tile[100, 100]; //簡単なタイルを生成
+            MapSizeX = 100;
+            MapSizeY = 100;
             
             for (int y = 0; y < MapSizeY; y++)
             {
@@ -30,8 +30,8 @@ namespace Craftory.Maps
                     else
                         terrain = TileType.stone;
                     //資源生成
-                    ResourceType resource = 
-                        (x + y) % 3 == 0 ? ResourceType.Copper : ResourceType.None;
+                    TileResourceType resource = 
+                        (x + y) % 3 == 0 ? TileResourceType.Copper : TileResourceType.None;
 
                     MapTiles[x, y] = new Tile(
                         terrain,
