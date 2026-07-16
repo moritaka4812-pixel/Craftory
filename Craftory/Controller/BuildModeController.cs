@@ -12,7 +12,7 @@ using System.Runtime.Intrinsics;
 
 namespace Craftory.Controller
 {
-    public class BuildModeController
+    public class BuildModeController : IToolController
     {
         public bool IsActive { get; private set; }
 
@@ -47,8 +47,8 @@ namespace Craftory.Controller
             var cancelButton = worldui.CreateWorldTextButton("x", 40, 0, 40, 40);
             var rotateButton = worldui.CreateWorldTextButton("R", 80, 0, 40, 40);
 
-            okButton.LeftClicked += () => screen.buildModeController.Confirm();
-            cancelButton.LeftClicked += () => screen.buildModeController.Cancel();
+            okButton.LeftClicked += () => screen.toolControllerManager.Build.Confirm();
+            cancelButton.LeftClicked += () => screen.toolControllerManager.Build.Cancel();
             rotateButton.LeftClicked += RotateDirection;
 
             confirmPanel.AddChild(okButton);
@@ -96,13 +96,17 @@ namespace Craftory.Controller
             mapManager.shadowGenerator.MarkDirty();
         }
 
-        public void Update(MouseInput mouse)
+        public bool Update(MouseInput mouse, bool uiConsumed)
         {
+            if (uiConsumed) return true;
+
+            //confirmPanelが入力を消費
+            if (confirmPanel.UpdateWorld(mouse)) return true;
+
             var worldPos = camera.ScreenToWorld(mouse.Current.Position.ToVector2());
-            if (confirmPanel.HitTestWorld(worldPos)) return;
 
             var tilePos = mapManager.Map.WorldToTile(worldPos);
-            if (tilePos == null) return;
+            if (tilePos == null) return false;
 
             var p = tilePos.Value;
             var tile = mapManager.Map.GetTile(p.X, p.Y);
@@ -140,6 +144,8 @@ namespace Craftory.Controller
 
             confirmPanel.X = (int)confirmButtonWorldPos.X;
             confirmPanel.Y = (int)confirmButtonWorldPos.Y;
+
+            return false;
         }
 
         public void Draw(SpriteBatch sb)

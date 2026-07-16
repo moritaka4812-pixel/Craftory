@@ -35,7 +35,7 @@ namespace Craftory.Screens
         Button settingsButton; //セッティングボタン
         ToolPanel toolPanel; //左に表示されるツールパネル
         InformationPanel informationPanel; //右に表示される情報パネル
-        public BuildModeController buildModeController;
+        public ToolControllerManager toolControllerManager;
 
         public GamePlayScreen(Game1 game) : base(game)
         {
@@ -58,7 +58,7 @@ namespace Craftory.Screens
             var builder = new GamePlayUIScreenBuilder(game, this, camera);
             (settingsButton, toolPanel, informationPanel) = builder.BuildUI();
 
-            buildModeController = new BuildModeController(GameCore.Instance.MapManager, toolPanel, game, camera, this);
+            toolControllerManager = new ToolControllerManager(GameCore.Instance.MapManager, toolPanel, game, camera, this);
 
             uiSet.Add(settingsButton);
 
@@ -77,13 +77,7 @@ namespace Craftory.Screens
             uiConsumed |= settingsButton.Update(game.Input.Mouse);
             uiConsumed |= informationPanel.Update(game.Input.Mouse);
 
-            if (buildModeController.IsActive && !uiConsumed)
-            {
-                uiConsumed |= buildModeController.confirmPanel.UpdateWorld(game.Input.Mouse);
-                if (!uiConsumed)
-                    buildModeController.Update(game.Input.Mouse);
-
-            }
+            uiConsumed |= toolControllerManager.Update(game.Input.Mouse, uiConsumed);
 
             //UIがホイールの入力を吸収していないときだけカメラ操作
             if (!uiConsumed)
@@ -120,10 +114,7 @@ namespace Craftory.Screens
             var range = GameCore.Instance.MapManager.Map.GetVisibleRange(camera, game.GraphicsDevice); //描画範囲内のレンジを取得
             GameCore.Instance.MapManager.Draw(sb, camera); //範囲内のマップをDraw
 
-            if (buildModeController.IsActive)
-            {
-                buildModeController.Draw(sb);
-            }
+            toolControllerManager.Draw(sb);
 
             sb.End();
 

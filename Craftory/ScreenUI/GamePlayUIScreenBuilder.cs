@@ -37,7 +37,10 @@ namespace Craftory.ScreenUI
 
             var toolPanel = new ToolPanel(ui);
 
-            toolPanel.OnBuildRequested += (type) => screen.buildModeController.Start(type);
+            toolPanel.OnBuildRequested += (type) =>
+            {
+                screen.toolControllerManager.StartBuild(type);
+            };
 
             var informationPanel = new InformationPanel(ui);
 
