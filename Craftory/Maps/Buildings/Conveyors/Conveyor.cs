@@ -184,7 +184,7 @@ namespace Craftory.Maps.Buildings.Conveyors
         }
 
         //IItemAcceptorの実装
-        public bool CanAccept(ConveyorItem item, BuildingDirection fromDir)
+        public virtual bool CanAccept(ConveyorItem item, BuildingDirection fromDir)
         {
             foreach(var dir in InDirections[TilePosition])
             {
@@ -232,7 +232,7 @@ namespace Craftory.Maps.Buildings.Conveyors
             return TileLogic.IsFull;
         }
 
-        public bool CanPreviewAccept(ConveyorItem item, BuildingDirection fromDir)
+        public virtual bool CanPreviewAccept(ConveyorItem item, BuildingDirection fromDir)
         {
             foreach(var dir in InDirections[TilePosition])
             {

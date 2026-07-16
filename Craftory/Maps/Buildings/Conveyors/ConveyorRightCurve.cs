@@ -14,7 +14,7 @@ namespace Craftory.Maps.Buildings.Conveyors
 
         protected override void InitDirections(List<BuildingDirection> inDir)
         {
-            InDirections[TilePosition] = new List<BuildingDirection> { inDir[0] };
+            InDirections[TilePosition] = new List<BuildingDirection> { inDir[0].GetOpposite() };
             OutDirections[TilePosition] = new List<BuildingDirection> { GetOutDirectionFromIn(inDir[0]) };
         }
 
@@ -61,10 +61,10 @@ namespace Craftory.Maps.Buildings.Conveyors
 
             Vector2 center = InDirections[TilePosition][0] switch
             {
-                BuildingDirection.Down => worldPos + new Vector2(0, 0),
-                BuildingDirection.Right => worldPos + new Vector2(0, tileSize),
-                BuildingDirection.Up => worldPos + new Vector2(tileSize, tileSize),
-                BuildingDirection.Left => worldPos + new Vector2(tileSize, 0),
+                BuildingDirection.Down => worldPos + new Vector2(tileSize, tileSize),
+                BuildingDirection.Right => worldPos + new Vector2(tileSize, 0),
+                BuildingDirection.Up => worldPos + new Vector2(0, 0),
+                BuildingDirection.Left => worldPos + new Vector2(0, tileSize),
             };
 
             //アイテムが通る円の半径
@@ -80,10 +80,10 @@ namespace Craftory.Maps.Buildings.Conveyors
 
             float startAngle = InDirections[TilePosition][0] switch
             {
-                BuildingDirection.Down => 0f,
-                BuildingDirection.Left => MathF.PI * 0.5f,
-                BuildingDirection.Up => MathF.PI,
-                BuildingDirection.Right => MathF.PI * 1.5f,
+                BuildingDirection.Down => MathF.PI,
+                BuildingDirection.Left => MathF.PI * 1.5f,
+                BuildingDirection.Up => 0f,
+                BuildingDirection.Right => MathF.PI * 0.5f,
             };
 
             float angle = startAngle + angleOffset;
@@ -103,10 +103,10 @@ namespace Craftory.Maps.Buildings.Conveyors
 
             float rotation = InDirections[tilePos][0] switch
             {
-                BuildingDirection.Right => 0f,
-                BuildingDirection.Down => MathF.PI / 2,
-                BuildingDirection.Left => MathF.PI,
-                BuildingDirection.Up => - MathF.PI / 2,
+                BuildingDirection.Right => MathF.PI,
+                BuildingDirection.Down => MathF.PI * 1.5f,
+                BuildingDirection.Left => 0,
+                BuildingDirection.Up => MathF.PI * 0.5f,
                 _ => 0f
             };
 
