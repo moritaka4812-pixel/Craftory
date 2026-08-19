@@ -14,12 +14,12 @@ namespace Craftory.Controller
 
         public EmptyController Empty { get; }
         public BuildModeController Build { get; }
-        //public DeleteModeController Delete { get; }
+        public DeleteModeController Delete { get; }
         public ToolControllerManager(MapManager map, ToolPanel panel, Game1 game, Camera camera, GamePlayScreen screen)
         {
             Empty = new EmptyController();
             Build = new BuildModeController(map, panel, game, camera, screen);
-            //Delete = new DeleteModeController(map, panel, game, camera, screen);
+            Delete = new DeleteModeController(map, panel, game, camera, screen);
 
             CurrentController = Empty;
         }
@@ -29,7 +29,7 @@ namespace Craftory.Controller
             {
                 case GameMode.None: CurrentController = Empty; break;
                 case GameMode.Build: CurrentController = Build; break;
-                //case GameMode.Delete: CurrentController = Delete; break;
+                case GameMode.Delete: CurrentController = Delete; break;
             }
         }
 
@@ -43,10 +43,20 @@ namespace Craftory.Controller
             CurrentController?.Draw(sb);
         }
 
+        public void Reset()
+        {
+            SetMode(GameMode.None);
+        }
+
         public void StartBuild(BuildType type)
         {
             SetMode(GameMode.Build);
             Build.Start(type);
+        }
+
+        public void StartRemove()
+        {
+            SetMode(GameMode.Delete);
         }
     }
 }

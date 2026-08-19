@@ -37,10 +37,21 @@ namespace Craftory.ScreenUI
 
             var toolPanel = new ToolPanel(ui);
 
+            toolPanel.OnResetRequested += () =>
+            {
+                screen.toolControllerManager.Reset();
+            };
+
             toolPanel.OnBuildRequested += (type) =>
             {
                 screen.toolControllerManager.StartBuild(type);
             };
+
+            toolPanel.OnRemoveRequested += () =>
+            {
+                screen.toolControllerManager.StartRemove();
+            };
+
 
             var informationPanel = new InformationPanel(ui);
 

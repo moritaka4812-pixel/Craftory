@@ -14,6 +14,8 @@ namespace Craftory.GameUI
     {
         public Panel panel; //UI.Elements.Panel
         public event Action<BuildType> OnBuildRequested;
+        public event Action OnResetRequested;
+        public event Action OnRemoveRequested;
         private Button handleButton; //取って
         private bool isOpen;
         private float targetX;
@@ -33,8 +35,6 @@ namespace Craftory.GameUI
             handleButton = ui.CreateTextButton("T", 0, 0, 40, 40);
             handleButton.OnClicked += Toggle;
 
-            
-
             var list = new ScrollMultiList();
             list.RelativeY = 0.15f;
             list.RelativeHeight = 0.7f;
@@ -49,7 +49,27 @@ namespace Craftory.GameUI
             AddBuildButton(ui, list, "Buildings/Conveyor/ConveyorLeftMerge", BuildType.ConveyorLeftMerge, 32);
 
             panel.AddChild(list);
-            
+
+
+            var removeButton = ui.CreateTextButton("Remove", 0, 0, 40, 40);
+            removeButton.RelativeHeight = 0.075f;
+            removeButton.RelativeWidth = 0.5f;
+            removeButton.RelativeX = 0f;
+            removeButton.RelativeY = 0.85f;
+
+            removeButton.OnClicked += () =>
+            {
+                if(activeButton != null)
+                {
+                    activeButton.IsToggle = false;
+                    activeButton = null;
+                }
+
+                OnRemoveRequested?.Invoke();
+            };
+
+            panel.AddChild(removeButton);
+
             panel.RecalculateLayout();
             handleButton.RecalculateLayout();
 
@@ -63,6 +83,14 @@ namespace Craftory.GameUI
             var btn = ui.CreateImageButtonFrame(label, new Rect(0, 0, size, size));
             btn.OnClicked += () =>
             {
+                if(activeButton == btn)
+                {
+                    btn.IsToggle = false;
+                    activeButton = null;
+                    OnResetRequested?.Invoke();
+                    return;
+                }
+
                 if(activeButton != null)
                     activeButton.IsToggle = false;
 
