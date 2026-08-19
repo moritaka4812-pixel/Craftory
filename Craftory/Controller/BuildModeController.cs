@@ -7,8 +7,13 @@ using Craftory.Input;
 using Craftory.Core;
 using Craftory.Maps.Tiles;
 using Craftory.Screens;
-using System.ComponentModel.DataAnnotations;
-using System.Runtime.Intrinsics;
+
+public struct BuildCandidate
+{
+    public Point Origin;
+    public BuildType Type;
+    public BuildingDirection Direction;
+}
 
 namespace Craftory.Controller
 {
@@ -22,10 +27,10 @@ namespace Craftory.Controller
         private ToolPanel toolPanel;
         private MapManager mapManager;
         private BuildType currentBuildType;
-        private List<Point> buildTargets = new(); //建設する位置の一時リスト
-        private List<Point> invalidTargets = new(); //建設不可の一時リスト
+        private List<BuildCandidate> buildTargets = new(); //建設する位置の一時リスト
+        private List<BuildCandidate> invalidTargets = new(); //建設不可の一時リスト
         private bool[,] previewOccupied;
-        private List<Point>[,] previewOwner;
+        private List<BuildCandidate>[,] previewOwner;
         private Vector2 confirmButtonWorldPos;
         private BuildPlacementValidator validator;
         private Point? lastDragOrigin = null;
@@ -65,10 +70,10 @@ namespace Craftory.Controller
             confirmPanel.Visible = false;
             direction = BuildingDirection.Up;
             previewOccupied = new bool[mapManager.Map.MapSizeX, mapManager.Map.MapSizeY];
-            previewOwner = new List<Point>[mapManager.Map.MapSizeX, mapManager.Map.MapSizeY];
+            previewOwner = new List<BuildCandidate>[mapManager.Map.MapSizeX, mapManager.Map.MapSizeY];
             for (int x = 0; x < mapManager.Map.MapSizeX; x++)
                 for (int y = 0; y < mapManager.Map.MapSizeY; y++)
-                    previewOwner[x, y] = new List<Point>();
+                    previewOwner[x, y] = new List<BuildCandidate>();
 
             validator = new BuildPlacementValidator(mapManager.Map, previewOccupied);
         }

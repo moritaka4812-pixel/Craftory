@@ -35,7 +35,14 @@ namespace Craftory.Controller
 
         public bool Update(MouseInput mouse, bool uiConsumed)
         {
-            return (bool)CurrentController?.Update(mouse, uiConsumed);
+            bool consumed = (bool)CurrentController?.Update(mouse, uiConsumed);
+
+            if (!CurrentController.IsActive)
+            {
+                Reset();
+            }
+
+            return consumed;
         }
 
         public void Draw(SpriteBatch sb)

@@ -9,6 +9,8 @@ namespace Craftory.Controller
 {
     public class DeleteModeController : IToolController
     {
+        public bool IsActive { get; private set; }
+
         public DeleteModeController(MapManager map, ToolPanel panel, Game1 game, Camera camera, GamePlayScreen screen) 
         {
 
