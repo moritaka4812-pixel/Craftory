@@ -8,6 +8,7 @@ using Craftory.UI.Elements;
 using Craftory.Maps.Buildings;
 using Craftory.Core;
 using Craftory.Maps.Resource;
+using Craftory.Controller;
 
 namespace Craftory.ScreenUI
 {
@@ -44,7 +45,15 @@ namespace Craftory.ScreenUI
 
             toolPanel.OnBuildRequested += (type) =>
             {
-                screen.toolControllerManager.StartBuild(type);
+                if(screen.toolControllerManager.CurrentController.IsActive == false && screen.toolControllerManager.CurrentController is not BuildModeController)
+                {
+                    screen.toolControllerManager.StartBuild(type);
+                }
+                else
+                {
+                    var controller = (BuildModeController)(screen.toolControllerManager.CurrentController);
+                    controller.SetCurrentType(type);
+                }
             };
 
             toolPanel.OnRemoveRequested += () =>

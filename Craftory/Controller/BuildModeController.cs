@@ -78,6 +78,11 @@ namespace Craftory.Controller
             validator = new BuildPlacementValidator(mapManager.Map, previewOccupied);
         }
 
+        public void SetCurrentType(BuildType type)
+        {
+            currentBuildType = type;
+        }
+
         public void Cancel()
         {
             confirmPanel.Visible = false;
@@ -90,8 +95,8 @@ namespace Craftory.Controller
         public void Confirm()
         {
             if (buildTargets.Count == 0) return;
-            foreach (var target in buildTargets)
-                mapManager.AddBuilding(currentBuildType, target, direction);
+            foreach (var c in buildTargets)
+                mapManager.AddBuilding(c.Type, c.Origin, c.Direction);
 
             confirmPanel.Visible = false;
             IsActive = false;
@@ -125,9 +130,16 @@ namespace Craftory.Controller
             //左ドラッグ
             if (mouse.LeftDragging())
             {
-                if(lastDragOrigin != p && //前のタイルと別のタイルをドラッグしている
-                    !buildTargets.Contains(p) && //BuildTargetに含まれない
-                    !invalidTargets.Contains(p)) //InvalidTargetにも含まれない
+                var candidate = new BuildCandidate
+                {
+                    Origin = p,
+                    Type = currentBuildType,
+                    Direction = direction
+                };
+
+                if (lastDragOrigin != p && //前のタイルと別のタイルをドラッグしている
+                    !buildTargets.Contains(candidate) && //BuildTargetに含まれない
+                    !invalidTargets.Contains(candidate)) //InvalidTargetにも含まれない
                 {
                     bool canPlace = validator.CanPlace(BuildingRegistry.Data[currentBuildType], p); //配置が可能か
 
@@ -155,17 +167,15 @@ namespace Craftory.Controller
 
         public void Draw(SpriteBatch sb)
         {
-            var info = BuildingRegistry.Data[currentBuildType];
-            var previewAnim = info.CreateTileAnimation(direction);
-            
-            
-            foreach (var origin in buildTargets)
+            foreach (var c in buildTargets)
             {
-                info.DrawPreview(sb, origin, direction, Color.White * 0.5f);
+                var info = BuildingRegistry.Data[c.Type];
+                info.DrawPreview(sb, c.Origin, c.Direction, Color.White * 0.5f);
             }
-            foreach (var origin in invalidTargets)
+            foreach (var c in invalidTargets)
             {
-                info.DrawPreview(sb, origin, direction, Color.Red * 0.5f);
+                var info = BuildingRegistry.Data[c.Type];
+                info.DrawPreview(sb, c.Origin, c.Direction, Color.Red * 0.5f);
             }
             confirmPanel.DrawWorld(sb);
         }
@@ -174,6 +184,16 @@ namespace Craftory.Controller
         {
             confirmPanel.Visible = true;
             var info = BuildingRegistry.Data[currentBuildType];
+
+            var candidate = new BuildCandidate
+            {
+                Origin = p,
+                Type = currentBuildType,
+                Direction = direction
+            };
+
+            bool canPlace = validator.CanPlace(info, p); //タイルが設置可能かを判定
+
 
             // pが既存のプレビュー建物の占有タイルか
             var owners = previewOwner[p.X, p.Y];
@@ -185,25 +205,22 @@ namespace Craftory.Controller
                 return;
             }
 
-            //以下新規追加の処理
-            bool canPlace = validator.CanPlace(info, p); //タイルが設置可能かを判定
-
             if (canPlace) //建設可能
-                buildTargets.Add(p);
+                buildTargets.Add(candidate);
             else //建設不可
-                invalidTargets.Add(p);
+                invalidTargets.Add(candidate);
 
             //仮想マップに追加
             foreach (var pos in info.GetArea(p))
             {
                 previewOccupied[pos.X, pos.Y] = true;
-                previewOwner[pos.X, pos.Y].Add(p);
+                previewOwner[pos.X, pos.Y].Add(candidate);
             }
 
             confirmButtonWorldPos = worldPos + new Vector2(10, 10);
         }
 
-        private void RemovePreviewBuilding(Point origin, BuildingInfo info) 
+        private void RemovePreviewBuilding(BuildCandidate origin, BuildingInfo info) 
         {
             buildTargets.Remove(origin);
             invalidTargets.Remove(origin);
@@ -212,7 +229,7 @@ namespace Craftory.Controller
             {
                 for (int y = 0; y < info.SizeInTiles.Y; y++)
                 {
-                    var pos = new Point(origin.X + x, origin.Y + y);
+                    var pos = new Point(origin.Origin.X + x, origin.Origin.Y + y);
 
                     previewOwner[pos.X, pos.Y].Remove(origin);
 
