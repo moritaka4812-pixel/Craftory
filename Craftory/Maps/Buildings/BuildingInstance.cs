@@ -19,6 +19,7 @@ namespace Craftory.Maps.Buildings
         // タイルごとの入口・出口情報
         public Dictionary<Point, List<BuildingDirection>> InDirections { get; private set; }
         public Dictionary<Point, List<BuildingDirection>> OutDirections { get; private set; }
+        public BuildingDirection buildingDirection;
 
         public TileAnimation Anim;
         public BuildingInfo info;
@@ -49,6 +50,8 @@ namespace Craftory.Maps.Buildings
                     OccupiedTiles.Add(new Point(tilePosition.X + x, tilePosition.Y + y));
                 }
             }
+
+            buildingDirection = dir;
         }
 
         public virtual void UpdateLogic(GameTime gameTime)

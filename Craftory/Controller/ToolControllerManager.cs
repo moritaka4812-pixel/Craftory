@@ -64,6 +64,7 @@ namespace Craftory.Controller
         public void StartRemove()
         {
             SetMode(GameMode.Delete);
+            Delete.Start();
         }
     }
 }

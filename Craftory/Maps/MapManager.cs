@@ -40,7 +40,28 @@ namespace Craftory.Maps
             }
 
             Buildings.Add(building);
-            NotifyNeighborsOfChange(tilePos);
+            foreach(var pos in building.OccupiedTiles)
+                NotifyNeighborsOfChange(pos);
+        }
+
+        public void RemoveBuildingAt(Point tilePos)
+        {
+            var building = GetBuildingAt(tilePos);
+            if (building == null) return;
+            foreach (var pos in building.OccupiedTiles)
+            {
+                var tile = Map.GetTile(pos.X, pos.Y);
+                tile.Occupant = null;
+                tile.ShadowSources.RemoveAll(s => s.Type == ShadowSourceType.Building);
+            }
+            Buildings.Remove(building);
+            foreach (var pos in building.OccupiedTiles)
+                NotifyNeighborsOfChange(pos);
+        }
+
+        public BuildingInstance? GetBuildingAt(Point tilePos)
+        {
+            return Buildings.FirstOrDefault(b => b.TilePosition == tilePos);
         }
 
         public void Update(GameTime gameTime, Camera camera, GraphicsDevice device)
