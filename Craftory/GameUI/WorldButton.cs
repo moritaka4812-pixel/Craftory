@@ -42,6 +42,11 @@ namespace Craftory.GameUI
             return true;
         }
 
+        public void SetText(string newText)
+        {
+            this.text = newText;
+        }
+
         public override bool UpdateWorld(MouseInput mouse)
         {
             var worldPos = Camera.ScreenToWorld(mouse.Current.Position.ToVector2()); 

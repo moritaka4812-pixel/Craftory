@@ -23,6 +23,8 @@ namespace Craftory.Controller
 
         private WorldUIFactory worldui;
 
+        private WorldButton rotateButton;
+
         private Camera camera;
         private ToolPanel toolPanel;
         private MapManager mapManager;
@@ -50,7 +52,7 @@ namespace Craftory.Controller
 
             var okButton = worldui.CreateWorldTextButton("o", 0, 0, 40, 40);
             var cancelButton = worldui.CreateWorldTextButton("x", 40, 0, 40, 40);
-            var rotateButton = worldui.CreateWorldTextButton("R", 80, 0, 40, 40);
+            rotateButton = worldui.CreateWorldTextButton("↑", 80, 0, 40, 40);
 
             okButton.LeftClicked += () => screen.toolControllerManager.Build.Confirm();
             cancelButton.LeftClicked += () => screen.toolControllerManager.Build.Cancel();
@@ -67,8 +69,13 @@ namespace Craftory.Controller
             currentBuildType = type;
             buildTargets.Clear();
             invalidTargets.Clear();
-            confirmPanel.Visible = false;
+
+            confirmPanel.Visible = true;
+            confirmButtonWorldPos.X = camera.Position.X;
+            confirmButtonWorldPos.Y = camera.Position.Y;
+
             direction = BuildingDirection.Up;
+            rotateButton.SetText("↑");
             previewOccupied = new bool[mapManager.Map.MapSizeX, mapManager.Map.MapSizeY];
             previewOwner = new List<BuildCandidate>[mapManager.Map.MapSizeX, mapManager.Map.MapSizeY];
             for (int x = 0; x < mapManager.Map.MapSizeX; x++)
@@ -239,21 +246,27 @@ namespace Craftory.Controller
             }
         }
 
-        private void DrawPreviewRotated(SpriteBatch sb, BuildingInstance instance, Color color)
-        {
-            instance.DrawRotated(sb, instance.TilePosition, color);
-        }
-
         private void RotateDirection()
         {
-            direction = direction switch
+            switch (direction)
             {
-                BuildingDirection.Up => BuildingDirection.Right,
-                BuildingDirection.Right => BuildingDirection.Down,
-                BuildingDirection.Down => BuildingDirection.Left,
-                BuildingDirection.Left => BuildingDirection.Up,
-                _ => BuildingDirection.Up
-            };
+                case BuildingDirection.Up:
+                    direction = BuildingDirection.Right;
+                    rotateButton.SetText("→");
+                    break;
+                case BuildingDirection.Right:
+                    direction = BuildingDirection.Down;
+                    rotateButton.SetText("↓");
+                    break;
+                case BuildingDirection.Down:
+                    direction = BuildingDirection.Left;
+                    rotateButton.SetText("←");
+                    break;
+                case BuildingDirection.Left:
+                    direction = BuildingDirection.Up;
+                    rotateButton.SetText("↑");
+                    break;
+            }
         }
     }
 }
