@@ -68,29 +68,51 @@ namespace Craftory.Maps.Buildings.Conveyors
 
         public void InitializeTileStart()
         {
+            float oldStart = TileStart;
+
             if (backTile == null)
                 TileStart = 0f;
             else
                 TileStart = backTile.TileStart + 1f;
+
+            // ★ TileStart が変わったら GlobalPosition を補正する
+            float diff = TileStart - oldStart;
+
+            if (diff != 0f)
+            {
+                foreach (var item in Items)
+                {
+                    item.GlobalPosition += diff;
+                }
+            }
         }
+
 
         public void InitializeMergeTileStart()
         {
-            if(inputTiles.Count == 0)
+            float oldStart = TileStart;
+
+            if (inputTiles.Count == 0)
             {
-                //Debug.WriteLine("inputTiles.Count == 0");
                 TileStart = 0f;
-                return;
+            }
+            else
+            {
+                float minStart = inputTiles.Min(t => t.TileStart);
+                TileStart = minStart + 1f;
             }
 
-            //foreach (var t in inputTiles)
-            //    Debug.WriteLine($"inputTile {t.ownerConveyor.GetType().Name} TileStart={t.TileStart}");
+            float diff = TileStart - oldStart;
 
-            float minStart = inputTiles.Min(t => t.TileStart);
-            TileStart = minStart + 1f;
-
-            //Debug.WriteLine($"Merge TileStart={TileStart}");
+            if (diff != 0f)
+            {
+                foreach (var item in Items)
+                {
+                    item.GlobalPosition += diff;
+                }
+            }
         }
+
 
         public void Update(GameTime time)
         {
@@ -169,6 +191,11 @@ namespace Craftory.Maps.Buildings.Conveyors
                 else
                 {
                     first.GlobalPosition = tileEnd;
+
+                    first.pastTile = null;
+                    first.arrivalTime = null;
+
+                    return;
                 }
                 
             }

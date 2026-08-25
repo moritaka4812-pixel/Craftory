@@ -6,6 +6,7 @@ using Craftory.Maps;
 using Craftory.Screens;
 using Point = Microsoft.Xna.Framework.Point;
 using Color = Microsoft.Xna.Framework.Color;
+using System.Drawing.Text;
 
 namespace Craftory.Controller
 {
@@ -22,6 +23,8 @@ namespace Craftory.Controller
 
         private WorldPanel confirmPanel;
         private Vector2 confirmPanelPos;
+
+        private Point? dragStart = null;
 
         public DeleteModeController(MapManager map, ToolPanel panel, Game1 game, Camera camera, GamePlayScreen screen) 
         {
@@ -70,11 +73,26 @@ namespace Craftory.Controller
 
             var p = tilePos.Value;
 
-            if(mouse.LeftClicked())
-                HandleDeleteTarget(p);
 
-            if (mouse.LeftDragging())
+
+            if (mouse.LeftClicked())
+            {
+                dragStart = p;
                 HandleDeleteTarget(p);
+            }
+
+            if (mouse.LeftDragging() && dragStart != null)
+            {
+                var start = dragStart.Value;
+                var end = p;
+
+                int minX = Math.Min(start.X, end.X);
+                int maxX = Math.Max(start.X, end.X);
+                int minY = Math.Min(start.Y, end.Y);
+                int maxY = Math.Max(start.Y, end.Y);
+
+                ApplyPreviewRectangle(minX, maxX, minY, maxY);
+            }
 
             confirmPanel.X = (int)confirmPanelPos.X;
             confirmPanel.Y = (int)confirmPanelPos.Y;
@@ -97,6 +115,24 @@ namespace Craftory.Controller
             deleteTargets.Add(p);
             previewOccupied[p.X, p.Y] = true;
             previewOwner[p.X, p.Y].Add(p);
+        }
+
+        private void ApplyPreviewRectangle(int minX, int maxX, int minY, int maxY)
+        {
+            for(int x = minX; x <= maxX; x++)
+            {
+                for(int y = minY; y<= maxY; y++)
+                {
+                    var building = mapManager.GetBuildingAt(new Point(x, y));
+                    if (building == null) continue;
+
+                    if (!previewOccupied[x, y])
+                    {
+                        previewOccupied[x, y] = true;
+                        deleteTargets.Add(new Point(x, y));
+                    }
+                }
+            }
         }
 
         private void RemovePreview(Point p)

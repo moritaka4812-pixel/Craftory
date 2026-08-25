@@ -48,13 +48,16 @@ namespace Craftory.Maps
         {
             var building = GetBuildingAt(tilePos);
             if (building == null) return;
+
             foreach (var pos in building.OccupiedTiles)
             {
                 var tile = Map.GetTile(pos.X, pos.Y);
                 tile.Occupant = null;
                 tile.ShadowSources.RemoveAll(s => s.Type == ShadowSourceType.Building);
             }
+
             Buildings.Remove(building);
+            
             foreach (var pos in building.OccupiedTiles)
                 NotifyNeighborsOfChange(pos);
         }

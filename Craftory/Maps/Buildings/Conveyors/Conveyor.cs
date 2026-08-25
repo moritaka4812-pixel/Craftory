@@ -28,9 +28,27 @@ namespace Craftory.Maps.Buildings.Conveyors
 
         public virtual void InitializeConnections()
         {
+            var map = GameCore.Instance.MapManager.Map;
+            var nextPos = GetNextPosition();
             var tile = GameCore.Instance.MapManager.Map.GetTile(GetNextPosition().X, GetNextPosition().Y);
             if(tile?.Occupant is  Conveyor nextConveyor)
-                TileLogic.SetNextTile(nextConveyor.TileLogic);
+            {
+                var outDir = OutDirections[TilePosition][0];
+
+                var nextInputDirs = nextConveyor.GetInputDirections();
+
+                if (nextInputDirs.Contains(outDir.GetOpposite()))
+                {
+                    TileLogic.SetNextTile(nextConveyor.TileLogic);
+                }
+                else
+                {
+                    TileLogic.SetNextTile(null);
+                }
+            }
+               
+            else
+                TileLogic.SetNextTile(null);
         }
 
         protected virtual BuildingDirection GetInDirectionFromOut(BuildingDirection outDir)
