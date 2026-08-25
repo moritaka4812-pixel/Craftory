@@ -7,6 +7,8 @@ namespace Craftory.Maps.Buildings.Miners
 {
     public class Drill : BuildingInstance
     {
+        private ConveyorItem bufferItem = null;
+
         public Drill(BuildType type, Point pos) :
             base(type, pos, BuildingDirection.None)
         {
@@ -23,19 +25,22 @@ namespace Craftory.Maps.Buildings.Miners
         {
             if(!IsActive) return;
 
+            TryFlushBuffer();
+
             timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if(timer >= 1f / WorkSpeed)
+            if (timer >= 1f / WorkSpeed)
             {
                 timer -= 1f / WorkSpeed;
 
                 var tile = GameCore.Instance.MapManager.Map.GetTile(TilePosition.X, TilePosition.Y);
 
-                if(tile.Resource != Resource.TileResourceType.None)
+                if (tile.Resource != Resource.TileResourceType.None)
                 {
                     TryOutputToAcceptor(tile.Resource);
                 }
             }
+
         }
 
         private void TryOutputToAcceptor(Resource.TileResourceType type)
@@ -50,6 +55,9 @@ namespace Craftory.Maps.Buildings.Miners
 
             var itemType = ResourceToItemConvertor.Convert(type);
 
+            if(bufferItem == null)
+                bufferItem = new ConveyorItem { Type = itemType };
+
 
             foreach (var tilePos in GetOccupiedTiles())
             {
@@ -60,13 +68,25 @@ namespace Craftory.Maps.Buildings.Miners
 
                     if (tile?.Occupant is IItemAcceptor acceptor)
                     {
-                        var item = new ConveyorItem { Type = itemType };
-
-                        if (TryOutputFair(item))
-                            return; // 受け取ってくれたAcceptorに渡して終了
+                        if(bufferItem != null)
+                        {
+                            if (TryOutputFair(bufferItem))
+                            {
+                                bufferItem = null;
+                            }
+                        }
                     }
                 }
             }
+        }
+
+        private void TryFlushBuffer()
+        {
+            if (bufferItem == null)
+                return;
+
+            if (TryOutputFair(bufferItem))
+                bufferItem = null;
         }
     }
 }
