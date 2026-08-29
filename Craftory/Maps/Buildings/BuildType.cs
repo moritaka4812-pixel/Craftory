@@ -9,6 +9,8 @@ namespace Craftory.Maps.Buildings
         ConveyorRightCurve,
         ConveyorLeftCurve,
         ConveyorRightMerge,
-        ConveyorLeftMerge
+        ConveyorLeftMerge,
+        ConveyorMerge,
+
     }
 }
