@@ -8,7 +8,7 @@ using Craftory.UI.Elements;
 using Craftory.Maps.Buildings;
 using Craftory.Core;
 using Craftory.Maps.Resource;
-using Craftory.Controller;
+using Craftory.Controller.BuildMode;
 
 namespace Craftory.ScreenUI
 {
