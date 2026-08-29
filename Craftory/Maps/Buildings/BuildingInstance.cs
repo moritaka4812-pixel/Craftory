@@ -6,15 +6,25 @@ using Craftory.Maps.Buildings.Conveyors;
 
 namespace Craftory.Maps.Buildings
 {
+    public enum BuildState
+    {
+        Constructing,
+        Active,
+        Deconstructing
+    }
+
     public class BuildingInstance : ITileOccupant
     {
         protected int outputIndex = 0; //出力方向のラウンドロビンキャッシュ
         public BuildType Type { get; private set; }     // 建物の種類
         public Point TilePosition { get; private set; } //タイル座標
         public Point SizeInTiles { get; private set; }  //タイル単位の大きさ
-        public bool IsActive { get; private set; }      //稼働状況
+        public bool IsActive => State == BuildState.Active;      //稼働状況
         public float WorkSpeed { get; private set; }    //採掘速度など、タイプ依存の性能値
         public List<Point> OccupiedTiles { get; private set; }
+        public BuildState State { get; private set; }
+        public float BuildProgress { get; private set; }
+        public float BuildTime { get; private set; }
 
         // タイルごとの入口・出口情報
         public Dictionary<Point, List<BuildingDirection>> InDirections { get; private set; }
@@ -37,7 +47,6 @@ namespace Craftory.Maps.Buildings
 
             SizeInTiles = info.SizeInTiles;
             WorkSpeed = info.WorkSpeed;
-            IsActive = true;
 
             InDirections = new();
             OutDirections = new();
@@ -52,13 +61,39 @@ namespace Craftory.Maps.Buildings
             }
 
             buildingDirection = dir;
+
+            State = BuildState.Constructing;
+            BuildProgress = 0f;
+            BuildTime = info.BuildTime;
         }
 
         public virtual void UpdateLogic(GameTime gameTime)
         {
-            if(!IsActive) return;
+            if (UpdateConstructingState(gameTime)) return;
             
+            //稼働中の通常ロジック（継承先で実装）
         }
+
+        protected bool UpdateConstructingState(GameTime gameTime)
+        {
+            if (State == BuildState.Constructing)
+            {
+                BuildProgress += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (BuildProgress >= BuildTime)
+                    State = BuildState.Active;
+
+                return true; // Constructing 中
+            }
+
+            if (State == BuildState.Deconstructing)
+            {
+                // 解体処理
+                return true; // Deconstructing 中
+            }
+
+            return false; // Active
+        }
+
 
         public virtual void UpdateVisual(GameTime gameTime)
         {
@@ -69,6 +104,13 @@ namespace Craftory.Maps.Buildings
         public virtual void Draw(SpriteBatch sb, Camera camera)
         {
             var worldPos = TilePosition.ToVector2() * 32;
+
+            if(State == BuildState.Constructing)
+            {
+                //建設中の建物の表示アニメーション
+                return;
+                
+            }
             // 建物のスプライト描画
             Anim.Draw(sb, worldPos);
         }

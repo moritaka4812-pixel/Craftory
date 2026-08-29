@@ -23,6 +23,9 @@ namespace Craftory.Maps.Buildings.Miners
 
         public override void UpdateLogic(GameTime gameTime)
         {
+            if (UpdateConstructingState(gameTime))
+                return;
+
             if(!IsActive) return;
 
             TryFlushBuffer();

@@ -70,6 +70,9 @@ namespace Craftory.Maps.Buildings.Conveyors
 
         public override void UpdateLogic(GameTime gameTime)
         {
+            if (UpdateConstructingState(gameTime)) 
+                return;
+
             TileLogic.Update(gameTime);
         }
 

@@ -26,6 +26,7 @@ namespace Craftory.Maps.Buildings
                         FrameTime = 0.2f,
                         SizeInTiles = new Point(1,1),
                         WorkSpeed = 0.25f,
+                        BuildTime = 0,
                         Create = (pos, dir) => new Drill(BuildType.Drill, pos)
                     }
                 },
@@ -44,6 +45,7 @@ namespace Craftory.Maps.Buildings
                         FrameTime = 0.25f,
                         SizeInTiles = new Point(1,1),
                         WorkSpeed = 1.0f,
+                        BuildTime = 0,
                         Create = (pos, dir) => new Conveyor(BuildType.Conveyor, pos, dir)
                     }
                 },
@@ -62,6 +64,7 @@ namespace Craftory.Maps.Buildings
                         FrameTime = 0.25f,
                         SizeInTiles = new Point(1,1),
                         WorkSpeed = 1.0f,
+                        BuildTime = 0,
                         Create = (pos, inDir) => new ConveyorRightCurve(BuildType.ConveyorRightCurve, pos, inDir)
                     }
                 },
@@ -80,6 +83,7 @@ namespace Craftory.Maps.Buildings
                         FrameTime = 0.25f,
                         SizeInTiles = new Point(1,1),
                         WorkSpeed = 1.0f,
+                        BuildTime = 0,
                         Create = (pos, inDir) => new ConveyorLeftCurve(BuildType.ConveyorLeftCurve, pos, inDir)
                     }
                 },
@@ -98,6 +102,7 @@ namespace Craftory.Maps.Buildings
                         FrameTime = 0.25f,
                         SizeInTiles = new Point(1,1),
                         WorkSpeed = 1.0f,
+                        BuildTime = 0,
                         Create = (pos, outDir) => new ConveyorRightMerge(BuildType.ConveyorRightMerge, pos, outDir)
                     }
                 },
@@ -116,6 +121,7 @@ namespace Craftory.Maps.Buildings
                         FrameTime = 0.25f,
                         SizeInTiles = new Point(1,1),
                         WorkSpeed = 1.0f,
+                        BuildTime= 0,
                         Create = (pos, outDir) => new ConveyorLeftMerge(BuildType.ConveyorLeftMerge, pos, outDir)
                     }
                 },
@@ -135,6 +141,7 @@ namespace Craftory.Maps.Buildings
                         FrameTime = 0.25f,
                         SizeInTiles = new Point(1,1),
                         WorkSpeed = 1.0f,
+                        BuildTime= 0,
                         Create = (pos, outDir) => new ConveyorMerge(BuildType.ConveyorMerge, pos, outDir)
                     }
                 }

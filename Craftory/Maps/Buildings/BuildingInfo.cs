@@ -12,6 +12,7 @@ namespace Craftory.Maps.Buildings
         public float FrameTime;
         public Point SizeInTiles;
         public float WorkSpeed;
+        public float BuildTime;
 
         public BuildType Type;
         public int Width;  //タイル準拠の幅
