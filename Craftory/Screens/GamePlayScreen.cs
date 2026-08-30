@@ -114,7 +114,7 @@ namespace Craftory.Screens
             var range = GameCore.Instance.MapManager.Map.GetVisibleRange(camera, game.GraphicsDevice); //描画範囲内のレンジを取得
             GameCore.Instance.MapManager.Draw(sb, camera); //範囲内のマップをDraw
 
-            toolControllerManager.Draw(sb);
+            toolControllerManager.DrawWorld(sb);
 
             sb.End();
 
@@ -133,6 +133,7 @@ namespace Craftory.Screens
                      DepthStencilState.None,
                      raster);
 
+            toolControllerManager.DrawUI(sb);
             toolPanel.Draw(sb);
             settingsButton.Draw(sb);
             informationPanel.Draw(sb);

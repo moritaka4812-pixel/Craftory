@@ -7,6 +7,7 @@ namespace Craftory.Controller
     {
         public bool IsActive => false;
         public bool Update(MouseInput mouse, bool uiConsumed) { return false; }
-        public void Draw(SpriteBatch sb) { }
+        public void DrawUI(SpriteBatch sb) { }
+        public void DrawWorld(SpriteBatch sb) { }
     }
 }

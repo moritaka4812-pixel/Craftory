@@ -57,14 +57,14 @@ namespace Craftory.UI.Elements
             container.X = this.X;
             container.Y = this.Y;
             container.RecalculateLayout();
-
+            
             // 2. Panel 自身のホイール処理（背景吸収）
             //    base.Update を先に呼ぶと OnWheel が正しく動く
             consumed |= base.Update(mouse);
 
             // 3. 子要素の更新（ボタンやスクロールリスト）
             consumed |= container.Update(mouse);
-
+            
             // 4. 背景クリック吸収
             if (HitTest(mouse.Current.Position) && mouse.LeftClicked())
                 consumed = true;

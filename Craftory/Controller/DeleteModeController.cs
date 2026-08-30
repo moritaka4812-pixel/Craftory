@@ -1,12 +1,11 @@
-﻿
-using Craftory.Core;
+﻿using Craftory.Core;
 using Craftory.GameUI;
 using Craftory.Input;
 using Craftory.Maps;
 using Craftory.Screens;
-using Point = Microsoft.Xna.Framework.Point;
+using Craftory.UI.Core;
 using Color = Microsoft.Xna.Framework.Color;
-using System.Drawing.Text;
+using Point = Microsoft.Xna.Framework.Point;
 
 namespace Craftory.Controller
 {
@@ -16,31 +15,37 @@ namespace Craftory.Controller
         private MapManager mapManager;
         private ToolPanel toolPanel;
         private Camera camera;
-        private WorldUIFactory worldui;
+
         private List<Point> deleteTargets = new();
         private bool[,] previewOccupied;
         private List<Point>[,] previewOwner;
 
-        private WorldPanel confirmPanel;
+        private ConfirmPanel confirmPanel;   // ★ BuildMode と同じ UIConfirmPanel
         private Vector2 confirmPanelPos;
 
         private Point? dragStart = null;
 
-        public DeleteModeController(MapManager map, ToolPanel panel, Game1 game, Camera camera, GamePlayScreen screen) 
+        public DeleteModeController(MapManager map, ToolPanel panel, Game1 game, Camera camera, GamePlayScreen screen)
         {
             this.mapManager = map;
             this.toolPanel = panel;
             this.camera = camera;
 
-            this.worldui = new WorldUIFactory(game, camera);
+            var ui = new UIFactory(game);
 
-            confirmPanel = worldui.CreateWorldPanel(80, 40);
+            // ★ BuildMode と同じ ConfirmPanel を使う
+            confirmPanel = new ConfirmPanel(80, 40);
 
-            var okButton = worldui.CreateWorldTextButton("o", 0, 0, 40, 40);
-            var cancelButton = worldui.CreateWorldTextButton("x", 40, 0, 40, 40);
+            var okButton = ui.CreateTextButton("o", 0, 0, 40, 40);
+            var cancelButton = ui.CreateTextButton("x", 40, 0, 40, 40);
 
             okButton.LeftClicked += ConfirmDelete;
             cancelButton.LeftClicked += CancelDelete;
+
+            okButton.IgnoreLayoutX = true;
+            okButton.IgnoreLayoutY = true;
+            cancelButton.IgnoreLayoutX = true;
+            cancelButton.IgnoreLayoutY = true;
 
             confirmPanel.AddChild(okButton);
             confirmPanel.AddChild(cancelButton);
@@ -55,7 +60,7 @@ namespace Craftory.Controller
             previewOwner = new List<Point>[mapManager.Map.MapSizeX, mapManager.Map.MapSizeY];
 
             for (int x = 0; x < mapManager.Map.MapSizeX; x++)
-                for(int y = 0; y < mapManager.Map.MapSizeY; y++)
+                for (int y = 0; y < mapManager.Map.MapSizeY; y++)
                     previewOwner[x, y] = new List<Point>();
 
             confirmPanel.Visible = true;
@@ -65,7 +70,9 @@ namespace Craftory.Controller
         public bool Update(MouseInput mouse, bool uiConsumed)
         {
             if (uiConsumed) return true;
-            if(confirmPanel.UpdateWorld(mouse)) return true;
+
+            // ★ BuildMode と同じ Update
+            if (confirmPanel.Update(mouse)) return true;
 
             var worldPos = camera.ScreenToWorld(mouse.Current.Position.ToVector2());
             var tilePos = mapManager.Map.WorldToTile(worldPos);
@@ -73,12 +80,13 @@ namespace Craftory.Controller
 
             var p = tilePos.Value;
 
-
-
             if (mouse.LeftClicked())
             {
                 dragStart = p;
                 HandleDeleteTarget(p);
+
+                // ConfirmPanel の位置更新
+                confirmPanelPos = worldPos + new Vector2(10, 10);
             }
 
             if (mouse.LeftDragging() && dragStart != null)
@@ -92,10 +100,14 @@ namespace Craftory.Controller
                 int maxY = Math.Max(start.Y, end.Y);
 
                 ApplyPreviewRectangle(minX, maxX, minY, maxY);
+
+                confirmPanelPos = worldPos + new Vector2(10, 10);
             }
 
-            confirmPanel.X = (int)confirmPanelPos.X;
-            confirmPanel.Y = (int)confirmPanelPos.Y;
+            // ★ World → Screen 座標変換
+            var screenPos = camera.WorldToScreen(confirmPanelPos);
+            confirmPanel.X = (int)screenPos.X;
+            confirmPanel.Y = (int)screenPos.Y;
 
             return false;
         }
@@ -119,9 +131,9 @@ namespace Craftory.Controller
 
         private void ApplyPreviewRectangle(int minX, int maxX, int minY, int maxY)
         {
-            for(int x = minX; x <= maxX; x++)
+            for (int x = minX; x <= maxX; x++)
             {
-                for(int y = minY; y<= maxY; y++)
+                for (int y = minY; y <= maxY; y++)
                 {
                     var building = mapManager.GetBuildingAt(new Point(x, y));
                     if (building == null) continue;
@@ -163,15 +175,18 @@ namespace Craftory.Controller
             confirmPanel.Visible = false;
         }
 
-        public void Draw(SpriteBatch sb)
+        public void DrawWorld(SpriteBatch sb)
         {
-            foreach(var p in deleteTargets)
+            foreach (var p in deleteTargets)
             {
                 var building = mapManager.GetBuildingAt(p);
                 building?.info.DrawPreview(sb, building.TilePosition, building.buildingDirection, Color.Red * 0.5f);
             }
+        }
 
-            confirmPanel.DrawWorld(sb);
+        public void DrawUI(SpriteBatch sb)
+        {
+            confirmPanel.Draw(sb);
         }
     }
 }

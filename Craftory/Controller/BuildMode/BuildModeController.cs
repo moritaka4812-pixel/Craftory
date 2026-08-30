@@ -1,5 +1,7 @@
 ﻿using Color = Microsoft.Xna.Framework.Color;
 using Point = Microsoft.Xna.Framework.Point;
+using Button = Craftory.UI.Elements.Button;
+using Panel = Craftory.UI.Elements.Panel;
 using Craftory.Maps.Buildings;
 using Craftory.GameUI;
 using Craftory.Maps;
@@ -7,6 +9,8 @@ using Craftory.Input;
 using Craftory.Core;
 using Craftory.Maps.Tiles;
 using Craftory.Screens;
+using Craftory.UI.Elements;
+using Craftory.UI.Core;
 
 public struct BuildCandidate
 {
@@ -21,8 +25,8 @@ namespace Craftory.Controller.BuildMode
     {
         public bool IsActive { get; private set; }
 
-        private WorldUIFactory worldui;
-        private WorldButton rotateButton;
+        private UIFactory ui;
+        private Button rotateButton;
 
         private Camera camera;
         private ToolPanel toolPanel;
@@ -35,7 +39,7 @@ namespace Craftory.Controller.BuildMode
         private BuildingDirection direction;
 
         private Vector2 confirmButtonWorldPos;
-        public WorldPanel confirmPanel;
+        public ConfirmPanel confirmPanel;
 
         public BuildModeController(MapManager mapManager, ToolPanel toolPanel, Game1 game, Camera camera, GamePlayScreen screen)
         {
@@ -46,17 +50,25 @@ namespace Craftory.Controller.BuildMode
             preview = new BuildPreviewManager(mapManager);
             placement = new BuildPlacementController(mapManager, preview);
 
-            worldui = new WorldUIFactory(game, camera);
+            ui = new UIFactory(game);
 
-            confirmPanel = worldui.CreateWorldPanel(120, 40);
+            confirmPanel = new ConfirmPanel(120, 40);
 
-            var okButton = worldui.CreateWorldTextButton("o", 0, 0, 40, 40);
-            var cancelButton = worldui.CreateWorldTextButton("x", 40, 0, 40, 40);
-            rotateButton = worldui.CreateWorldTextButton("↑", 80, 0, 40, 40);
+            var okButton = ui.CreateTextButton("o", 0, 0, 40, 40);
+            var cancelButton = ui.CreateTextButton("x", 40, 0, 40, 40);
+            rotateButton = ui.CreateTextButton("↑", 80, 0, 40, 40);
 
             okButton.LeftClicked += () => screen.toolControllerManager.Build.Confirm();
             cancelButton.LeftClicked += () => screen.toolControllerManager.Build.Cancel();
             rotateButton.LeftClicked += RotateDirection;
+
+            
+            okButton.IgnoreLayoutX = true;
+            okButton.IgnoreLayoutY = true;
+            cancelButton.IgnoreLayoutX = true;
+            cancelButton.IgnoreLayoutY = true;
+            rotateButton.IgnoreLayoutX = true;
+            rotateButton.IgnoreLayoutY = true;
 
             confirmPanel.AddChild(okButton);
             confirmPanel.AddChild(cancelButton);
@@ -104,7 +116,7 @@ namespace Craftory.Controller.BuildMode
         {
             if (uiConsumed) return true;
 
-            if (confirmPanel.UpdateWorld(mouse)) return true;
+            if (confirmPanel.Update(mouse)) return true;
 
             var worldPos = camera.ScreenToWorld(mouse.Current.Position.ToVector2());
             var tilePos = mapManager.Map.WorldToTile(worldPos);
@@ -130,17 +142,25 @@ namespace Craftory.Controller.BuildMode
                 placement.OnDragEnd();
             }
 
-            confirmPanel.X = (int)confirmButtonWorldPos.X;
-            confirmPanel.Y = (int)confirmButtonWorldPos.Y;
+            var screenPos = camera.WorldToScreen(confirmButtonWorldPos);
+            confirmPanel.X = (int)screenPos.X;
+            confirmPanel.Y = (int)screenPos.Y;
+
 
             return false;
         }
 
-        public void Draw(SpriteBatch sb)
+        public void DrawWorld(SpriteBatch sb)
         {
             preview.Draw(sb);
-            confirmPanel.DrawWorld(sb);
         }
+
+        public void DrawUI(SpriteBatch sb)
+        {
+            confirmPanel.Draw(sb);
+        }
+
+
 
         private void RotateDirection()
         {

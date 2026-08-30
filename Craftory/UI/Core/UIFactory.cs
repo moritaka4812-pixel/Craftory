@@ -2,6 +2,7 @@
 using Button = Craftory.UI.Elements.Button;
 using Color = Microsoft.Xna.Framework.Color;
 using Rect = Microsoft.Xna.Framework.Rectangle;
+using Panel = Craftory.UI.Elements.Panel;
 using Craftory.UI.Elements;
 using Craftory.GameUI;
 
@@ -109,5 +110,11 @@ namespace Craftory.UI.Core
             return label;
         }
 
+        public Panel CreatePanel(
+            int width, 
+            int height)
+        {
+            return new Panel(width, height);
+        }
     }
 }

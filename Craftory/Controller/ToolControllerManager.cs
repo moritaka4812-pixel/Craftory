@@ -46,9 +46,14 @@ namespace Craftory.Controller
             return consumed;
         }
 
-        public void Draw(SpriteBatch sb)
+        public void DrawUI(SpriteBatch sb)
         {
-            CurrentController?.Draw(sb);
+            CurrentController?.DrawUI(sb);
+        }
+
+        public void DrawWorld(SpriteBatch sb)
+        {
+            CurrentController?.DrawWorld(sb);
         }
 
         public void Reset()
