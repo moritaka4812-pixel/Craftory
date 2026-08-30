@@ -36,7 +36,7 @@ namespace Craftory.Maps.Buildings
                     {
                         TexturePaths = new()
                         {
-                            { BuildingDirection.None, "Buildings/Conveyor/ConveyorStraight"}
+                            { BuildingDirection.None, "Buildings/Logistics/Conveyor/ConveyorStraight"}
                         },
                         Type = BuildType.Conveyor,
                         Width = 1,
@@ -55,7 +55,7 @@ namespace Craftory.Maps.Buildings
                     {
                         TexturePaths = new()
                         {
-                            { BuildingDirection.None, "Buildings/Conveyor/ConveyorRightCurve" }
+                            { BuildingDirection.None, "Buildings/Logistics/Conveyor/ConveyorRightCurve" }
                         },
                         Type = BuildType.ConveyorRightCurve,
                         Width = 1,
@@ -74,7 +74,7 @@ namespace Craftory.Maps.Buildings
                     {
                         TexturePaths = new()
                         {
-                            {BuildingDirection.None, "Buildings/Conveyor/ConveyorLeftCurve" }
+                            {BuildingDirection.None, "Buildings/Logistics/Conveyor/ConveyorLeftCurve" }
                         },
                         Type = BuildType.ConveyorLeftCurve,
                         Width = 1,
@@ -93,7 +93,7 @@ namespace Craftory.Maps.Buildings
                     {
                         TexturePaths = new ()
                         {
-                            { BuildingDirection.None, "Buildings/Conveyor/ConveyorRightMerge" }
+                            { BuildingDirection.None, "Buildings/Logistics/Conveyor/ConveyorRightMerge" }
                         },
                         Type = BuildType.ConveyorRightMerge,
                         Width = 1,
@@ -112,7 +112,7 @@ namespace Craftory.Maps.Buildings
                     {
                         TexturePaths = new ()
                         {
-                            { BuildingDirection.None, "Buildings/Conveyor/ConveyorLeftMerge" }
+                            { BuildingDirection.None, "Buildings/Logistics/Conveyor/ConveyorLeftMerge" }
                         },
                         Type = BuildType.ConveyorLeftMerge,
                         Width = 1,
@@ -132,7 +132,7 @@ namespace Craftory.Maps.Buildings
                     {
                         TexturePaths = new Dictionary<BuildingDirection, string>()
                         {
-                            { BuildingDirection.None, "Buildings/Conveyor/ConveyorMerge" }
+                            { BuildingDirection.None, "Buildings/Logistics/Conveyor/ConveyorMerge" }
                         },
                         Type = BuildType.ConveyorLeftMerge,
                         Width = 1,

@@ -13,7 +13,7 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin Buildings/Conveyor/ConveyorLeftCurve.png
+#begin Buildings/Logistics/Conveyor/ConveyorLeftCurve.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -23,9 +23,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Buildings/Conveyor/ConveyorLeftCurve.png
+/build:Buildings/Logistics/Conveyor/ConveyorLeftCurve.png
 
-#begin Buildings/Conveyor/ConveyorLeftMerge.png
+#begin Buildings/Logistics/Conveyor/ConveyorLeftMerge.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -35,9 +35,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Buildings/Conveyor/ConveyorLeftMerge.png
+/build:Buildings/Logistics/Conveyor/ConveyorLeftMerge.png
 
-#begin Buildings/Conveyor/ConveyorMerge.png
+#begin Buildings/Logistics/Conveyor/ConveyorMerge.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -47,9 +47,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Buildings/Conveyor/ConveyorMerge.png
+/build:Buildings/Logistics/Conveyor/ConveyorMerge.png
 
-#begin Buildings/Conveyor/ConveyorRightCurve.png
+#begin Buildings/Logistics/Conveyor/ConveyorRightCurve.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -59,9 +59,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Buildings/Conveyor/ConveyorRightCurve.png
+/build:Buildings/Logistics/Conveyor/ConveyorRightCurve.png
 
-#begin Buildings/Conveyor/ConveyorRightMerge.png
+#begin Buildings/Logistics/Conveyor/ConveyorRightMerge.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -71,9 +71,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Buildings/Conveyor/ConveyorRightMerge.png
+/build:Buildings/Logistics/Conveyor/ConveyorRightMerge.png
 
-#begin Buildings/Conveyor/ConveyorStraight.png
+#begin Buildings/Logistics/Conveyor/ConveyorStraight.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -83,7 +83,103 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Buildings/Conveyor/ConveyorStraight.png
+/build:Buildings/Logistics/Conveyor/ConveyorStraight.png
+
+#begin Buildings/Logistics/Splitter/Splitter_Active_Down.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Buildings/Logistics/Splitter/Splitter_Active_Down.png
+
+#begin Buildings/Logistics/Splitter/Splitter_Active_Left.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Buildings/Logistics/Splitter/Splitter_Active_Left.png
+
+#begin Buildings/Logistics/Splitter/Splitter_Active_Right.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Buildings/Logistics/Splitter/Splitter_Active_Right.png
+
+#begin Buildings/Logistics/Splitter/Splitter_Active_Up.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Buildings/Logistics/Splitter/Splitter_Active_Up.png
+
+#begin Buildings/Logistics/Splitter/Splitter_Idle_Down.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Buildings/Logistics/Splitter/Splitter_Idle_Down.png
+
+#begin Buildings/Logistics/Splitter/Splitter_Idle_Left.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Buildings/Logistics/Splitter/Splitter_Idle_Left.png
+
+#begin Buildings/Logistics/Splitter/Splitter_Idle_Right.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Buildings/Logistics/Splitter/Splitter_Idle_Right.png
+
+#begin Buildings/Logistics/Splitter/Splitter_Idle_Up.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Buildings/Logistics/Splitter/Splitter_Idle_Up.png
 
 #begin Buildings/Miner/Drill.png
 /importer:TextureImporter
