@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Point = Microsoft.Xna.Framework.Point;
 
-namespace Craftory.Maps.Buildings.Conveyors
+namespace Craftory.Maps.Buildings.Logistics.Conveyors
 {
     public class ConveyorLeftMerge : Conveyor, IItemAcceptor, IMergeConveyor
     {

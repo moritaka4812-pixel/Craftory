@@ -1,14 +1,12 @@
-﻿using Craftory.Maps.Tiles;
-using System.Linq.Expressions;
-using Point = Microsoft.Xna.Framework.Point;
+﻿using Point = Microsoft.Xna.Framework.Point;
 using Color = Microsoft.Xna.Framework.Color;
 
-namespace Craftory.Maps.Buildings.Conveyors
+namespace Craftory.Maps.Buildings.Logistics.Conveyors
 {
-    public class ConveyorRightCurve : Conveyor, IItemAcceptor
+    public class ConveyorLeftCurve : Conveyor, IItemAcceptor
     {
-        public ConveyorRightCurve(BuildType type, Point pos, BuildingDirection inDir)
-            :base(type, pos, inDir)
+        public ConveyorLeftCurve(BuildType type, Point pos, BuildingDirection inDir)
+            : base (type, pos, inDir)
         {
         }
 
@@ -21,11 +19,11 @@ namespace Craftory.Maps.Buildings.Conveyors
         protected BuildingDirection GetOutDirectionFromIn(BuildingDirection inDir)
         {
             return inDir switch
-            { 
-                BuildingDirection.Up => BuildingDirection.Right,
-                BuildingDirection.Right => BuildingDirection.Down,
-                BuildingDirection.Down => BuildingDirection.Left,
-                BuildingDirection.Left => BuildingDirection.Up,
+            {
+                BuildingDirection.Up => BuildingDirection.Left,
+                BuildingDirection.Left => BuildingDirection.Down,
+                BuildingDirection.Down => BuildingDirection.Right,
+                BuildingDirection.Right => BuildingDirection.Up,
                 _ => BuildingDirection.None
             };
         }
@@ -36,11 +34,9 @@ namespace Craftory.Maps.Buildings.Conveyors
 
             if (local < 0.5f)
                 return InDirections[TilePosition][0];
-            else
+            else 
                 return OutDirections[TilePosition][0];
         }
-
-        
 
         public override Point GetBackPosition()
         {
@@ -61,10 +57,10 @@ namespace Craftory.Maps.Buildings.Conveyors
 
             Vector2 center = InDirections[TilePosition][0] switch
             {
-                BuildingDirection.Down => worldPos + new Vector2(tileSize, tileSize),
-                BuildingDirection.Right => worldPos + new Vector2(tileSize, 0),
-                BuildingDirection.Up => worldPos + new Vector2(0, 0),
-                BuildingDirection.Left => worldPos + new Vector2(0, tileSize),
+                BuildingDirection.Down => worldPos + new Vector2(0, tileSize),
+                BuildingDirection.Right => worldPos + new Vector2(tileSize, tileSize),
+                BuildingDirection.Up => worldPos + new Vector2(tileSize, 0),
+                BuildingDirection.Left => worldPos + new Vector2(0),
             };
 
             //アイテムが通る円の半径
@@ -74,19 +70,19 @@ namespace Craftory.Maps.Buildings.Conveyors
 
             float arcLength = radius * arcAngle;
             float traveled = arcLength * local;
-            
+
             //角度を計算
             float angleOffset = traveled / radius;
 
             float startAngle = InDirections[TilePosition][0] switch
             {
-                BuildingDirection.Down => MathF.PI,
-                BuildingDirection.Left => MathF.PI * 1.5f,
-                BuildingDirection.Up => 0f,
-                BuildingDirection.Right => MathF.PI * 0.5f,
+                BuildingDirection.Down => 0,
+                BuildingDirection.Left => MathF.PI * 0.5f,
+                BuildingDirection.Up => MathF.PI,
+                BuildingDirection.Right => MathF.PI * 1.5f,
             };
 
-            float angle = startAngle + angleOffset;
+            float angle = startAngle - angleOffset;
 
             Vector2 arcCenterPos = new Vector2(
                 center.X + MathF.Cos(angle) * radius,
@@ -126,5 +122,6 @@ namespace Craftory.Maps.Buildings.Conveyors
             );
         }
 
+        
     }
 }

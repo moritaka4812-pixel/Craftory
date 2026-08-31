@@ -1,6 +1,6 @@
 ﻿using Craftory.Conversion;
 using Craftory.Core;
-using Craftory.Maps.Buildings.Conveyors;
+using Craftory.Maps.Buildings.Logistics.Conveyors;
 using Point = Microsoft.Xna.Framework.Point;
 
 namespace Craftory.Maps.Buildings.Miners

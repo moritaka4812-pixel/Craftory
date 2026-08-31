@@ -1,5 +1,4 @@
-﻿
-namespace Craftory.Maps.Buildings.Conveyors
+﻿namespace Craftory.Maps.Buildings.Logistics.Conveyors
 {
     public interface IMergeConveyor
     {

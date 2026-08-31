@@ -1,7 +1,7 @@
 ﻿
 using Craftory.Core;
 using Craftory.Maps.Buildings;
-using Craftory.Maps.Buildings.Conveyors;
+using Craftory.Maps.Buildings.Logistics.Conveyors;
 using Craftory.Maps.Shadow;
 using Craftory.Maps.Tiles;
 using Point = Microsoft.Xna.Framework.Point;

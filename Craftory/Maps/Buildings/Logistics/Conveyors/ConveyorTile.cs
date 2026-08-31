@@ -1,12 +1,11 @@
-﻿
-using Craftory.Core;
+﻿using Craftory.Core;
 using Craftory.Item;
 using Craftory.Maps.Shadow;
 using System.Diagnostics;
 using System.DirectoryServices;
 using Color = Microsoft.Xna.Framework.Color;
 
-namespace Craftory.Maps.Buildings.Conveyors
+namespace Craftory.Maps.Buildings.Logistics.Conveyors
 {
     public class ConveyorTile
     {

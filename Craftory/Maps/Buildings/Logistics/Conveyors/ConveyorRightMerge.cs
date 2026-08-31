@@ -1,9 +1,9 @@
 ﻿using Craftory.Core;
 using System.Diagnostics;
-using Color = Microsoft.Xna.Framework.Color; 
+using Color = Microsoft.Xna.Framework.Color;
 using Point = Microsoft.Xna.Framework.Point;
 
-namespace Craftory.Maps.Buildings.Conveyors
+namespace Craftory.Maps.Buildings.Logistics.Conveyors
 {
     public class ConveyorRightMerge : Conveyor, IItemAcceptor, IMergeConveyor
     {

@@ -2,7 +2,7 @@
 using Craftory.Maps.Tiles;
 using Point = Microsoft.Xna.Framework.Point;
 using Color = Microsoft.Xna.Framework.Color;
-using Craftory.Maps.Buildings.Conveyors;
+using Craftory.Maps.Buildings.Logistics.Conveyors;
 
 namespace Craftory.Maps.Buildings
 {

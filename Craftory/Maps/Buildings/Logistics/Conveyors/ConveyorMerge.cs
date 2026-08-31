@@ -2,7 +2,7 @@
 using Color = Microsoft.Xna.Framework.Color;
 using Craftory.Core;
 
-namespace Craftory.Maps.Buildings.Conveyors
+namespace Craftory.Maps.Buildings.Logistics.Conveyors
 {
     public class ConveyorMerge : Conveyor, IItemAcceptor, IMergeConveyor
     {

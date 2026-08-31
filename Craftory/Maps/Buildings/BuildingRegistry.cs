@@ -1,6 +1,6 @@
 ﻿using Point = Microsoft.Xna.Framework.Point;
 using Craftory.Maps.Buildings.Miners;
-using Craftory.Maps.Buildings.Conveyors;
+using Craftory.Maps.Buildings.Logistics.Conveyors;
 using SharpDX.Direct3D11;
 
 namespace Craftory.Maps.Buildings
@@ -30,6 +30,8 @@ namespace Craftory.Maps.Buildings
                         Create = (pos, dir) => new Drill(BuildType.Drill, pos)
                     }
                 },
+                //Logistics
+                //Conveyor
                 {
                     BuildType.Conveyor,
                     new BuildingInfo
