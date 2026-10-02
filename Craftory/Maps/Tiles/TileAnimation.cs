@@ -3,6 +3,12 @@ using Color = Microsoft.Xna.Framework.Color;
 
 namespace Craftory.Maps.Tiles
 {
+    public enum TileAnimationMode
+    {
+        Rotate,
+        Flip,
+        None
+    }
     public class TileAnimation
     {
         public Texture2D Texture;
@@ -14,13 +20,18 @@ namespace Craftory.Maps.Tiles
         private float timer;
         private int currentFrame;
 
-        public TileAnimation(Texture2D tex, int count, int w, int h, float time)
+        public bool UseRotation;
+        public bool UseFlip;
+
+        public TileAnimation(Texture2D tex, int count, int w, int h, float time, bool useRotation = true, bool useFlip = false)
         {
             Texture = tex; ;
             FrameCount = count;
             FrameWidth = w;
             FrameHeight = h;
             FrameTime = time;
+            UseRotation = useRotation;
+            UseFlip = useFlip;
         }
 
         public void Update(GameTime gameTime)

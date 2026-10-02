@@ -75,6 +75,7 @@ namespace Craftory.Maps.Buildings.Miners
                         {
                             if (TryOutputFair(bufferItem))
                             {
+                                bufferItem.pastOutDir = dir.dir;
                                 bufferItem = null;
                             }
                         }

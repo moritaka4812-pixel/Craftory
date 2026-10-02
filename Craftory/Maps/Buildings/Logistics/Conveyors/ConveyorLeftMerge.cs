@@ -5,7 +5,7 @@ using Point = Microsoft.Xna.Framework.Point;
 
 namespace Craftory.Maps.Buildings.Logistics.Conveyors
 {
-    public class ConveyorLeftMerge : Conveyor, IItemAcceptor, IMergeConveyor
+    public class ConveyorLeftMerge : Conveyor, IItemAcceptor, IMergeConveyor, IPureConveyor
     {
         public ConveyorLeftMerge(BuildType type, Point pos, BuildingDirection outDir)
             : base (type, pos, outDir)
@@ -33,6 +33,8 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
 
         public override void InitializeConnections()
         {
+            base.InitializeConnections();
+
             //Debug.WriteLine("Merge InitializeConnections called");
             var backs = new List<ConveyorTile>();
 
@@ -46,9 +48,6 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
             TileLogic.SetBackTiles(backs);
 
             TileLogic.InitializeMergeTileStart();
-
-            base.InitializeConnections();
-
             
         }
 

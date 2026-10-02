@@ -25,11 +25,7 @@ namespace Craftory.Maps.Buildings
         public BuildState State { get; private set; }
         public float BuildProgress { get; private set; }
         public float BuildTime { get; private set; }
-
-        // タイルごとの入口・出口情報
-        public Dictionary<Point, List<BuildingDirection>> InDirections { get; private set; }
-        public Dictionary<Point, List<BuildingDirection>> OutDirections { get; private set; }
-        public BuildingDirection buildingDirection;
+        public BuildingDirection buildingDirection; //入出力に寄らない建物の向き (画像準拠)
 
         public TileAnimation Anim;
         public BuildingInfo info;
@@ -47,9 +43,6 @@ namespace Craftory.Maps.Buildings
 
             SizeInTiles = info.SizeInTiles;
             WorkSpeed = info.WorkSpeed;
-
-            InDirections = new();
-            OutDirections = new();
 
             OccupiedTiles = new List<Point>();
             for (int x = 0; x < info.Width; x++)
@@ -115,12 +108,12 @@ namespace Craftory.Maps.Buildings
             Anim.Draw(sb, worldPos);
         }
 
-        public virtual void DrawRotated(SpriteBatch sb, Point tilePos, Color tint) //標準回転描画(Out基準)
+        public virtual void DrawRotated(SpriteBatch sb, Point tilePos, Color tint) //標準回転描画(buildingDirection基準)
         {
             var tex = Anim.Texture;
             var frame = Anim.GetCurrentFrameRect();
 
-            float rotation = OutDirections[tilePos][0] switch
+            float rotation = buildingDirection switch
             {
                 BuildingDirection.Right => 0f,
                 BuildingDirection.Down => MathF.PI / 2,
@@ -156,18 +149,30 @@ namespace Craftory.Maps.Buildings
             }
         }
 
-        protected  List<(IItemAcceptor acceptor, BuildingDirection fromDir)> GetOutputAcceptors()
+
+        protected List<(IItemAcceptor acceptor, BuildingDirection fromDir)> GetOutputAcceptors()
         {
             var list = new List<(IItemAcceptor, BuildingDirection)>();
 
-            foreach(var tilePos in GetOccupiedTiles())
-            {
-                foreach(var dir in OutDirections[tilePos])
-                {
-                    var nextPos = tilePos + dir.GetPoint();
-                    var tile = GameCore.Instance.MapManager.Map.GetTile(nextPos.X, nextPos.Y);
+            var outputOffsets =
+            info.OutputTileOffsetsByDirection[buildingDirection];
 
-                    if(tile?.Occupant is IItemAcceptor acceptor)
+            var outputDirections =
+            info.OutputDirections[buildingDirection];
+
+            foreach (var offset in outputOffsets)
+            {
+                var outputTile = TilePosition + offset;
+
+                foreach (var dir in outputDirections)
+                {
+                    var nextPos = outputTile + dir.GetPoint();
+
+                    var tile = GameCore.Instance.MapManager.Map.GetTile(
+                    nextPos.X,
+                    nextPos.Y);
+
+                    if (tile?.Occupant is IItemAcceptor acceptor)
                     {
                         list.Add((acceptor, dir.GetOpposite()));
                     }

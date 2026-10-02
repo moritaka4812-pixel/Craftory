@@ -2,6 +2,7 @@
 using Craftory.Core;
 using Craftory.Maps.Buildings;
 using Craftory.Maps.Buildings.Logistics.Conveyors;
+using Craftory.Maps.Buildings.Logistics.Splitters;
 using Craftory.Maps.Shadow;
 using Craftory.Maps.Tiles;
 using Point = Microsoft.Xna.Framework.Point;
@@ -92,13 +93,18 @@ namespace Craftory.Maps
 
             //コンベア
             foreach (var b in Buildings)
-                if (b is Conveyor)
+                if (b is IPureConveyor)
                     b.Draw(sb, camera);
 
             //アイテム
             foreach(var b in Buildings)
                 if(b is Conveyor conveyor)
                     conveyor.TileLogic.Draw(sb, new Vector2(conveyor.TilePosition.X * 32, conveyor.TilePosition.Y * 32));
+
+            // 特殊系コンベア（Splitter / Sorter）
+            foreach (var b in Buildings)
+                if (b is ISpecialConveyor)
+                    b.Draw(sb, camera);
 
             //その他の建物
             foreach (var b in Buildings)

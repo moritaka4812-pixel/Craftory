@@ -1,31 +1,33 @@
-﻿using Craftory.Maps.Tiles;
+﻿using Craftory.Core;
+using Craftory.Maps.Tiles;
 using System.Linq.Expressions;
-using Point = Microsoft.Xna.Framework.Point;
 using Color = Microsoft.Xna.Framework.Color;
+using Point = Microsoft.Xna.Framework.Point;
 
 namespace Craftory.Maps.Buildings.Logistics.Conveyors
 {
-    public class ConveyorRightCurve : Conveyor, IItemAcceptor
+    public class ConveyorRightCurve : Conveyor, IItemAcceptor, IPureConveyor
     {
-        public ConveyorRightCurve(BuildType type, Point pos, BuildingDirection inDir)
-            :base(type, pos, inDir)
+        public ConveyorRightCurve(BuildType type, Point pos, BuildingDirection OppositeInDir)
+            :base(type, pos, OppositeInDir)
         {
         }
 
-        protected override void InitDirections(List<BuildingDirection> inDir)
+
+        protected override void InitDirections(List<BuildingDirection> OppositeInDir)
         {
-            InDirections[TilePosition] = new List<BuildingDirection> { inDir[0].GetOpposite() };
-            OutDirections[TilePosition] = new List<BuildingDirection> { GetOutDirectionFromIn(inDir[0]) };
+            InDirections[TilePosition] = new List<BuildingDirection> { OppositeInDir[0].GetOpposite() };
+            OutDirections[TilePosition] = new List<BuildingDirection> { GetOutDirectionFromIn(OppositeInDir[0].GetOpposite()) };
         }
 
         protected BuildingDirection GetOutDirectionFromIn(BuildingDirection inDir)
         {
             return inDir switch
             { 
-                BuildingDirection.Up => BuildingDirection.Right,
-                BuildingDirection.Right => BuildingDirection.Down,
-                BuildingDirection.Down => BuildingDirection.Left,
-                BuildingDirection.Left => BuildingDirection.Up,
+                BuildingDirection.Up => BuildingDirection.Left,
+                BuildingDirection.Right => BuildingDirection.Up,
+                BuildingDirection.Down => BuildingDirection.Right,
+                BuildingDirection.Left => BuildingDirection.Down,
                 _ => BuildingDirection.None
             };
         }
@@ -59,12 +61,12 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
             const float tileSize = 32f;
             const float itemSize = 24f;
 
-            Vector2 center = InDirections[TilePosition][0] switch
+            Vector2 center = InDirections[TilePosition][0].GetOpposite() switch
             {
-                BuildingDirection.Down => worldPos + new Vector2(tileSize, tileSize),
-                BuildingDirection.Right => worldPos + new Vector2(tileSize, 0),
-                BuildingDirection.Up => worldPos + new Vector2(0, 0),
-                BuildingDirection.Left => worldPos + new Vector2(0, tileSize),
+                BuildingDirection.Down => worldPos + new Vector2(0, 0),
+                BuildingDirection.Right => worldPos + new Vector2(0, tileSize),
+                BuildingDirection.Up => worldPos + new Vector2(tileSize, tileSize),
+                BuildingDirection.Left => worldPos + new Vector2(tileSize, 0),
             };
 
             //アイテムが通る円の半径
@@ -78,12 +80,12 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
             //角度を計算
             float angleOffset = traveled / radius;
 
-            float startAngle = InDirections[TilePosition][0] switch
+            float startAngle = InDirections[TilePosition][0].GetOpposite() switch
             {
-                BuildingDirection.Down => MathF.PI,
-                BuildingDirection.Left => MathF.PI * 1.5f,
-                BuildingDirection.Up => 0f,
-                BuildingDirection.Right => MathF.PI * 0.5f,
+                BuildingDirection.Down => 0,
+                BuildingDirection.Left => MathF.PI * 0.5f,
+                BuildingDirection.Up => MathF.PI,
+                BuildingDirection.Right => MathF.PI * 1.5f,
             };
 
             float angle = startAngle + angleOffset;
@@ -101,12 +103,12 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
             var tex = Anim.Texture;
             var frame = Anim.GetCurrentFrameRect();
 
-            float rotation = InDirections[tilePos][0] switch
+            float rotation = InDirections[tilePos][0].GetOpposite() switch
             {
-                BuildingDirection.Right => MathF.PI,
-                BuildingDirection.Down => MathF.PI * 1.5f,
-                BuildingDirection.Left => 0,
-                BuildingDirection.Up => MathF.PI * 0.5f,
+                BuildingDirection.Right => 0f,
+                BuildingDirection.Down => MathF.PI * 0.5f,
+                BuildingDirection.Left => MathF.PI,
+                BuildingDirection.Up => MathF.PI * 1.5f,
                 _ => 0f
             };
 

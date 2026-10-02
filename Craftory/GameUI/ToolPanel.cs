@@ -41,13 +41,14 @@ namespace Craftory.GameUI
             list.RelativeWidth = 1f;
             list.BackgroundColor = new Color(30, 30, 30, 200);
 
-            AddBuildButton(ui, list, "Buildings/Miner/Drill", BuildType.Drill, 32);
-            AddBuildButton(ui, list, "Buildings/Logistics/Conveyor/ConveyorStraight", BuildType.Conveyor, 32);
-            AddBuildButton(ui, list, "Buildings/Logistics/Conveyor/ConveyorRightCurve", BuildType.ConveyorRightCurve, 32);
-            AddBuildButton(ui, list, "Buildings/Logistics/Conveyor/ConveyorLeftCurve", BuildType.ConveyorLeftCurve, 32);
-            AddBuildButton(ui, list, "Buildings/Logistics/Conveyor/ConveyorRightMerge", BuildType.ConveyorRightMerge, 32);
-            AddBuildButton(ui, list, "Buildings/Logistics/Conveyor/ConveyorLeftMerge", BuildType.ConveyorLeftMerge, 32);
-            AddBuildButton(ui, list, "Buildings/Logistics/Conveyor/ConveyorMerge", BuildType.ConveyorMerge, 32);
+            AddBuildButton(ui, list, "Buildings/Miners/Drill", BuildType.Drill, 32);
+            AddBuildButton(ui, list, "Buildings/Logistics/Conveyors/ConveyorStraight", BuildType.Conveyor, 32);
+            AddBuildButton(ui, list, "Buildings/Logistics/Conveyors/ConveyorRightCurve", BuildType.ConveyorRightCurve, 32);
+            AddBuildButton(ui, list, "Buildings/Logistics/Conveyors/ConveyorLeftCurve", BuildType.ConveyorLeftCurve, 32);
+            AddBuildButton(ui, list, "Buildings/Logistics/Conveyors/ConveyorRightMerge", BuildType.ConveyorRightMerge, 32);
+            AddBuildButton(ui, list, "Buildings/Logistics/Conveyors/ConveyorLeftMerge", BuildType.ConveyorLeftMerge, 32);
+            AddBuildButton(ui, list, "Buildings/Logistics/Conveyors/ConveyorMerge", BuildType.ConveyorMerge, 32);
+            AddBuildButton(ui, list, "Buildings/Logistics/Splitters/Splitter_Idle_Down", BuildType.Splitter, 32);
 
             panel.AddChild(list);
 

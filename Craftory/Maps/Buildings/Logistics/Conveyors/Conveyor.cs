@@ -4,26 +4,19 @@ using Color = Microsoft.Xna.Framework.Color;
 
 namespace Craftory.Maps.Buildings.Logistics.Conveyors
 {
-    public class Conveyor : BuildingInstance, IItemAcceptor
+    public class Conveyor : BuildingInstance, IItemAcceptor, IPureConveyor
     {
         public ConveyorTile TileLogic { get; private set; }
 
         public Conveyor(BuildType type, Point pos, BuildingDirection dir) : 
             base(type, pos, dir)
         {
-            InitDirections(new List<BuildingDirection> { dir });
 
             TileLogic = new ConveyorTile(WorkSpeed, this);
 
             TileLogic.InitializeTileStart();
 
             InitializeConnections();
-        }
-
-        protected virtual void InitDirections(List<BuildingDirection> outdir)
-        {
-            OutDirections[TilePosition] = new List<BuildingDirection> { outdir[0] };
-            InDirections[TilePosition] = new List<BuildingDirection> { GetInDirectionFromOut(outdir[0]) };
         }
 
         public virtual void InitializeConnections()
@@ -33,7 +26,7 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
             var tile = GameCore.Instance.MapManager.Map.GetTile(GetNextPosition().X, GetNextPosition().Y);
             if(tile?.Occupant is  Conveyor nextConveyor)
             {
-                var outDir = OutDirections[TilePosition][0];
+                var outDir = info.OutputDirections[buildingDirection][0];
 
                 var nextInputDirs = nextConveyor.GetInputDirections();
 
@@ -49,23 +42,20 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
                
             else
                 TileLogic.SetNextTile(null);
-        }
 
-        protected virtual BuildingDirection GetInDirectionFromOut(BuildingDirection outDir)
-        {
-            return outDir switch
-            {
-                BuildingDirection.Up => BuildingDirection.Down,
-                BuildingDirection.Right => BuildingDirection.Left,
-                BuildingDirection.Down => BuildingDirection.Up,
-                BuildingDirection.Left => BuildingDirection.Right,
-                _ => BuildingDirection.None
-            };
+            // BackTile 設定
+            var backPos = GetBackPosition();
+            var backTile = GameCore.Instance.MapManager.Map.GetTile(backPos.X, backPos.Y);
+            if (backTile?.Occupant is Conveyor backConveyor)
+                TileLogic.SetBackTiles(new List<ConveyorTile> { backConveyor.TileLogic });
+            else
+                TileLogic.SetBackTiles(new List<ConveyorTile>());
+
         }
 
         public virtual BuildingDirection GetDirectionForItem(ConveyorItem item)
         {
-            return OutDirections[TilePosition][0];
+            return info.OutputDirections[buildingDirection][0];
         }
 
         public override void UpdateLogic(GameTime gameTime)
@@ -88,7 +78,7 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
             var tex = Anim.Texture;
             var frame = Anim.GetCurrentFrameRect();
 
-            float rotation = OutDirections[tilePos][0] switch
+            float rotation = buildingDirection switch
             {
                 BuildingDirection.Right => 0f,
                 BuildingDirection.Down => MathF.PI / 2,
@@ -120,7 +110,7 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
 
         public virtual IEnumerable<Point> GetNextPositions()
         {
-            foreach (var dir in OutDirections[TilePosition])
+            foreach (var dir in info.OutputDirections[buildingDirection])
             {
                 yield return dir switch
                 {
@@ -140,7 +130,7 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
 
         public virtual IEnumerable<Point> GetBackPositions()
         {
-            foreach (var dir in InDirections[TilePosition])
+            foreach (var dir in info.ReceivedDirections[buildingDirection])
             {
                 yield return dir switch
                 {
@@ -165,7 +155,7 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
 
         public virtual void SetOutDir(ConveyorItem item)
         {
-            item.pastOutDir = this.OutDirections[TilePosition][0];
+            item.pastOutDir = this.info.OutputDirections[buildingDirection][0];
         }
 
         public Vector2 DefaultCalculate(Vector2 worldPos, float pos, BuildingDirection dir)
@@ -207,7 +197,7 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
         //IItemAcceptorの実装
         public virtual bool CanAccept(ConveyorItem item, BuildingDirection fromDir)
         {
-            foreach(var dir in InDirections[TilePosition])
+            foreach(var dir in info.ReceivedDirections[buildingDirection])
             {
                 if (dir == fromDir)
                 {
@@ -217,7 +207,7 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
             return false;
         }
 
-        public bool TryAccept(ConveyorItem item, BuildingDirection fromDir)
+        public virtual bool TryAccept(ConveyorItem item, BuildingDirection fromDir)
         {
             if(!CanAccept(item, fromDir))
             {
@@ -229,7 +219,7 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
 
         public IEnumerable<BuildingDirection> GetInputDirections()
         {
-            foreach(var dir in InDirections[TilePosition])
+            foreach(var dir in info.ReceivedDirections[buildingDirection])
             {
                 yield return dir;
             }
@@ -237,7 +227,7 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
 
         public IEnumerable<BuildingDirection> GetOutputDirections()
         {
-            foreach (var dir in OutDirections[TilePosition])
+            foreach (var dir in info.OutputDirections[buildingDirection])
             {
                 yield return dir;
             }
@@ -255,7 +245,7 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
 
         public virtual bool CanPreviewAccept(ConveyorItem item, BuildingDirection fromDir)
         {
-            foreach(var dir in InDirections[TilePosition])
+            foreach(var dir in info.ReceivedDirections[buildingDirection])
             {
                 if (dir == fromDir)
                 {

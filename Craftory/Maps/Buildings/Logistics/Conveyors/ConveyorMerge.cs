@@ -4,7 +4,7 @@ using Craftory.Core;
 
 namespace Craftory.Maps.Buildings.Logistics.Conveyors
 {
-    public class ConveyorMerge : Conveyor, IItemAcceptor, IMergeConveyor
+    public class ConveyorMerge : Conveyor, IItemAcceptor, IMergeConveyor, IPureConveyor
     {
         public ConveyorMerge(BuildType type, Point pos, BuildingDirection outDir)
             : base(type, pos, outDir)
@@ -32,6 +32,8 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
 
         public override void InitializeConnections()
         {
+            base.InitializeConnections();
+
             var backs = new List<ConveyorTile>();
 
             foreach(var pos in GetBackPosition())
@@ -46,7 +48,8 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
 
             TileLogic.SetBackTiles(backs);
             TileLogic.InitializeMergeTileStart();
-            base.InitializeConnections();
+
+
         }
 
         protected new List<BuildingDirection> GetInDirectionFromOut(BuildingDirection outDir)

@@ -1,0 +1,42 @@
+﻿# コンベアの方向バグの修正
+
+2026-9-?? ~ 2026-10-
+
+## 問題
+ 
+本来受け入れられない方向からも
+アイテムを受け入れてしまう。
+ 
+## 原因
+ 
+Conveyorが方向管理や接続管理まで持っており、
+責務が大きくなっていた。
+ 
+## 対応方針
+ 
+- ~~DirectionResolverを作成して方向管理を分離する。~~
+- BuildingInstance内のbuildingDirectionを利用して、建物自体の方向を管理する。
+- BuildingInfoにReceivedDirectionsとOutputDirectionsを追加したことで、DirectionResolverの責務が重複する可能性があるため再検討する。
+- ConnectionManagerを作成して接続管理を分離する。
+
+## 進行中メモ
+
+以前、方向の管理をコンベアが担っていたためBuildingInfoにReceivedDirectionsとOutputDirectionsを追加して、BuildingRegistry
+に各建物ごとの入力方向、出力方向を入力することでBuildingInfoに方向情報を保持するようにした。
+改めて見返したところBuildingInfoのReceivedDirectionsとOutputDirectionsがBulidingInstanceのInDirectionsとOutDirections
+の二重管理になっている可能性が高い。動的な方向接続が必要な建物は生産系の建物のため、その建物に特化した継承クラスでは必要な変数。
+一方で、他のConveyorやDrillなどの建物は動的な方向保持が不要なためOutputDirectionsとInDirectionsは削除するべき。
+
+それにあたってOutputDirectionsと依存関係があるDrawRotatedに関して、buildingDirection準拠にすべきだが使われていないことがわかった。
+以降の設計においては、すべての建物がBuildingInstanceのbuildingDirectionを参照するようにするべき。
+
+BuildingInstanceの持つbuildingDirectionが何の方向を指すのかを明確にする必要がある。元々はOutputDirectionsや
+InputDirectionsの方向を元に与えられる変数のような形だったが、これからはBuilding画像に準拠した建物方向を指す変数とする。
+
+## 次回作業用結論
+ 
+- BuildingInstanceのbuildingDirectionは建物画像基準の向きを表す変数とする。
+- BuildingInfoを方向情報の管理元とする。
+- BuildingInstanceのInDirectionsとOutDirectionsは削除する。
+- DirectionResolverは責務重複のため保留または削除候補とする。
+- 接続管理は今後ConnectionManagerへ分離する。
