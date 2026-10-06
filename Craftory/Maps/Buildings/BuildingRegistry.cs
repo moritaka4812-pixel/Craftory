@@ -376,7 +376,7 @@ namespace Craftory.Maps.Buildings
                         WorkSpeed = 1.0f,
                         BuildTime = 0,
                         AnimationMode = Tiles.TileAnimationMode.Rotate,
-                        Create = (pos, outDir) => new ConveyorRightLeftMerge(BuildType.ConveyorMerge, pos, outDir)
+                        Create = (pos, outDir) => new ConveyorRightLeftMerge(BuildType.ConveyorRightLeftMerge, pos, outDir)
                     }
                 },
 
@@ -392,7 +392,7 @@ namespace Craftory.Maps.Buildings
                         {
 
                         },
-                        Type = BuildType.ConveyorLeftMerge,
+                        Type = BuildType.ConveyorMerge,
                         Width = 1,
                         Height = 1,
                         FrameCount = 5,
@@ -401,10 +401,10 @@ namespace Craftory.Maps.Buildings
                         OccupiedTilesByDirection = null,
                         ReceivedDirections = new()
                         {
-                            { BuildingDirection.Up, new List<BuildingDirection> {BuildingDirection.Left, BuildingDirection.Down, BuildingDirection.Right} },
-                            { BuildingDirection.Down, new List<BuildingDirection> {BuildingDirection.Right, BuildingDirection.Up, BuildingDirection.Left} },
-                            { BuildingDirection.Left, new List<BuildingDirection> {BuildingDirection.Down, BuildingDirection.Right, BuildingDirection.Up} },
-                            { BuildingDirection.Right, new List<BuildingDirection> {BuildingDirection.Up, BuildingDirection.Left, BuildingDirection.Down} }
+                            { BuildingDirection.Up, new List<BuildingDirection> {BuildingDirection.Down, BuildingDirection.Left, BuildingDirection.Right} },
+                            { BuildingDirection.Down, new List<BuildingDirection> {BuildingDirection.Up, BuildingDirection.Right, BuildingDirection.Left} },
+                            { BuildingDirection.Left, new List<BuildingDirection> {BuildingDirection.Right, BuildingDirection.Down, BuildingDirection.Up} },
+                            { BuildingDirection.Right, new List<BuildingDirection> {BuildingDirection.Left, BuildingDirection.Up, BuildingDirection.Down} }
                         },
                         OutputDirections = new()
                         {

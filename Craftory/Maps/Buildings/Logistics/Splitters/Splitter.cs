@@ -15,26 +15,9 @@ namespace Craftory.Maps.Buildings.Logistics.Splitters
         public Splitter(BuildType type, Point pos, BuildingDirection inDir)
             : base(type, pos, inDir)
         {
-            InitDirections(new List<BuildingDirection> { inDir });
+
         }
 
-        // 入力方向は inDir の反対
-        // 出力方向は「入力以外の3方向」
-        protected override void InitDirections(List<BuildingDirection> inDir)
-        {
-            var input = inDir[0].GetOpposite();
-            InDirections[TilePosition] = new List<BuildingDirection> { input };
-
-            OutDirections[TilePosition] = new List<BuildingDirection>
-            {
-                BuildingDirection.Up,
-                BuildingDirection.Right,
-                BuildingDirection.Down,
-                BuildingDirection.Left
-            }
-            .Where(d => d != input)
-            .ToList();
-        }
 
         public override void UpdateLogic(GameTime gameTime)
         {
@@ -58,10 +41,10 @@ namespace Craftory.Maps.Buildings.Logistics.Splitters
             float local = item.GlobalPosition - TileLogic.TileStart;
 
             if (local < 0.5f)
-                return InDirections[TilePosition][0];
+                return info.ReceivedDirections[buildingDirection][0];
 
             // TryOutputFair が内部で outputIndex を進めるのでここでは参照だけ
-            var dirs = OutDirections[TilePosition];
+            var dirs = info.OutputDirections[buildingDirection];
             return dirs[outputIndex % dirs.Count];
         }
 
@@ -79,7 +62,7 @@ namespace Craftory.Maps.Buildings.Logistics.Splitters
         // ConveyorTile の nextTile は使わないのでそのまま受け入れ
         public override bool TryAccept(ConveyorItem item, BuildingDirection fromDir)
         {
-            var inputDir = InDirections[TilePosition][0];
+            var inputDir = info.ReceivedDirections[buildingDirection][0];
 
             // 入力方向以外からは絶対に受け入れない
             if (fromDir != inputDir)
@@ -94,7 +77,7 @@ namespace Craftory.Maps.Buildings.Logistics.Splitters
         {
             var worldPos = TilePosition.ToVector2() * 32f;
 
-            var inDir = InDirections[TilePosition][0];
+            var inDir = info.ReceivedDirections[buildingDirection][0];
 
             // Idle（黒い本体）
             sb.Draw(
@@ -106,7 +89,7 @@ namespace Craftory.Maps.Buildings.Logistics.Splitters
             // Active（黄色部分）
             if (isBlinking)
             {
-                var outDir = OutDirections[TilePosition][outputIndex % OutDirections[TilePosition].Count];
+                var outDir = info.OutputDirections[buildingDirection][outputIndex % info.OutputDirections[buildingDirection].Count];
                 sb.Draw(
                     info.CachedActiveTextures[outDir],
                     worldPos,
@@ -118,7 +101,7 @@ namespace Craftory.Maps.Buildings.Logistics.Splitters
         // Splitter は複数方向へ出力する
         public override IEnumerable<Point> GetNextPositions()
         {
-            foreach (var dir in OutDirections[TilePosition])
+            foreach (var dir in info.OutputDirections[buildingDirection])
             {
                 yield return dir switch
                 {
@@ -134,7 +117,7 @@ namespace Craftory.Maps.Buildings.Logistics.Splitters
         // 入力方向のタイル位置
         public override Point GetBackPosition()
         {
-            var dir = InDirections[TilePosition][0];
+            var dir = info.ReceivedDirections[buildingDirection][0];
             return dir switch
             {
                 BuildingDirection.Right => new Point(TilePosition.X + 1, TilePosition.Y),

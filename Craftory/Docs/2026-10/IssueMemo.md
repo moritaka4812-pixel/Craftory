@@ -33,6 +33,13 @@ Conveyorが方向管理や接続管理まで持っており、
 BuildingInstanceの持つbuildingDirectionが何の方向を指すのかを明確にする必要がある。元々はOutputDirectionsや
 InputDirectionsの方向を元に与えられる変数のような形だったが、これからはBuilding画像に準拠した建物方向を指す変数とする。
 
+Conveyorの両方向からの受け入れをするConveyorLeftRightがなかったため、それを追加実装する。
+
+Registryでの方向の記載順序に関して規約がなかったためにConveyorMergeでバグが発生した。[0]をメイン入力、[1]を左入力、[2]を右入力
+として管理することにする。今後、BuildingInfoについてのReceivedDirectionsとOutputDirectionsについて各方向に名前をつけるように変更することも
+検討する。
+
+
 ## 次回作業用結論
  
 - BuildingInstanceのbuildingDirectionは建物画像基準の向きを表す変数とする。

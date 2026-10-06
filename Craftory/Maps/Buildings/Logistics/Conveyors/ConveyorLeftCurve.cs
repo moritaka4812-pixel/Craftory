@@ -10,37 +10,19 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
         {
         }
 
-        protected override void InitDirections(List<BuildingDirection> OppositeInDir)
-        {
-            InDirections[TilePosition] = new List<BuildingDirection> { OppositeInDir[0].GetOpposite() };
-            OutDirections[TilePosition] = new List<BuildingDirection> { GetOutDirectionFromIn(OppositeInDir[0].GetOpposite()) };
-        }
-
-        protected BuildingDirection GetOutDirectionFromIn(BuildingDirection inDir)
-        {
-            return inDir switch
-            {
-                BuildingDirection.Up => BuildingDirection.Right,
-                BuildingDirection.Left => BuildingDirection.Up,
-                BuildingDirection.Down => BuildingDirection.Left,
-                BuildingDirection.Right => BuildingDirection.Down,
-                _ => BuildingDirection.None
-            };
-        }
-
         public override BuildingDirection GetDirectionForItem(ConveyorItem item)
         {
             float local = item.GlobalPosition - TileLogic.TileStart;
 
             if (local < 0.5f)
-                return InDirections[TilePosition][0];
+                return info.ReceivedDirections[buildingDirection][0];
             else 
-                return OutDirections[TilePosition][0];
+                return info.OutputDirections[buildingDirection][0];
         }
 
         public override Point GetBackPosition()
         {
-            return InDirections[TilePosition][0] switch
+            return info.ReceivedDirections[buildingDirection][0] switch
             {
                 BuildingDirection.Right => new Point(TilePosition.X + 1, TilePosition.Y),
                 BuildingDirection.Left => new Point(TilePosition.X - 1, TilePosition.Y),
@@ -55,7 +37,7 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
             const float tileSize = 32f;
             const float itemSize = 24f;
 
-            Vector2 center = InDirections[TilePosition][0].GetOpposite() switch
+            Vector2 center = info.ReceivedDirections[buildingDirection][0].GetOpposite() switch
             {
                 BuildingDirection.Down => worldPos + new Vector2(tileSize, 0),
                 BuildingDirection.Right => worldPos + new Vector2(0, 0),
@@ -74,7 +56,7 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
             //角度を計算
             float angleOffset = traveled / radius;
 
-            float startAngle = InDirections[TilePosition][0].GetOpposite() switch
+            float startAngle = info.ReceivedDirections[buildingDirection][0].GetOpposite() switch
             {
                 BuildingDirection.Down => MathF.PI,
                 BuildingDirection.Left => MathF.PI * 1.5f,
@@ -97,7 +79,7 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
             var tex = Anim.Texture;
             var frame = Anim.GetCurrentFrameRect();
 
-            float rotation = InDirections[tilePos][0].GetOpposite() switch
+            float rotation = info.ReceivedDirections[buildingDirection][0].GetOpposite() switch
             {
                 BuildingDirection.Right => 0,
                 BuildingDirection.Down => MathF.PI * 0.5f,

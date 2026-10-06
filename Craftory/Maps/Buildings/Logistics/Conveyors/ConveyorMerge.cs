@@ -24,12 +24,6 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
             TileLogic.InitializeMergeTileStart();
         }
 
-        protected override void InitDirections(List<BuildingDirection> outDir)
-        {
-            OutDirections[TilePosition] = new List<BuildingDirection> { outDir[0] };
-            InDirections[TilePosition] = GetInDirectionFromOut(outDir[0]);
-        }
-
         public override void InitializeConnections()
         {
             base.InitializeConnections();
@@ -52,21 +46,9 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
 
         }
 
-        protected new List<BuildingDirection> GetInDirectionFromOut(BuildingDirection outDir)
-        {
-            return outDir switch
-            {
-                BuildingDirection.Right => new List<BuildingDirection> { BuildingDirection.Left, BuildingDirection.Down, BuildingDirection.Up },
-                BuildingDirection.Left => new List<BuildingDirection> { BuildingDirection.Right, BuildingDirection.Up, BuildingDirection.Down },
-                BuildingDirection.Up => new List<BuildingDirection> { BuildingDirection.Down, BuildingDirection.Right, BuildingDirection.Left },
-                BuildingDirection.Down => new List<BuildingDirection> { BuildingDirection.Up, BuildingDirection.Left, BuildingDirection.Right },
-                _ => new List<BuildingDirection>()
-            };
-        }
-
         public new IEnumerable<Point> GetBackPosition()
         {
-            foreach (var Indir in InDirections[TilePosition])
+            foreach (var Indir in info.ReceivedDirections[buildingDirection])
             {
                 yield return Indir switch
                 {
@@ -93,14 +75,14 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
 
             float angleOffset = traveled / radius;
 
-            if (item.pastOutDir == OutDirections[TilePosition][0])
+            if (item.pastOutDir == info.OutputDirections[buildingDirection][0])
             {
                 return DefaultCalculate(worldPos, local, item.pastOutDir);
             }
 
-            if (item.pastOutDir == InDirections[TilePosition][1].GetOpposite()) //右回り
+            if (item.pastOutDir == info.ReceivedDirections[buildingDirection][2].GetOpposite()) //右回り
             {
-                Vector2 center = InDirections[TilePosition][1] switch
+                Vector2 center = info.ReceivedDirections[buildingDirection][2] switch
                 {
                     BuildingDirection.Down => worldPos + new Vector2(tileSize, tileSize),
                     BuildingDirection.Right => worldPos + new Vector2(tileSize, 0),
@@ -108,7 +90,7 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
                     BuildingDirection.Left => worldPos + new Vector2(0, tileSize),
                 };
 
-                float startAngle = InDirections[TilePosition][1] switch
+                float startAngle = info.ReceivedDirections[buildingDirection][2] switch
                 {
                     BuildingDirection.Down => MathF.PI * 1f,
                     BuildingDirection.Left => MathF.PI * 1.5f,
@@ -126,9 +108,9 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
                 return arcCenterPos - new Vector2(itemSize / 2, itemSize / 2);
             }
 
-            if (item.pastOutDir == InDirections[TilePosition][2].GetOpposite()) //右回り
+            if (item.pastOutDir == info.ReceivedDirections[buildingDirection][1].GetOpposite()) //左回り
             {
-                Vector2 center = InDirections[TilePosition][2] switch
+                Vector2 center = info.ReceivedDirections[buildingDirection][1] switch
                 { 
                     BuildingDirection.Down => worldPos + new Vector2(0, tileSize),
                     BuildingDirection.Right => worldPos + new Vector2(tileSize, tileSize),
@@ -136,7 +118,7 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
                     BuildingDirection.Left => worldPos + new Vector2(0, 0)
                 };
 
-                float startAngle = InDirections[TilePosition][2] switch
+                float startAngle = info.ReceivedDirections[buildingDirection][1] switch
                 {
                     BuildingDirection.Down => 0,
                     BuildingDirection.Left => MathF.PI * 0.5f,

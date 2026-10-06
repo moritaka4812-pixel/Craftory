@@ -25,12 +25,6 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
             TileLogic.InitializeMergeTileStart();
         }
 
-        protected override void InitDirections(List<BuildingDirection> outDir)
-        {
-            OutDirections[TilePosition] = new List<BuildingDirection> { outDir[0] };
-            InDirections[TilePosition] = GetInDirectionFromOut(outDir[0]);
-        }
-
         public override void InitializeConnections()
         {
             base.InitializeConnections();
@@ -53,21 +47,9 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
             TileLogic.InitializeMergeTileStart();
         }
 
-        protected new List<BuildingDirection> GetInDirectionFromOut(BuildingDirection outDir)
-        {
-            return outDir switch
-            {
-                BuildingDirection.Right => new List<BuildingDirection> { BuildingDirection.Left, BuildingDirection.Down },
-                BuildingDirection.Left => new List<BuildingDirection> { BuildingDirection.Right, BuildingDirection.Up },
-                BuildingDirection.Up => new List<BuildingDirection> { BuildingDirection.Down, BuildingDirection.Right },
-                BuildingDirection.Down => new List<BuildingDirection> { BuildingDirection.Up, BuildingDirection.Left },
-                _ => new List<BuildingDirection>()
-            };
-        }
-
         public new IEnumerable<Point> GetBackPosition()
         {
-            foreach (var Indir in InDirections[TilePosition])
+            foreach (var Indir in info.ReceivedDirections[buildingDirection])
             {
                 yield return Indir switch
                 {
@@ -85,12 +67,12 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
             const float tileSize = 32f;
             const float itemSize = 24f;
 
-            if(item.pastOutDir == OutDirections[TilePosition][0]) //直線描画
+            if(item.pastOutDir == info.OutputDirections[buildingDirection][0]) //直線描画
             {
                 return DefaultCalculate(worldPos, local, item.pastOutDir);
             }
 
-            Vector2 center = InDirections[TilePosition][1] switch
+            Vector2 center = info.ReceivedDirections[buildingDirection][1] switch
             {
                 BuildingDirection.Down => worldPos + new Vector2(tileSize, tileSize),
                 BuildingDirection.Right => worldPos + new Vector2(tileSize, 0),
@@ -109,7 +91,7 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
             //角度を計算
             float angleOffset = traveled / radius;
 
-            float startAngle = InDirections[TilePosition][1] switch
+            float startAngle = info.ReceivedDirections[buildingDirection][1] switch
             {
                 BuildingDirection.Down => MathF.PI * 1f,
                 BuildingDirection.Left => MathF.PI * 1.5f,

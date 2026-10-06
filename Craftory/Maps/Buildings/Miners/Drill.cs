@@ -12,13 +12,6 @@ namespace Craftory.Maps.Buildings.Miners
         public Drill(BuildType type, Point pos) :
             base(type, pos, BuildingDirection.None)
         {
-            OutDirections[pos] = new List<BuildingDirection>
-            {
-                BuildingDirection.Right,
-                BuildingDirection.Left,
-                BuildingDirection.Up,
-                BuildingDirection.Down
-            };
         }
 
         public override void UpdateLogic(GameTime gameTime)
