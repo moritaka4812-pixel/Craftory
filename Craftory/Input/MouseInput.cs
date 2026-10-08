@@ -43,6 +43,12 @@ namespace Craftory.Input
             return LeftDown() && PointDelta() != Point.Zero;
         }
 
+        public bool LeftReleased()
+        {
+            return Current.LeftButton == ButtonState.Released &&
+                   Previous.LeftButton == ButtonState.Pressed;
+        }
+
         public bool RightClicked() //右クリックの入力処理
         {
             return Current.RightButton == ButtonState.Pressed &&

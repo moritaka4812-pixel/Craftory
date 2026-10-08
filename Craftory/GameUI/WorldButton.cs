@@ -42,6 +42,16 @@ namespace Craftory.GameUI
             return true;
         }
 
+        public void SetText(string newText)
+        {
+            this.text = newText;
+        }
+
+        public void SetBorderColor(Color color)
+        {
+            this.BorderColor = color;
+        }
+
         public override bool UpdateWorld(MouseInput mouse)
         {
             var worldPos = Camera.ScreenToWorld(mouse.Current.Position.ToVector2()); 

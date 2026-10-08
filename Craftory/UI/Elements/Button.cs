@@ -117,6 +117,10 @@ namespace Craftory.UI.Elements
             }
         }
 
+        public void SetText(string text)
+        {
+            this.Text = text;
+        }
 
         public void SetBackgroundColor(Color color) //背景色変更メソッド
         {

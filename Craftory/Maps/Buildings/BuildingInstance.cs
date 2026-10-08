@@ -2,23 +2,30 @@
 using Craftory.Maps.Tiles;
 using Point = Microsoft.Xna.Framework.Point;
 using Color = Microsoft.Xna.Framework.Color;
-using Craftory.Maps.Buildings.Conveyors;
+using Craftory.Maps.Buildings.Logistics.Conveyors;
 
 namespace Craftory.Maps.Buildings
 {
+    public enum BuildState
+    {
+        Constructing,
+        Active,
+        Deconstructing
+    }
+
     public class BuildingInstance : ITileOccupant
     {
         protected int outputIndex = 0; //出力方向のラウンドロビンキャッシュ
         public BuildType Type { get; private set; }     // 建物の種類
         public Point TilePosition { get; private set; } //タイル座標
         public Point SizeInTiles { get; private set; }  //タイル単位の大きさ
-        public bool IsActive { get; private set; }      //稼働状況
+        public bool IsActive => State == BuildState.Active;      //稼働状況
         public float WorkSpeed { get; private set; }    //採掘速度など、タイプ依存の性能値
         public List<Point> OccupiedTiles { get; private set; }
-
-        // タイルごとの入口・出口情報
-        public Dictionary<Point, List<BuildingDirection>> InDirections { get; private set; }
-        public Dictionary<Point, List<BuildingDirection>> OutDirections { get; private set; }
+        public BuildState State { get; private set; }
+        public float BuildProgress { get; private set; }
+        public float BuildTime { get; private set; }
+        public BuildingDirection buildingDirection; //入出力に寄らない建物の向き (画像準拠)
 
         public TileAnimation Anim;
         public BuildingInfo info;
@@ -36,10 +43,6 @@ namespace Craftory.Maps.Buildings
 
             SizeInTiles = info.SizeInTiles;
             WorkSpeed = info.WorkSpeed;
-            IsActive = true;
-
-            InDirections = new();
-            OutDirections = new();
 
             OccupiedTiles = new List<Point>();
             for (int x = 0; x < info.Width; x++)
@@ -49,13 +52,41 @@ namespace Craftory.Maps.Buildings
                     OccupiedTiles.Add(new Point(tilePosition.X + x, tilePosition.Y + y));
                 }
             }
+
+            buildingDirection = dir;
+
+            State = BuildState.Constructing;
+            BuildProgress = 0f;
+            BuildTime = info.BuildTime;
         }
 
         public virtual void UpdateLogic(GameTime gameTime)
         {
-            if(!IsActive) return;
+            if (UpdateConstructingState(gameTime)) return;
             
+            //稼働中の通常ロジック（継承先で実装）
         }
+
+        protected bool UpdateConstructingState(GameTime gameTime)
+        {
+            if (State == BuildState.Constructing)
+            {
+                BuildProgress += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (BuildProgress >= BuildTime)
+                    State = BuildState.Active;
+
+                return true; // Constructing 中
+            }
+
+            if (State == BuildState.Deconstructing)
+            {
+                // 解体処理
+                return true; // Deconstructing 中
+            }
+
+            return false; // Active
+        }
+
 
         public virtual void UpdateVisual(GameTime gameTime)
         {
@@ -66,16 +97,23 @@ namespace Craftory.Maps.Buildings
         public virtual void Draw(SpriteBatch sb, Camera camera)
         {
             var worldPos = TilePosition.ToVector2() * 32;
+
+            if(State == BuildState.Constructing)
+            {
+                //建設中の建物の表示アニメーション
+                return;
+                
+            }
             // 建物のスプライト描画
             Anim.Draw(sb, worldPos);
         }
 
-        public virtual void DrawRotated(SpriteBatch sb, Point tilePos, Color tint) //標準回転描画(Out基準)
+        public virtual void DrawRotated(SpriteBatch sb, Point tilePos, Color tint) //標準回転描画(buildingDirection基準)
         {
             var tex = Anim.Texture;
             var frame = Anim.GetCurrentFrameRect();
 
-            float rotation = OutDirections[tilePos][0] switch
+            float rotation = buildingDirection switch
             {
                 BuildingDirection.Right => 0f,
                 BuildingDirection.Down => MathF.PI / 2,
@@ -111,18 +149,30 @@ namespace Craftory.Maps.Buildings
             }
         }
 
-        protected  List<(IItemAcceptor acceptor, BuildingDirection fromDir)> GetOutputAcceptors()
+
+        protected List<(IItemAcceptor acceptor, BuildingDirection fromDir)> GetOutputAcceptors()
         {
             var list = new List<(IItemAcceptor, BuildingDirection)>();
 
-            foreach(var tilePos in GetOccupiedTiles())
-            {
-                foreach(var dir in OutDirections[tilePos])
-                {
-                    var nextPos = tilePos + dir.GetPoint();
-                    var tile = GameCore.Instance.MapManager.Map.GetTile(nextPos.X, nextPos.Y);
+            var outputOffsets =
+            info.OutputTileOffsetsByDirection[buildingDirection];
 
-                    if(tile?.Occupant is IItemAcceptor acceptor)
+            var outputDirections =
+            info.OutputDirections[buildingDirection];
+
+            foreach (var offset in outputOffsets)
+            {
+                var outputTile = TilePosition + offset;
+
+                foreach (var dir in outputDirections)
+                {
+                    var nextPos = outputTile + dir.GetPoint();
+
+                    var tile = GameCore.Instance.MapManager.Map.GetTile(
+                    nextPos.X,
+                    nextPos.Y);
+
+                    if (tile?.Occupant is IItemAcceptor acceptor)
                     {
                         list.Add((acceptor, dir.GetOpposite()));
                     }

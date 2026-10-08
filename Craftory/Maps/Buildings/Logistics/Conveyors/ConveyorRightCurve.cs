@@ -1,33 +1,16 @@
-﻿using Craftory.Maps.Tiles;
+﻿using Craftory.Core;
+using Craftory.Maps.Tiles;
 using System.Linq.Expressions;
-using Point = Microsoft.Xna.Framework.Point;
 using Color = Microsoft.Xna.Framework.Color;
+using Point = Microsoft.Xna.Framework.Point;
 
-namespace Craftory.Maps.Buildings.Conveyors
+namespace Craftory.Maps.Buildings.Logistics.Conveyors
 {
-    public class ConveyorRightCurve : Conveyor, IItemAcceptor
+    public class ConveyorRightCurve : Conveyor, IItemAcceptor, IPureConveyor
     {
-        public ConveyorRightCurve(BuildType type, Point pos, BuildingDirection inDir)
-            :base(type, pos, inDir)
+        public ConveyorRightCurve(BuildType type, Point pos, BuildingDirection OppositeInDir)
+            :base(type, pos, OppositeInDir)
         {
-        }
-
-        protected override void InitDirections(List<BuildingDirection> inDir)
-        {
-            InDirections[TilePosition] = new List<BuildingDirection> { inDir[0] };
-            OutDirections[TilePosition] = new List<BuildingDirection> { GetOutDirectionFromIn(inDir[0]) };
-        }
-
-        protected BuildingDirection GetOutDirectionFromIn(BuildingDirection inDir)
-        {
-            return inDir switch
-            { 
-                BuildingDirection.Up => BuildingDirection.Right,
-                BuildingDirection.Right => BuildingDirection.Down,
-                BuildingDirection.Down => BuildingDirection.Left,
-                BuildingDirection.Left => BuildingDirection.Up,
-                _ => BuildingDirection.None
-            };
         }
 
         public override BuildingDirection GetDirectionForItem(ConveyorItem item)
@@ -35,16 +18,16 @@ namespace Craftory.Maps.Buildings.Conveyors
             float local = item.GlobalPosition - TileLogic.TileStart;
 
             if (local < 0.5f)
-                return InDirections[TilePosition][0];
+                return info.ReceivedDirections[buildingDirection][0];
             else
-                return OutDirections[TilePosition][0];
+                return info.OutputDirections[buildingDirection][0];
         }
 
         
 
         public override Point GetBackPosition()
         {
-            return InDirections[TilePosition][0] switch
+            return info.ReceivedDirections[buildingDirection][0] switch
             {
                 BuildingDirection.Right => new Point(TilePosition.X + 1, TilePosition.Y),
                 BuildingDirection.Left => new Point(TilePosition.X - 1, TilePosition.Y),
@@ -59,7 +42,7 @@ namespace Craftory.Maps.Buildings.Conveyors
             const float tileSize = 32f;
             const float itemSize = 24f;
 
-            Vector2 center = InDirections[TilePosition][0] switch
+            Vector2 center = info.ReceivedDirections[buildingDirection][0].GetOpposite() switch
             {
                 BuildingDirection.Down => worldPos + new Vector2(0, 0),
                 BuildingDirection.Right => worldPos + new Vector2(0, tileSize),
@@ -78,9 +61,9 @@ namespace Craftory.Maps.Buildings.Conveyors
             //角度を計算
             float angleOffset = traveled / radius;
 
-            float startAngle = InDirections[TilePosition][0] switch
+            float startAngle = info.ReceivedDirections[buildingDirection][0].GetOpposite() switch
             {
-                BuildingDirection.Down => 0f,
+                BuildingDirection.Down => 0,
                 BuildingDirection.Left => MathF.PI * 0.5f,
                 BuildingDirection.Up => MathF.PI,
                 BuildingDirection.Right => MathF.PI * 1.5f,
@@ -101,12 +84,12 @@ namespace Craftory.Maps.Buildings.Conveyors
             var tex = Anim.Texture;
             var frame = Anim.GetCurrentFrameRect();
 
-            float rotation = InDirections[tilePos][0] switch
+            float rotation = info.ReceivedDirections[buildingDirection][0].GetOpposite() switch
             {
                 BuildingDirection.Right => 0f,
-                BuildingDirection.Down => MathF.PI / 2,
+                BuildingDirection.Down => MathF.PI * 0.5f,
                 BuildingDirection.Left => MathF.PI,
-                BuildingDirection.Up => - MathF.PI / 2,
+                BuildingDirection.Up => MathF.PI * 1.5f,
                 _ => 0f
             };
 

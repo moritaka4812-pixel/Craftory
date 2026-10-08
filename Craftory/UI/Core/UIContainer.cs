@@ -37,7 +37,7 @@ namespace Craftory.UI.Core
 
             foreach(var child in Children)
             {
-                child.RecalculateLayout();
+                //child.RecalculateLayout();
                 consumed |= child.Update(mouse);
             }
 

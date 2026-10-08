@@ -1,4 +1,4 @@
-﻿using Craftory.Maps.Buildings.Conveyors;
+﻿using Craftory.Maps.Buildings.Logistics.Conveyors;
 
 namespace Craftory.Maps.Buildings
 {

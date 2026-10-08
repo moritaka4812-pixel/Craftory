@@ -1,7 +1,8 @@
 ﻿
 using Craftory.Core;
 using Craftory.Maps.Buildings;
-using Craftory.Maps.Buildings.Conveyors;
+using Craftory.Maps.Buildings.Logistics.Conveyors;
+using Craftory.Maps.Buildings.Logistics.Splitters;
 using Craftory.Maps.Shadow;
 using Craftory.Maps.Tiles;
 using Point = Microsoft.Xna.Framework.Point;
@@ -40,7 +41,31 @@ namespace Craftory.Maps
             }
 
             Buildings.Add(building);
-            NotifyNeighborsOfChange(tilePos);
+            foreach(var pos in building.OccupiedTiles)
+                NotifyNeighborsOfChange(pos);
+        }
+
+        public void RemoveBuildingAt(Point tilePos)
+        {
+            var building = GetBuildingAt(tilePos);
+            if (building == null) return;
+
+            foreach (var pos in building.OccupiedTiles)
+            {
+                var tile = Map.GetTile(pos.X, pos.Y);
+                tile.Occupant = null;
+                tile.ShadowSources.RemoveAll(s => s.Type == ShadowSourceType.Building);
+            }
+
+            Buildings.Remove(building);
+            
+            foreach (var pos in building.OccupiedTiles)
+                NotifyNeighborsOfChange(pos);
+        }
+
+        public BuildingInstance? GetBuildingAt(Point tilePos)
+        {
+            return Buildings.FirstOrDefault(b => b.TilePosition == tilePos);
         }
 
         public void Update(GameTime gameTime, Camera camera, GraphicsDevice device)
@@ -68,13 +93,18 @@ namespace Craftory.Maps
 
             //コンベア
             foreach (var b in Buildings)
-                if (b is Conveyor)
+                if (b is IPureConveyor)
                     b.Draw(sb, camera);
 
             //アイテム
             foreach(var b in Buildings)
                 if(b is Conveyor conveyor)
                     conveyor.TileLogic.Draw(sb, new Vector2(conveyor.TilePosition.X * 32, conveyor.TilePosition.Y * 32));
+
+            // 特殊系コンベア（Splitter / Sorter）
+            foreach (var b in Buildings)
+                if (b is ISpecialConveyor)
+                    b.Draw(sb, camera);
 
             //その他の建物
             foreach (var b in Buildings)

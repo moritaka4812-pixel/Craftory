@@ -10,6 +10,10 @@
 				<Start> </Start>
 				<End>~</End>
 			</CharacterRegion>
+			<CharacterRegion>
+				<Start>&#x2190;</Start>
+				<End>&#x2193;</End>
+			</CharacterRegion>
 		</CharacterRegions>
 	</Asset>
 </XnaContent>
