@@ -39,6 +39,9 @@ Registryでの方向の記載順序に関して規約がなかったためにCon
 として管理することにする。今後、BuildingInfoについてのReceivedDirectionsとOutputDirectionsについて各方向に名前をつけるように変更することも
 検討する。
 
+Conveyor系のGetNextPositionとGetBackPosition系の処理に関して、ConnectionManagerへの集約を考えると整理する必要がある。
+
+
 
 ## 次回作業用結論
  
@@ -47,3 +50,4 @@ Registryでの方向の記載順序に関して規約がなかったためにCon
 - BuildingInstanceのInDirectionsとOutDirectionsは削除する。
 - DirectionResolverは責務重複のため保留または削除候補とする。
 - 接続管理は今後ConnectionManagerへ分離する。
+- Conveyor系とConveyorTileのGetNextPositionなどのConnectionに関係する関数について集約する前に整理する必要がある。
