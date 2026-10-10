@@ -14,10 +14,8 @@ namespace Craftory.Maps.Buildings
         public float FrameTime;
         public Point SizeInTiles;
         public Dictionary<BuildingDirection, List<Point>> OccupiedTilesByDirection; //建物の方向別の占有タイル座標
-        public Dictionary<BuildingDirection, List<BuildingDirection>> ReceivedDirections; //建物の方向による入力方向
-        public Dictionary<BuildingDirection, List<BuildingDirection>> OutputDirections; //建物の方向による出力方向
-        public Dictionary<BuildingDirection, List<Point>> ReceivedTileOffsetsByDirection; //建物のどのタイルが入力になるか（左上原点の座標）
-        public Dictionary<BuildingDirection, List<Point>> OutputTileOffsetsByDirection; //建物のどのタイルが出力になるか（左上原点の座標）
+
+        public List<PortDefinitions> PortDefinitions;
 
         public float WorkSpeed;
         public float BuildTime;

@@ -32,26 +32,38 @@ namespace Craftory.Maps.Buildings
                         FrameTime = 0.2f,
                         SizeInTiles = new Point(1,1),
                         OccupiedTilesByDirection = null,
-                        ReceivedDirections = new()
+                        PortDefinitions = new List<PortDefinitions>()
                         {
-                            { BuildingDirection.None, new List<BuildingDirection> () }
-                        },
-                        OutputDirections = new()
-                        {
-                            { BuildingDirection.None, new List<BuildingDirection> { 
-                                BuildingDirection.Up,
-                                BuildingDirection.Down,
-                                BuildingDirection.Left,
-                                BuildingDirection.Right }
+                            new PortDefinitions
+                            {
+                                Name = "OutputUp",
+                                Offset = new Point(0,0),
+                                Direction = BuildingDirection.Up,
+                                Pattern = PortPattern.Output
+                            },
+                            new PortDefinitions
+                            {
+                                Name = "OutputDown",
+                                Offset = new Point(0, 0),
+                                Direction = BuildingDirection.Down,
+                                Pattern = PortPattern.Output
+                            },
+
+                            new PortDefinitions
+                            {
+                                Name = "OutputLeft",
+                                Offset = new Point(0, 0),
+                                Direction = BuildingDirection.Left,
+                                Pattern = PortPattern.Output
+                            },
+
+                            new PortDefinitions
+                            {
+                                Name = "OutputRight",
+                                Offset = new Point(0, 0),
+                                Direction = BuildingDirection.Right,
+                                Pattern = PortPattern.Output
                             }
-                        },
-                        ReceivedTileOffsetsByDirection = new()
-                        {
-                            { BuildingDirection.None, new List<Point> () }
-                        },
-                        OutputTileOffsetsByDirection = new()
-                        {
-                            { BuildingDirection.None, new List<Point> { new Point(0, 0) } }
                         },
                         WorkSpeed = 0.25f,
                         BuildTime = 0,
@@ -79,33 +91,22 @@ namespace Craftory.Maps.Buildings
                         FrameTime = 0.25f,
                         SizeInTiles = new Point(1,1),
                         OccupiedTilesByDirection = null,
-                        ReceivedDirections = new()
+                        PortDefinitions = new List<PortDefinitions>()
                         {
-                            { BuildingDirection.Up, new List<BuildingDirection> {BuildingDirection.Down} },
-                            { BuildingDirection.Down, new List<BuildingDirection> {BuildingDirection.Up} },
-                            { BuildingDirection.Left, new List<BuildingDirection> {BuildingDirection.Right} },
-                            { BuildingDirection.Right, new List<BuildingDirection> {BuildingDirection.Left} }
-                        },
-                        OutputDirections = new()
-                        {
-                            { BuildingDirection.Up, new List<BuildingDirection> { BuildingDirection.Up } },
-                            { BuildingDirection.Down, new List<BuildingDirection> { BuildingDirection.Down } },
-                            { BuildingDirection.Left, new List<BuildingDirection> { BuildingDirection.Left } },
-                            { BuildingDirection.Right, new List<BuildingDirection> { BuildingDirection.Right } }
-                        },
-                        ReceivedTileOffsetsByDirection = new()
-                        {
-                            { BuildingDirection.Up, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Down, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Left, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Right, new List<Point> { new Point(0, 0) } }
-                        },
-                        OutputTileOffsetsByDirection = new()
-                        {
-                            { BuildingDirection.Up, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Down, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Left, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Right, new List<Point> { new Point(0, 0) } }
+                            new PortDefinitions
+                            {
+                                Name = "Output",
+                                Offset = new Point(0,0),
+                                Direction = BuildingDirection.Right,
+                                Pattern = PortPattern.Output
+                            },
+                            new PortDefinitions
+                            {
+                                Name = "Input",
+                                Offset = new Point(0, 0),
+                                Direction = BuildingDirection.Left,
+                                Pattern = PortPattern.Input
+                            }
                         },
                         WorkSpeed = 1.0f,
                         BuildTime = 0,
@@ -132,33 +133,22 @@ namespace Craftory.Maps.Buildings
                         FrameTime = 0.25f,
                         SizeInTiles = new Point(1,1),
                         OccupiedTilesByDirection = null,
-                        ReceivedDirections = new()
+                        PortDefinitions = new List<PortDefinitions>()
                         {
-                            { BuildingDirection.Up, new List<BuildingDirection> {BuildingDirection.Down} },
-                            { BuildingDirection.Down, new List<BuildingDirection> {BuildingDirection.Up} },
-                            { BuildingDirection.Left, new List<BuildingDirection> {BuildingDirection.Right} },
-                            { BuildingDirection.Right, new List<BuildingDirection> {BuildingDirection.Left} }
-                        },
-                        OutputDirections = new()
-                        {
-                            { BuildingDirection.Up, new List<BuildingDirection> { BuildingDirection.Right } },
-                            { BuildingDirection.Down, new List<BuildingDirection> { BuildingDirection.Left } },
-                            { BuildingDirection.Left, new List<BuildingDirection> { BuildingDirection.Up } },
-                            { BuildingDirection.Right, new List<BuildingDirection> { BuildingDirection.Down } }
-                        },
-                        ReceivedTileOffsetsByDirection = new()
-                        {
-                            { BuildingDirection.Up, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Down, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Left, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Right, new List<Point> { new Point(0, 0) } }
-                        },
-                        OutputTileOffsetsByDirection = new()
-                        {
-                            { BuildingDirection.Up, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Down, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Left, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Right, new List<Point> { new Point(0, 0) } }
+                            new PortDefinitions
+                            {
+                                Name = "Output",
+                                Offset = new Point(0,0),
+                                Direction = BuildingDirection.Down,
+                                Pattern = PortPattern.Output
+                            },
+                            new PortDefinitions
+                            {
+                                Name = "Input",
+                                Offset = new Point(0, 0),
+                                Direction = BuildingDirection.Left,
+                                Pattern = PortPattern.Input
+                            }
                         },
                         WorkSpeed = 1.0f,
                         BuildTime = 0,
@@ -185,33 +175,22 @@ namespace Craftory.Maps.Buildings
                         FrameTime = 0.25f,
                         SizeInTiles = new Point(1,1),
                         OccupiedTilesByDirection = null,
-                        ReceivedDirections = new()
+                        PortDefinitions = new List<PortDefinitions>()
                         {
-                            { BuildingDirection.Up, new List<BuildingDirection> {BuildingDirection.Down} },
-                            { BuildingDirection.Down, new List<BuildingDirection> {BuildingDirection.Up} },
-                            { BuildingDirection.Left, new List<BuildingDirection> {BuildingDirection.Right} },
-                            { BuildingDirection.Right, new List<BuildingDirection> {BuildingDirection.Left} }
-                        },
-                        OutputDirections = new()
-                        {
-                            { BuildingDirection.Up, new List<BuildingDirection> { BuildingDirection.Left } },
-                            { BuildingDirection.Down, new List<BuildingDirection> { BuildingDirection.Right } },
-                            { BuildingDirection.Left, new List<BuildingDirection> { BuildingDirection.Down } },
-                            { BuildingDirection.Right, new List<BuildingDirection> { BuildingDirection.Up } }
-                        },
-                        ReceivedTileOffsetsByDirection = new()
-                        {
-                            { BuildingDirection.Up, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Down, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Left, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Right, new List<Point> { new Point(0, 0) } }
-                        },
-                        OutputTileOffsetsByDirection = new()
-                        {
-                            { BuildingDirection.Up, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Down, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Left, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Right, new List<Point> { new Point(0, 0) } }
+                            new PortDefinitions
+                            {
+                                Name = "Output",
+                                Offset = new Point(0,0),
+                                Direction = BuildingDirection.Up,
+                                Pattern = PortPattern.Output
+                            },
+                            new PortDefinitions
+                            {
+                                Name = "Input",
+                                Offset = new Point(0, 0),
+                                Direction = BuildingDirection.Left,
+                                Pattern = PortPattern.Input
+                            }
                         },
                         WorkSpeed = 1.0f,
                         BuildTime = 0,
@@ -238,33 +217,30 @@ namespace Craftory.Maps.Buildings
                         FrameTime = 0.25f,
                         SizeInTiles = new Point(1,1),
                         OccupiedTilesByDirection = null,
-                        ReceivedDirections = new()
+                        PortDefinitions = new List<PortDefinitions>()
                         {
-                            { BuildingDirection.Up, new List<BuildingDirection> {BuildingDirection.Down, BuildingDirection.Right} },
-                            { BuildingDirection.Down, new List<BuildingDirection> {BuildingDirection.Up, BuildingDirection.Left} },
-                            { BuildingDirection.Left, new List<BuildingDirection> {BuildingDirection.Right, BuildingDirection.Up} },
-                            { BuildingDirection.Right, new List<BuildingDirection> {BuildingDirection.Left, BuildingDirection.Down} }
-                        },
-                        OutputDirections = new()
-                        {
-                            { BuildingDirection.Up, new List<BuildingDirection> { BuildingDirection.Up } },
-                            { BuildingDirection.Down, new List<BuildingDirection> { BuildingDirection.Down } },
-                            { BuildingDirection.Left, new List<BuildingDirection> { BuildingDirection.Left } },
-                            { BuildingDirection.Right, new List<BuildingDirection> { BuildingDirection.Right } }
-                        },
-                        ReceivedTileOffsetsByDirection = new()
-                        {
-                            { BuildingDirection.Up, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Down, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Left, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Right, new List<Point> { new Point(0, 0) } }
-                        },
-                        OutputTileOffsetsByDirection = new()
-                        {
-                            { BuildingDirection.Up, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Down, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Left, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Right, new List<Point> { new Point(0, 0) } }
+                            new PortDefinitions
+                            {
+                                Name = "Output",
+                                Offset = new Point(0,0),
+                                Direction = BuildingDirection.Right,
+                                Pattern = PortPattern.Output
+                            },
+                            new PortDefinitions
+                            {
+                                Name = "SubInput",
+                                Offset = new Point(0, 0),
+                                Direction = BuildingDirection.Down,
+                                Pattern = PortPattern.Input
+
+                            },
+                            new PortDefinitions
+                            {
+                                Name = "MainInput",
+                                Offset = new Point(0, 0),
+                                Direction = BuildingDirection.Left,
+                                Pattern = PortPattern.Input
+                            }
                         },
                         WorkSpeed = 1.0f,
                         BuildTime = 0,
@@ -291,33 +267,30 @@ namespace Craftory.Maps.Buildings
                         FrameTime = 0.25f,
                         SizeInTiles = new Point(1,1),
                         OccupiedTilesByDirection = null,
-                        ReceivedDirections = new()
+                        PortDefinitions = new List<PortDefinitions>()
                         {
-                            { BuildingDirection.Up, new List<BuildingDirection> {BuildingDirection.Down, BuildingDirection.Left} },
-                            { BuildingDirection.Down, new List<BuildingDirection> {BuildingDirection.Up, BuildingDirection.Right} },
-                            { BuildingDirection.Left, new List<BuildingDirection> {BuildingDirection.Right, BuildingDirection.Down} },
-                            { BuildingDirection.Right, new List<BuildingDirection> {BuildingDirection.Left, BuildingDirection.Up} }
-                        },
-                        OutputDirections = new()
-                        {
-                            { BuildingDirection.Up, new List<BuildingDirection> { BuildingDirection.Up } },
-                            { BuildingDirection.Down, new List<BuildingDirection> { BuildingDirection.Down } },
-                            { BuildingDirection.Left, new List<BuildingDirection> { BuildingDirection.Left } },
-                            { BuildingDirection.Right, new List<BuildingDirection> { BuildingDirection.Right } }
-                        },
-                        ReceivedTileOffsetsByDirection = new()
-                        {
-                            { BuildingDirection.Up, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Down, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Left, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Right, new List<Point> { new Point(0, 0) } }
-                        },
-                        OutputTileOffsetsByDirection = new()
-                        {
-                            { BuildingDirection.Up, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Down, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Left, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Right, new List<Point> { new Point(0, 0) } }
+                            new PortDefinitions
+                            {
+                                Name = "Output",
+                                Offset = new Point(0,0),
+                                Direction = BuildingDirection.Right,
+                                Pattern = PortPattern.Output
+                            },
+                            new PortDefinitions
+                            {
+                                Name = "SubInput",
+                                Offset = new Point(0, 0),
+                                Direction = BuildingDirection.Down,
+                                Pattern = PortPattern.Input
+
+                            },
+                            new PortDefinitions
+                            {
+                                Name = "MainInput",
+                                Offset = new Point(0, 0),
+                                Direction = BuildingDirection.Left,
+                                Pattern = PortPattern.Input
+                            }
                         },
                         WorkSpeed = 1.0f,
                         BuildTime= 0,
@@ -345,33 +318,29 @@ namespace Craftory.Maps.Buildings
                         FrameTime = 0.25f,
                         SizeInTiles = new Point(1,1),
                         OccupiedTilesByDirection = null,
-                        ReceivedDirections = new()
+                        PortDefinitions = new List<PortDefinitions>()
                         {
-                            { BuildingDirection.Up, new List<BuildingDirection> {BuildingDirection.Left, BuildingDirection.Right} },
-                            { BuildingDirection.Down, new List<BuildingDirection> {BuildingDirection.Right, BuildingDirection.Left} },
-                            { BuildingDirection.Left, new List<BuildingDirection> {BuildingDirection.Down, BuildingDirection.Up} },
-                            { BuildingDirection.Right, new List<BuildingDirection> {BuildingDirection.Up, BuildingDirection.Down} }
-                        },
-                        OutputDirections = new()
-                        {
-                            { BuildingDirection.Up, new List<BuildingDirection> { BuildingDirection.Up } },
-                            { BuildingDirection.Down, new List<BuildingDirection> { BuildingDirection.Down } },
-                            { BuildingDirection.Left, new List<BuildingDirection> { BuildingDirection.Left } },
-                            { BuildingDirection.Right, new List<BuildingDirection> { BuildingDirection.Right } }
-                        },
-                        ReceivedTileOffsetsByDirection = new()
-                        {
-                            { BuildingDirection.Up, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Down, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Left, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Right, new List<Point> { new Point(0, 0) } }
-                        },
-                        OutputTileOffsetsByDirection = new()
-                        {
-                            { BuildingDirection.Up, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Down, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Left, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Right, new List<Point> { new Point(0, 0) } }
+                            new PortDefinitions
+                            {
+                                Name = "Output",
+                                Offset = new Point(0,0),
+                                Direction = BuildingDirection.Right,
+                                Pattern = PortPattern.Output
+                            },
+                            new PortDefinitions
+                            {
+                                Name = "RightInput",
+                                Offset = new Point(0, 0),
+                                Direction = BuildingDirection.Down,
+                                Pattern = PortPattern.Input
+                            },
+                            new PortDefinitions
+                            {
+                                Name = "LeftInput",
+                                Offset = new Point(0, 0),
+                                Direction = BuildingDirection.Up,
+                                Pattern = PortPattern.Input
+                            }
                         },
                         WorkSpeed = 1.0f,
                         BuildTime = 0,
@@ -399,33 +368,36 @@ namespace Craftory.Maps.Buildings
                         FrameTime = 0.25f,
                         SizeInTiles = new Point(1,1),
                         OccupiedTilesByDirection = null,
-                        ReceivedDirections = new()
+                        PortDefinitions = new List<PortDefinitions>()
                         {
-                            { BuildingDirection.Up, new List<BuildingDirection> {BuildingDirection.Down, BuildingDirection.Left, BuildingDirection.Right} },
-                            { BuildingDirection.Down, new List<BuildingDirection> {BuildingDirection.Up, BuildingDirection.Right, BuildingDirection.Left} },
-                            { BuildingDirection.Left, new List<BuildingDirection> {BuildingDirection.Right, BuildingDirection.Down, BuildingDirection.Up} },
-                            { BuildingDirection.Right, new List<BuildingDirection> {BuildingDirection.Left, BuildingDirection.Up, BuildingDirection.Down} }
-                        },
-                        OutputDirections = new()
-                        {
-                            { BuildingDirection.Up, new List<BuildingDirection> { BuildingDirection.Up } },
-                            { BuildingDirection.Down, new List<BuildingDirection> { BuildingDirection.Down } },
-                            { BuildingDirection.Left, new List<BuildingDirection> { BuildingDirection.Left } },
-                            { BuildingDirection.Right, new List<BuildingDirection> { BuildingDirection.Right } }
-                        },
-                        ReceivedTileOffsetsByDirection = new()
-                        {
-                            { BuildingDirection.Up, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Down, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Left, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Right, new List<Point> { new Point(0, 0) } }
-                        },
-                        OutputTileOffsetsByDirection = new()
-                        {
-                            { BuildingDirection.Up, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Down, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Left, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Right, new List<Point> { new Point(0, 0) } }
+                            new PortDefinitions
+                            {
+                                Name = "Output",
+                                Offset = new Point(0,0),
+                                Direction = BuildingDirection.Right,
+                                Pattern = PortPattern.Output
+                            },
+                            new PortDefinitions
+                            {
+                                Name = "RightInput",
+                                Offset = new Point(0, 0),
+                                Direction = BuildingDirection.Down,
+                                Pattern = PortPattern.Input
+                            },
+                            new PortDefinitions
+                            {
+                                Name = "LeftInput",
+                                Offset = new Point(0, 0),
+                                Direction = BuildingDirection.Up,
+                                Pattern = PortPattern.Input
+                            },
+                            new PortDefinitions
+                            {
+                                Name = "MainInput",
+                                Offset = new Point(0, 0),
+                                Direction = BuildingDirection.Left,
+                                Pattern = PortPattern.Input
+                            }
                         },
                         WorkSpeed = 1.0f,
                         BuildTime= 0,
@@ -460,33 +432,36 @@ namespace Craftory.Maps.Buildings
                         FrameTime = 0.25f,
                         SizeInTiles= new Point(1,1),
                         OccupiedTilesByDirection = null,
-                        ReceivedDirections = new()
+                        PortDefinitions = new List<PortDefinitions>()
                         {
-                            { BuildingDirection.Up, new List<BuildingDirection> { BuildingDirection.Down } },
-                            { BuildingDirection.Down, new List<BuildingDirection> { BuildingDirection.Up } },
-                            { BuildingDirection.Left, new List<BuildingDirection> { BuildingDirection.Right } },
-                            { BuildingDirection.Right, new List<BuildingDirection> { BuildingDirection.Left } }
-                        },
-                        OutputDirections = new()
-                        {
-                            { BuildingDirection.Up, new List<BuildingDirection> { BuildingDirection.Left, BuildingDirection.Down, BuildingDirection.Right } },
-                            { BuildingDirection.Down, new List<BuildingDirection> { BuildingDirection.Right, BuildingDirection.Up, BuildingDirection.Left } },
-                            { BuildingDirection.Left, new List<BuildingDirection> { BuildingDirection.Down, BuildingDirection.Right, BuildingDirection.Up } },
-                            { BuildingDirection.Right, new List<BuildingDirection> { BuildingDirection.Up, BuildingDirection.Left, BuildingDirection.Down } }
-                        },
-                        ReceivedTileOffsetsByDirection = new()
-                        {
-                            { BuildingDirection.Up, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Down, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Left, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Right, new List<Point> { new Point(0, 0) } }
-                        },
-                        OutputTileOffsetsByDirection = new()
-                        {
-                            { BuildingDirection.Up, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Down, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Left, new List<Point> { new Point(0, 0) } },
-                            { BuildingDirection.Right, new List<Point> { new Point(0, 0) } }
+                            new PortDefinitions
+                            {
+                                Name = "Output",
+                                Offset = new Point(0,0),
+                                Direction = BuildingDirection.Right,
+                                Pattern = PortPattern.Output
+                            },
+                            new PortDefinitions
+                            {
+                                Name = "RightOutput",
+                                Offset = new Point(0, 0),
+                                Direction = BuildingDirection.Down,
+                                Pattern = PortPattern.Output
+                            },
+                            new PortDefinitions
+                            {
+                                Name = "LeftOutput",
+                                Offset = new Point(0, 0),
+                                Direction = BuildingDirection.Up,
+                                Pattern = PortPattern.Output
+                            },
+                            new PortDefinitions
+                            {
+                                Name = "Input",
+                                Offset = new Point(0, 0),
+                                Direction = BuildingDirection.Left,
+                                Pattern = PortPattern.Input
+                            }
                         },
                         WorkSpeed= 1.0f,
                         BuildTime = 0,

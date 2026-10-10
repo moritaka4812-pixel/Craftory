@@ -26,6 +26,7 @@ namespace Craftory.Maps.Buildings
         public float BuildProgress { get; private set; }
         public float BuildTime { get; private set; }
         public BuildingDirection buildingDirection; //入出力に寄らない建物の向き (画像準拠)
+        public List<BuildingPort> Ports { get; private set; }
 
         public TileAnimation Anim;
         public BuildingInfo info;
@@ -54,6 +55,8 @@ namespace Craftory.Maps.Buildings
             }
 
             buildingDirection = dir;
+
+            Ports = BuildingPortFactory.CreatePorts(info, buildingDirection);
 
             State = BuildState.Constructing;
             BuildProgress = 0f;
@@ -149,42 +152,9 @@ namespace Craftory.Maps.Buildings
             }
         }
 
-
-        protected List<(IItemAcceptor acceptor, BuildingDirection fromDir)> GetOutputAcceptors()
-        {
-            var list = new List<(IItemAcceptor, BuildingDirection)>();
-
-            var outputOffsets =
-            info.OutputTileOffsetsByDirection[buildingDirection];
-
-            var outputDirections =
-            info.OutputDirections[buildingDirection];
-
-            foreach (var offset in outputOffsets)
-            {
-                var outputTile = TilePosition + offset;
-
-                foreach (var dir in outputDirections)
-                {
-                    var nextPos = outputTile + dir.GetPoint();
-
-                    var tile = GameCore.Instance.MapManager.Map.GetTile(
-                    nextPos.X,
-                    nextPos.Y);
-
-                    if (tile?.Occupant is IItemAcceptor acceptor)
-                    {
-                        list.Add((acceptor, dir.GetOpposite()));
-                    }
-                }
-            }
-
-            return list;
-        }
-
         protected bool TryOutputFair(ConveyorItem item)
         {
-            var outputs = GetOutputAcceptors();
+            var outputs = GetOutputAcceptors();　//ConnectionManager.GetOutputAcceptors(this);
 
             if (outputs.Count == 0)
                 return false;

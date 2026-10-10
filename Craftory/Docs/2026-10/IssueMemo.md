@@ -41,13 +41,25 @@ Registryでの方向の記載順序に関して規約がなかったためにCon
 
 Conveyor系のGetNextPositionとGetBackPosition系の処理に関して、ConnectionManagerへの集約を考えると整理する必要がある。
 
+ConnectionManagerを作成する前に、BuildingPortを作成して建物の出入り口に関する処理をまとめることにする。
+それに関係してBuildingInfoに保持している以下の情報は削除対象になりえる。
+
+- ReceivedDirections
+- OutputDirections
+- ReceivedTileOffsetsByDirection
+- OutputTileOffsetsByDirection
+
+Portに関する定義がおおよそ完了したのでConnectionManagerの実装をする。実装後にそれぞれの建物の接続管理をConnectionManagerの実装を元に
+整理する。
 
 
 ## 次回作業用結論
  
 - BuildingInstanceのbuildingDirectionは建物画像基準の向きを表す変数とする。
 - BuildingInfoを方向情報の管理元とする。
-- BuildingInstanceのInDirectionsとOutDirectionsは削除する。
-- DirectionResolverは責務重複のため保留または削除候補とする。
+- BuildingInstanceのInDirectionsとOutDirectionsは削除する。(済)
+- DirectionResolverは責務重複のため保留または削除候補とする。(済)
 - 接続管理は今後ConnectionManagerへ分離する。
 - Conveyor系とConveyorTileのGetNextPositionなどのConnectionに関係する関数について集約する前に整理する必要がある。
+- BuildingPortについてBuildingPortFactoryを経由してインスタンス生成をするようにする。
+- ConnectionManagerを作成して接続管理を分離する。
