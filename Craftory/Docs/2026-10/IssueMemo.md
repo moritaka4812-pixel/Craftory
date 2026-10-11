@@ -52,6 +52,19 @@ ConnectionManagerを作成する前に、BuildingPortを作成して建物の出
 Portに関する定義がおおよそ完了したのでConnectionManagerの実装をする。実装後にそれぞれの建物の接続管理をConnectionManagerの実装を元に
 整理する。
 
+ConnectionManagerについての実装で、
+- MapManagerのNotifyNeighborsOfChange
+- Conveyor系の接続
+- ConveyorTile（済）
+以上の3ファイルに渡ってある接続関係に関する処理を追加で整理する必要が出てきた。まずはConveyorTileに関する処理から行う方針にする。
+
+ConveyorTileを整理する上で、ConveyorItemのGlobalPositionの必要性を考えると必要ない可能性が高い。
+そのため、削除対象として代わりにLocalPositionとCurrentTileを追加してItemの位置を管理することにする。ConveyorTileのTileStartも必要なくなる
+ため削除する。 => ConveyorTileの整理終了
+
+ConnectionManagerの実装をする。MapManagerの隣接タイルの接続を再更新する関数を削除し、ConnectionManagerに同じ役割をもつ
+RefreshNeighborConnectionsとして実装した。
+
 
 ## 次回作業用結論
  
@@ -62,4 +75,4 @@ Portに関する定義がおおよそ完了したのでConnectionManagerの実�
 - 接続管理は今後ConnectionManagerへ分離する。
 - Conveyor系とConveyorTileのGetNextPositionなどのConnectionに関係する関数について集約する前に整理する必要がある。
 - BuildingPortについてBuildingPortFactoryを経由してインスタンス生成をするようにする。
-- ConnectionManagerを作成して接続管理を分離する。
+- ConnectionManagerを作成して接続管理を分離する。=> Conveyor系の内容を整理して動かせるようにする

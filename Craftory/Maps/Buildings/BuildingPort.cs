@@ -12,6 +12,7 @@ namespace Craftory.Maps.Buildings
 
     public class BuildingPort
     {
+        public BuildingInstance Owner { get; init; }
         public string Name { get; set; } //Portの名前
         public Point Offset { get; set; } //建物の左上からのオフセット座標
 
@@ -19,7 +20,7 @@ namespace Craftory.Maps.Buildings
 
         public PortPattern Pattern { get; set; }
 
-        public BuildingPort? ConnectedPort { get; set; } //接続されているPort
+        public BuildingPort? ConnectedPort { get; set; } = null; //接続されているPort
 
     }
 

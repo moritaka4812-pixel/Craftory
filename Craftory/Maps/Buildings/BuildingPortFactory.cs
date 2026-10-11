@@ -1,5 +1,4 @@
 ﻿
-using Craftory.Core;
 using Point = Microsoft.Xna.Framework.Point;
 
 namespace Craftory.Maps.Buildings
@@ -7,6 +6,7 @@ namespace Craftory.Maps.Buildings
     public static class BuildingPortFactory
     {
         public static BuildingPort Create(
+            BuildingInstance owner,
             PortDefinitions definition,
             BuildingInfo info,
             BuildingDirection buildingDirection
@@ -14,6 +14,7 @@ namespace Craftory.Maps.Buildings
         {
             return new BuildingPort
             {
+                Owner = owner,
                 Name = definition.Name,
                 Offset = RotateOffset(
                     definition.Offset,
@@ -31,12 +32,14 @@ namespace Craftory.Maps.Buildings
         }
 
         public static List<BuildingPort> CreatePorts(
+            BuildingInstance owner,
             BuildingInfo info, 
             BuildingDirection buildingDirection
             )
         {
             return info.PortDefinitions
                 .Select(p => Create(
+                    owner,
                     p,
                     info,
                     buildingDirection))

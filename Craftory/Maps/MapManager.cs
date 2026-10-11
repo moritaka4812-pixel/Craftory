@@ -22,7 +22,6 @@ namespace Craftory.Maps
             Buildings = new();
             tileAnimator = new TileAnimator(map);
             shadowGenerator = new MapShadowGenerator(map, graphics);
-
         }
 
         public void AddBuilding(BuildType type, Point tilePos, BuildingDirection dir)
@@ -41,8 +40,9 @@ namespace Craftory.Maps
             }
 
             Buildings.Add(building);
-            foreach(var pos in building.OccupiedTiles)
-                NotifyNeighborsOfChange(pos);
+
+            ConnectionManager.RefreshConnections(building);
+            ConnectionManager.RefreshNeighborConnections(building);
         }
 
         public void RemoveBuildingAt(Point tilePos)
@@ -58,9 +58,8 @@ namespace Craftory.Maps
             }
 
             Buildings.Remove(building);
-            
-            foreach (var pos in building.OccupiedTiles)
-                NotifyNeighborsOfChange(pos);
+
+            ConnectionManager.RefreshNeighborConnections(building);
         }
 
         public BuildingInstance? GetBuildingAt(Point tilePos)
@@ -97,8 +96,8 @@ namespace Craftory.Maps
                     b.Draw(sb, camera);
 
             //アイテム
-            foreach(var b in Buildings)
-                if(b is Conveyor conveyor)
+            foreach (var b in Buildings)
+                if (b is Conveyor conveyor)
                     conveyor.TileLogic.Draw(sb, new Vector2(conveyor.TilePosition.X * 32, conveyor.TilePosition.Y * 32));
 
             // 特殊系コンベア（Splitter / Sorter）
@@ -111,73 +110,6 @@ namespace Craftory.Maps
                 if (b is not Conveyor)
                     b.Draw(sb, camera);
         }
-
-        private void NotifyNeighborsOfChange(Point pos)
-        {
-            var dirs = new (int x, int y)[]
-            {
-                (1,0), (-1,0), (0,1), (0,-1)
-            };
-
-            foreach (var d in dirs)
-            {
-                var npos = new Point(pos.X + d.x, pos.Y + d.y);
-                var tile = Map.GetTile(npos.X, npos.Y);
-
-                if (tile?.Occupant is Conveyor c)
-                {
-                    bool changed = false;
-
-                    // 出力側の更新
-                    if (c is ISplitConveyor split)
-                    {
-                        foreach (var nextPos in split.GetNextPositions())
-                        {
-                            if (nextPos == pos)
-                            {
-                                c.RefreshConnection();
-                                changed = true;
-                                break;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // 通常の1出力
-                        if (c.GetNextPosition() == pos)
-                        {
-                            c.RefreshConnection();
-                            changed = true;
-                        }
-                    }
-
-
-                    // ★ 入力側の更新（Merge は複数の入力を持つのでループで判定）
-                    foreach (var backPos in c.GetBackPositions())  // ← IEnumerable<Point> をループ
-                    {
-                        if (backPos == pos)
-                        {
-                            c.RefreshConnection();
-                            changed = true;
-                            break;
-                        }
-                    }
-
-                    // ★ 接続が変わったなら TileStart を再計算
-                    if (changed)
-                    {
-                        c.TileLogic.InitializeTileStart();
-
-                        // Merge の場合は inputTiles を使って TileStart を再計算
-                        if (c is IMergeConveyor merge)
-                        {
-                            merge.InitializeMergeTileStart();
-                        }
-                    }
-                }
-            }
-        }
-
     }
 }
 

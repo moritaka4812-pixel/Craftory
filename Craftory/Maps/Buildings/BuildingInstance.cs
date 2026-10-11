@@ -16,6 +16,7 @@ namespace Craftory.Maps.Buildings
     public class BuildingInstance : ITileOccupant
     {
         protected int outputIndex = 0; //出力方向のラウンドロビンキャッシュ
+        public int OutputIndex => outputIndex; //読み取り専用
         public BuildType Type { get; private set; }     // 建物の種類
         public Point TilePosition { get; private set; } //タイル座標
         public Point SizeInTiles { get; private set; }  //タイル単位の大きさ
@@ -27,6 +28,8 @@ namespace Craftory.Maps.Buildings
         public float BuildTime { get; private set; }
         public BuildingDirection buildingDirection; //入出力に寄らない建物の向き (画像準拠)
         public List<BuildingPort> Ports { get; private set; }
+        public List<BuildingPort> InputPorts { get; }
+        public List<BuildingPort> OutputPorts { get; }
 
         public TileAnimation Anim;
         public BuildingInfo info;
@@ -56,7 +59,15 @@ namespace Craftory.Maps.Buildings
 
             buildingDirection = dir;
 
-            Ports = BuildingPortFactory.CreatePorts(info, buildingDirection);
+            Ports = BuildingPortFactory.CreatePorts(this, info, buildingDirection);
+            foreach(var port in Ports)
+            {
+                if (port.Pattern == PortPattern.Input || port.Pattern == PortPattern.InputOutput)
+                    InputPorts.Add(port);
+
+                if (port.Pattern == PortPattern.Output || port.Pattern == PortPattern.InputOutput)
+                    OutputPorts.Add(port);
+            }
 
             State = BuildState.Constructing;
             BuildProgress = 0f;
