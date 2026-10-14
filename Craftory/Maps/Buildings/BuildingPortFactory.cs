@@ -1,4 +1,5 @@
 ﻿
+using System.Diagnostics;
 using Point = Microsoft.Xna.Framework.Point;
 
 namespace Craftory.Maps.Buildings
@@ -12,6 +13,15 @@ namespace Craftory.Maps.Buildings
             BuildingDirection buildingDirection
             )
         {
+            /*
+            Debug.WriteLine(
+            $"{buildingDirection}" +
+            $"{owner.Type} " +
+            $"{definition.Name}" +
+            $"Offset={RotateOffset(definition.Offset, info, buildingDirection)} " +
+            $"Dir={RotateDirection(definition.Direction,buildingDirection)} " 
+            );
+            */
             return new BuildingPort
             {
                 Owner = owner,

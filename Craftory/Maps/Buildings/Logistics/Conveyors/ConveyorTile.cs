@@ -80,24 +80,40 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
 
         public void TryMoveToNextTile()
         {
+            //global::System.Diagnostics.Debug.WriteLine("A");
             if (Items.Count == 0) return;
 
+            //global::System.Diagnostics.Debug.WriteLine("B");
             var first = Items[0];
 
+            //global::System.Diagnostics.Debug.WriteLine($"C:{first.LocalPosition}");
             float tileEnd = 1f;
+
 
             if (first.LocalPosition >= tileEnd)
             {
-                if(first.arrivalTime == null)
+                //global::System.Diagnostics.Debug.WriteLine("D");
+                if (first.arrivalTime == null)
                     first.arrivalTime = GameCore.Instance.Time;
+
+                //global::System.Diagnostics.Debug.WriteLine($"OutputTiles.Count={OutputTiles.Count}");
+                //global::System.Diagnostics.Debug.WriteLine($"OutputIndex={ownerConveyor.OutputIndex}");
 
                 var NextOut = OutputTiles[ownerConveyor.OutputIndex];
 
-                if(NextOut.ownerConveyor is IMergeConveyor)
+                //global::System.Diagnostics.Debug.WriteLine($"NextOut null = {NextOut == null}");
+
+                //global::System.Diagnostics.Debug.WriteLine(NextOut?.ownerConveyor.GetType().FullName);
+
+                if (NextOut?.ownerConveyor is IMergeConveyor)
                 {
-                    var NextAcceptItem = NextOut.ownerConveyor.TileLogic.SelectNextAcceptItem();
+                    //global::System.Diagnostics.Debug.WriteLine("aaa");
+                        var NextAcceptItem = NextOut.SelectNextAcceptItem();
                     if (first != NextAcceptItem) //Null処理を含む(first != Null)
+                    {
+                        first.LocalPosition = tileEnd;
                         return;
+                    }
                 }
 
                 if (NextOut != null && NextOut.TryAccept(first))
@@ -140,17 +156,27 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
         {
             var candidates = new List<ConveyorItem>();
 
-            foreach(var tile in InputTiles)
+            //Debug.WriteLine($"InputTiles={InputTiles.Count}");
+
+            foreach (var tile in InputTiles)
             {
+                if (tile == null) continue;
+
+                //Debug.WriteLine($"TileItems={tile.Items.Count}");
+
                 if (tile.Items.Count == 0) continue;
 
                 var first = tile.Items[0];
-                float tileEnd = 1f;
 
-                if (first.LocalPosition >= tileEnd)
+                //Debug.WriteLine($"LP={first.LocalPosition}");
+
+                if (first.LocalPosition >= 1f)
+                {
                     candidates.Add(first);
+                    //Debug.WriteLine("ADD");
+                }
             }
-
+            // Debug.WriteLine($"{candidates.Count}");
             if (candidates.Count == 0) return null;
 
             candidates.Sort((a, b) => Nullable.Compare(a.arrivalTime, b.arrivalTime));

@@ -37,11 +37,13 @@ namespace Craftory.Maps
 
         public Tiles.Tile GetTile(int x, int y) //指定されたタイルを返す
         {
-            try
-            {
-                return MapTiles[x, y];
-            }
-            catch { return null; }
+            if (x < 0 || x >= MapSizeX)
+                return null;
+
+            if (y < 0 || y >= MapSizeY)
+                return null;
+
+            return MapTiles[x, y];
         }
 
         public Point? WorldToTile(Vector2 worldPos)

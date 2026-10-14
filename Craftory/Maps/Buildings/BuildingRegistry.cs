@@ -280,7 +280,7 @@ namespace Craftory.Maps.Buildings
                             {
                                 Name = "SubInput",
                                 Offset = new Point(0, 0),
-                                Direction = BuildingDirection.Down,
+                                Direction = BuildingDirection.Up,
                                 Pattern = PortPattern.Input
 
                             },

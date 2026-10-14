@@ -52,7 +52,7 @@ namespace Craftory.Maps.Buildings.Miners
             var itemType = ResourceToItemConvertor.Convert(type);
 
             if(bufferItem == null)
-                bufferItem = new ConveyorItem { Type = itemType };
+                bufferItem = new ConveyorItem { Type = itemType};
 
 
             foreach (var tilePos in GetOccupiedTiles())

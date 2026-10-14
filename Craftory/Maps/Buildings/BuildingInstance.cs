@@ -28,8 +28,8 @@ namespace Craftory.Maps.Buildings
         public float BuildTime { get; private set; }
         public BuildingDirection buildingDirection; //入出力に寄らない建物の向き (画像準拠)
         public List<BuildingPort> Ports { get; private set; }
-        public List<BuildingPort> InputPorts { get; }
-        public List<BuildingPort> OutputPorts { get; }
+        public List<BuildingPort> InputPorts { get; } = new List<BuildingPort>();
+        public List<BuildingPort> OutputPorts { get; } = new List<BuildingPort>();
 
         public TileAnimation Anim;
         public BuildingInfo info;
@@ -164,20 +164,26 @@ namespace Craftory.Maps.Buildings
         }
 
         protected bool TryOutputFair(ConveyorItem item)
-        {
-            var outputs = GetOutputAcceptors();　//ConnectionManager.GetOutputAcceptors(this);
-
-            if (outputs.Count == 0)
+        {　
+            if (OutputPorts.Count == 0)
                 return false;
 
-            int count = outputs.Count;
+            int count = OutputPorts.Count;
 
             for(int i=0; i< count; i++)
             {
                 var idx = (outputIndex + i) % count;
-                var (acceptor, dir) = outputs[idx];
+                var candidatePort = OutputPorts[idx];
 
-                if(acceptor.TryAccept(item, dir))
+                var targetBuilding = candidatePort.ConnectedPort?.Owner;
+
+                if (targetBuilding is not IItemAcceptor acceptor)
+                    continue;
+
+                if (!acceptor.CanAccept(item))
+                    continue;
+
+                if (acceptor.TryAccept(item))
                 {
                     outputIndex = (idx + 1) % count;
                     return true;
@@ -185,6 +191,11 @@ namespace Craftory.Maps.Buildings
             }
 
             return false;
+        }
+
+        public BuildingPort? GetPort(string name)
+        {
+            return Ports.FirstOrDefault(p => p.Name == name);
         }
     }
 }

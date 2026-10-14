@@ -1,6 +1,7 @@
 ﻿
 using Craftory.Core;
 using Craftory.Maps.Buildings.Logistics.Conveyors;
+using System.Diagnostics;
 using Point = Microsoft.Xna.Framework.Point;
 
 namespace Craftory.Maps.Buildings
@@ -9,7 +10,8 @@ namespace Craftory.Maps.Buildings
     {
         public static void RefreshConnections(BuildingInstance building)
         {
-            foreach(var port in building.Ports) //初期化
+            //Debug.WriteLine($"Refresh {building.GetType()}");
+            foreach (var port in building.Ports) //初期化
             {
                 port.ConnectedPort = null;
             }
@@ -19,12 +21,12 @@ namespace Craftory.Maps.Buildings
                 ConnectPort(port);
             }
 
-            if(building is Conveyor conveyor)
+            if (building is Conveyor conveyor)
             {
                 BuildConveyorConnections(conveyor);
             }
         }
-
+        
         public static void RefreshNeighborConnections(BuildingInstance changeBuilding)
         {
             HashSet<BuildingInstance> neighbors = new(); //重複Refreshをなくすため
@@ -36,6 +38,7 @@ namespace Craftory.Maps.Buildings
 
                 if(tile?.Occupant is BuildingInstance neighbor)
                 {
+                    //Debug.WriteLine($"{port.Direction} Change owner = {changeBuilding.GetType()}");
                     neighbors.Add(neighbor);
                 }
             }
@@ -50,11 +53,26 @@ namespace Craftory.Maps.Buildings
 
             var targetPos = worldPos + port.Direction.GetPoint();
 
+            //Debug.WriteLine($"TARGETPOS={targetPos}");
+            
+            /*
+            Debug.WriteLine(
+            $"{port.Owner.Type} " +
+            $"{port.Name} " +
+            $"Offset={port.Offset} " +
+            $"Dir={port.Direction} " +
+            $"Target={targetPos}");
+            */
+
             var tile = 
                 GameCore.Instance.MapManager.Map.GetTile(targetPos.X, targetPos.Y);
 
-            if(tile?.Occupant is not BuildingInstance target)
+            //Debug.WriteLine($"OCCUPANT={tile?.Occupant?.GetType().Name}");
+
+            if (tile?.Occupant is not BuildingInstance target)
             {
+                //Debug.WriteLine($"NO TARGET : {targetPos}");
+                //Debug.WriteLine($"TARGET = {tile.Occupant?.GetType()}");
                 port.ConnectedPort = null;
                 return;
             }
@@ -65,20 +83,28 @@ namespace Craftory.Maps.Buildings
                 {
                     port.ConnectedPort = targetPort;
                     targetPort.ConnectedPort = port;
+                    //global::System.Diagnostics.Debug.WriteLine($"Connected: {port.Name} - {targetPort.Name}");
+                    //Debug.WriteLine($"source: {port.Name} Hash={port.GetHashCode()}");
+                    //Debug.WriteLine($"target: {targetPort.Name} Hash={targetPort.GetHashCode()}");
                 }
             }
         }
 
         private static bool CanConnect(BuildingPort source, BuildingPort target)
         {
-            if (source.Pattern != PortPattern.Output)
-                return false;
+            bool outputToInput =
+                source.Pattern == PortPattern.Output &&
+                (target.Pattern == PortPattern.Input ||
+                 target.Pattern == PortPattern.InputOutput) &&
+                source.Direction.GetOpposite() == target.Direction;
 
-            if (target.Pattern != PortPattern.Input &&
-                target.Pattern != PortPattern.InputOutput)
-                return false;
+            bool inputToOutput =
+                (source.Pattern == PortPattern.Input ||
+                 source.Pattern == PortPattern.InputOutput) &&
+                target.Pattern == PortPattern.Output &&
+                source.Direction.GetOpposite() == target.Direction;
 
-            return source.Direction.GetOpposite() == target.Direction;
+            return outputToInput || inputToOutput;
         }
 
         private static void BuildConveyorConnections(Conveyor conveyor)
@@ -89,8 +115,7 @@ namespace Craftory.Maps.Buildings
             {
                 var connected = outputPort.ConnectedPort?.Owner;
 
-                if (connected is Conveyor next)
-                    outputs.Add(next.TileLogic);
+                outputs.Add(connected is Conveyor next ? next.TileLogic : null);
             }
 
             conveyor.TileLogic.SetOutputTiles(outputs);
@@ -101,8 +126,7 @@ namespace Craftory.Maps.Buildings
             {
                 var connected = inputPort.ConnectedPort?.Owner;
 
-                if (connected is Conveyor previous)
-                    inputs.Add(previous.TileLogic);
+                inputs.Add(connected is Conveyor previous ? previous.TileLogic : null);
             }
 
             conveyor.TileLogic.SetInputTiles(inputs);

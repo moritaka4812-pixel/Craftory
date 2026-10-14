@@ -65,6 +65,13 @@ ConveyorTileを整理する上で、ConveyorItemのGlobalPositionの必要性を
 ConnectionManagerの実装をする。MapManagerの隣接タイルの接続を再更新する関数を削除し、ConnectionManagerに同じ役割をもつ
 RefreshNeighborConnectionsとして実装した。
 
+Merge系のアイテムの移動に関する接続に関してバグが出た。調べた結果Mergeのテストとして利用していたLeftMergeの定義ミスが見つかった。
+ただ、それでもアイテムの搬送接続に失敗するバグは残っていた。
+
+Merge系のアイテムの搬送接続に関してはConnectionManagerのCanConnectがOut->In方向にしか接続判定をtrueで返さないことが理由だった。
+今回の修正ではOut->In OR In -> Outの双方向接続が可能なように実装を変更した。また、今後の実装方針としてPort同士の接続
+に関しては方向はなく、In、Outはあくまで接続の条件として扱うことにする。
+
 
 ## 次回作業用結論
  
@@ -75,4 +82,4 @@ RefreshNeighborConnectionsとして実装した。
 - 接続管理は今後ConnectionManagerへ分離する。
 - Conveyor系とConveyorTileのGetNextPositionなどのConnectionに関係する関数について集約する前に整理する必要がある。
 - BuildingPortについてBuildingPortFactoryを経由してインスタンス生成をするようにする。
-- ConnectionManagerを作成して接続管理を分離する。=> Conveyor系の内容を整理して動かせるようにする
+- ConnectionManagerを作成して接続管理を分離する。=> Conveyor系の内容を整理して動かせるようにする。（済）

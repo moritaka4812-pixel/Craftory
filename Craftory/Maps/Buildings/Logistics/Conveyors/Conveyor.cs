@@ -11,51 +11,12 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
         public Conveyor(BuildType type, Point pos, BuildingDirection dir) : 
             base(type, pos, dir)
         {
-
             TileLogic = new ConveyorTile(WorkSpeed, this);
-
-            TileLogic.InitializeTileStart();
-
-            InitializeConnections();
-        }
-
-        public virtual void InitializeConnections()
-        {
-            var map = GameCore.Instance.MapManager.Map;
-            var nextPos = GetNextPosition();
-            var tile = GameCore.Instance.MapManager.Map.GetTile(GetNextPosition().X, GetNextPosition().Y);
-            if(tile?.Occupant is  Conveyor nextConveyor)
-            {
-                var outDir = info.OutputDirections[buildingDirection][0];
-
-                var nextInputDirs = nextConveyor.GetInputDirections();
-
-                if (nextInputDirs.Contains(outDir.GetOpposite()))
-                {
-                    TileLogic.SetNextTile(nextConveyor.TileLogic);
-                }
-                else
-                {
-                    TileLogic.SetNextTile(null);
-                }
-            }
-               
-            else
-                TileLogic.SetNextTile(null);
-
-            // BackTile 設定
-            var backPos = GetBackPosition();
-            var backTile = GameCore.Instance.MapManager.Map.GetTile(backPos.X, backPos.Y);
-            if (backTile?.Occupant is Conveyor backConveyor)
-                TileLogic.SetBackTiles(new List<ConveyorTile> { backConveyor.TileLogic });
-            else
-                TileLogic.SetBackTiles(new List<ConveyorTile>());
-
         }
 
         public virtual BuildingDirection GetDirectionForItem(ConveyorItem item)
         {
-            return info.OutputDirections[buildingDirection][0];
+            return GetPort("Output").Direction;
         }
 
         public override void UpdateLogic(GameTime gameTime)
@@ -72,80 +33,9 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
             DrawRotated(sb, TilePosition, Color.White);
         }
 
-
-        public override void DrawRotated(SpriteBatch sb, Point tilePos, Color tint)
-        {
-            var tex = Anim.Texture;
-            var frame = Anim.GetCurrentFrameRect();
-
-            float rotation = buildingDirection switch
-            {
-                BuildingDirection.Right => 0f,
-                BuildingDirection.Down => MathF.PI / 2,
-                BuildingDirection.Left => MathF.PI,
-                BuildingDirection.Up => -MathF.PI / 2,
-                _ => 0f
-            };
-
-            Vector2 origin = new(tex.Width / Anim.FrameCount / 2f, tex.Height / 2f);
-            Vector2 pos = tilePos.ToVector2() * 32 + origin;
-
-            sb.Draw(
-                tex,
-                pos,
-                frame,
-                tint,
-                rotation,
-                origin,
-                1f,
-                SpriteEffects.None,
-                0f
-            );
-        }
-
         public void RefreshConnection()
         {
-            InitializeConnections();
-        }
-
-        public virtual IEnumerable<Point> GetNextPositions()
-        {
-            foreach (var dir in info.OutputDirections[buildingDirection])
-            {
-                yield return dir switch
-                {
-                    BuildingDirection.Right => new Point(TilePosition.X + 1, TilePosition.Y),
-                    BuildingDirection.Left => new Point(TilePosition.X - 1, TilePosition.Y),
-                    BuildingDirection.Up => new Point(TilePosition.X, TilePosition.Y - 1),
-                    BuildingDirection.Down => new Point(TilePosition.X, TilePosition.Y + 1),
-                    _ => TilePosition
-                };
-            }
-        }
-
-        public virtual Point GetNextPosition()
-        {
-            return GetNextPositions().First();
-        }
-
-        public virtual IEnumerable<Point> GetBackPositions()
-        {
-            foreach (var dir in info.ReceivedDirections[buildingDirection])
-            {
-                yield return dir switch
-                {
-                    BuildingDirection.Right => new Point(TilePosition.X + 1, TilePosition.Y),
-                    BuildingDirection.Left => new Point(TilePosition.X - 1, TilePosition.Y),
-                    BuildingDirection.Up => new Point(TilePosition.X, TilePosition.Y - 1),
-                    BuildingDirection.Down => new Point(TilePosition.X, TilePosition.Y + 1),
-                    _ => TilePosition
-                };
-            }
-        }
-
-        public virtual Point GetBackPosition()
-        {
-            return GetBackPositions().First();
+            ConnectionManager.RefreshConnections(this);
         }
 
         public virtual Vector2 GetItemPosition(Vector2 worldPos, float local, ConveyorItem item)
@@ -155,7 +45,7 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
 
         public virtual void SetOutDir(ConveyorItem item)
         {
-            item.pastOutDir = this.info.OutputDirections[buildingDirection][0];
+            item.pastOutDir = GetPort("Output").Direction;
         }
 
         public Vector2 DefaultCalculate(Vector2 worldPos, float pos, BuildingDirection dir)
@@ -195,42 +85,14 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
         }
 
         //IItemAcceptorの実装
-        public virtual bool CanAccept(ConveyorItem item, BuildingDirection fromDir)
+        public virtual bool CanAccept(ConveyorItem item)
         {
-            foreach(var dir in info.ReceivedDirections[buildingDirection])
-            {
-                if (dir == fromDir)
-                {
-                    return TileLogic.CanAcceptItem();
-                }
-            }
-            return false;
+            return TileLogic.CanAcceptItem();
         }
 
-        public virtual bool TryAccept(ConveyorItem item, BuildingDirection fromDir)
+        public virtual bool TryAccept(ConveyorItem item)
         {
-            if(!CanAccept(item, fromDir))
-            {
-                return false;
-            }
-
             return TileLogic.TryAccept(item);
-        }
-
-        public IEnumerable<BuildingDirection> GetInputDirections()
-        {
-            foreach(var dir in info.ReceivedDirections[buildingDirection])
-            {
-                yield return dir;
-            }
-        }
-
-        public IEnumerable<BuildingDirection> GetOutputDirections()
-        {
-            foreach (var dir in info.OutputDirections[buildingDirection])
-            {
-                yield return dir;
-            }
         }
 
         public bool HasSpace()
@@ -243,16 +105,9 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
             return TileLogic.IsFull;
         }
 
-        public virtual bool CanPreviewAccept(ConveyorItem item, BuildingDirection fromDir)
+        public virtual bool CanPreviewAccept(ConveyorItem item)
         {
-            foreach(var dir in info.ReceivedDirections[buildingDirection])
-            {
-                if (dir == fromDir)
-                {
-                    return TileLogic.CanPreviewAccept(item);
-                }
-            }
-            return false;
+            return TileLogic.CanPreviewAccept(item);
         }
     }
 }

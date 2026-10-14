@@ -7,57 +7,9 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
 {
     public class ConveyorLeftMerge : Conveyor, IItemAcceptor, IMergeConveyor, IPureConveyor
     {
-        public ConveyorLeftMerge(BuildType type, Point pos, BuildingDirection outDir)
-            : base (type, pos, outDir)
-        { 
-        }
-
-        public override void UpdateLogic(GameTime gameTime)
+        public ConveyorLeftMerge(BuildType type, Point pos, BuildingDirection dir)
+            : base (type, pos, dir)
         {
-            if (UpdateConstructingState(gameTime))
-                return;
-
-            TileLogic.UpdateMerge(gameTime);
-        }
-
-        public void InitializeMergeTileStart()
-        {
-            TileLogic.InitializeMergeTileStart();
-        }
-
-        public override void InitializeConnections()
-        {
-            base.InitializeConnections();
-
-            //Debug.WriteLine("Merge InitializeConnections called");
-            var backs = new List<ConveyorTile>();
-
-            foreach(var pos in GetBackPosition()) 
-            {
-                var tile = GameCore.Instance.MapManager.Map.GetTile(pos.X, pos.Y);
-                if (tile?.Occupant is Conveyor c)
-                    backs.Add(c.TileLogic);
-            }
-
-            TileLogic.SetBackTiles(backs);
-
-            TileLogic.InitializeMergeTileStart();
-            
-        }
-
-        public new IEnumerable<Point> GetBackPosition()
-        {
-            foreach (var Indir in info.ReceivedDirections[buildingDirection])
-            {
-                yield return Indir switch
-                {
-                    BuildingDirection.Right => new Point(TilePosition.X + 1, TilePosition.Y),
-                    BuildingDirection.Left => new Point(TilePosition.X - 1, TilePosition.Y),
-                    BuildingDirection.Up => new Point(TilePosition.X, TilePosition.Y - 1),
-                    BuildingDirection.Down => new Point(TilePosition.X, TilePosition.Y + 1),
-                    _ => TilePosition
-                };
-            }
         }
 
         public override Vector2 GetItemPosition(Vector2 worldPos, float local, ConveyorItem item)
@@ -65,12 +17,12 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
             const float tileSize = 32f;
             const float itemSize = 24f;
 
-            if(item.pastOutDir == info.OutputDirections[buildingDirection][0])
+            if(item.pastOutDir == GetPort("MainInput").Direction.GetOpposite())
             {
                 return DefaultCalculate(worldPos, local, item.pastOutDir);
             }
 
-            Vector2 center = info.ReceivedDirections[buildingDirection][1] switch
+            Vector2 center = GetPort("SubInput").Direction switch
             {
                 BuildingDirection.Down => worldPos + new Vector2(0, tileSize),
                 BuildingDirection.Right => worldPos + new Vector2(tileSize, tileSize),
@@ -87,7 +39,7 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
 
             float angleOffset = traveled / radius;
 
-            float startAngle = info.ReceivedDirections[buildingDirection][1] switch
+            float startAngle = GetPort("SubInput").Direction switch
             {
                 BuildingDirection.Down => 0,
                 BuildingDirection.Left => MathF.PI * 0.5f,
