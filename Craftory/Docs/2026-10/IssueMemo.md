@@ -1,6 +1,6 @@
 ﻿# コンベアの方向バグの修正
 
-2026-9-?? ~ 2026-10-
+2026-9-?? ~ 2026-10-14(End)
 
 ## 問題
  
@@ -41,13 +41,76 @@ Registryでの方向の記載順序に関して規約がなかったためにCon
 
 Conveyor系のGetNextPositionとGetBackPosition系の処理に関して、ConnectionManagerへの集約を考えると整理する必要がある。
 
+ConnectionManagerを作成する前に、BuildingPortを作成して建物の出入り口に関する処理をまとめることにする。
+それに関係してBuildingInfoに保持している以下の情報は削除対象になりえる。
+
+- ReceivedDirections
+- OutputDirections
+- ReceivedTileOffsetsByDirection
+- OutputTileOffsetsByDirection
+
+Portに関する定義がおおよそ完了したのでConnectionManagerの実装をする。実装後にそれぞれの建物の接続管理をConnectionManagerの実装を元に
+整理する。
+
+ConnectionManagerについての実装で、
+- MapManagerのNotifyNeighborsOfChange
+- Conveyor系の接続
+- ConveyorTile（済）
+以上の3ファイルに渡ってある接続関係に関する処理を追加で整理する必要が出てきた。まずはConveyorTileに関する処理から行う方針にする。
+
+ConveyorTileを整理する上で、ConveyorItemのGlobalPositionの必要性を考えると必要ない可能性が高い。
+そのため、削除対象として代わりにLocalPositionとCurrentTileを追加してItemの位置を管理することにする。ConveyorTileのTileStartも必要なくなる
+ため削除する。 => ConveyorTileの整理終了
+
+ConnectionManagerの実装をする。MapManagerの隣接タイルの接続を再更新する関数を削除し、ConnectionManagerに同じ役割をもつ
+RefreshNeighborConnectionsとして実装した。
+
+Merge系のアイテムの移動に関する接続に関してバグが出た。調べた結果Mergeのテストとして利用していたLeftMergeの定義ミスが見つかった。
+ただ、それでもアイテムの搬送接続に失敗するバグは残っていた。
+
+Merge系のアイテムの搬送接続に関してはConnectionManagerのCanConnectがOut->In方向にしか接続判定をtrueで返さないことが理由だった。
+今回の修正ではOut->In OR In -> Outの双方向接続が可能なように実装を変更した。また、今後の実装方針としてPort同士の接続
+に関しては方向はなく、In、Outはあくまで接続の条件として扱うことにする。
 
 
-## 次回作業用結論
+## 次回作業用メモ
  
 - BuildingInstanceのbuildingDirectionは建物画像基準の向きを表す変数とする。
 - BuildingInfoを方向情報の管理元とする。
-- BuildingInstanceのInDirectionsとOutDirectionsは削除する。
-- DirectionResolverは責務重複のため保留または削除候補とする。
+- BuildingInstanceのInDirectionsとOutDirectionsは削除する。(済)
+- DirectionResolverは責務重複のため保留または削除候補とする。(済)
 - 接続管理は今後ConnectionManagerへ分離する。
 - Conveyor系とConveyorTileのGetNextPositionなどのConnectionに関係する関数について集約する前に整理する必要がある。
+- BuildingPortについてBuildingPortFactoryを経由してインスタンス生成をするようにする。
+- ConnectionManagerを作成して接続管理を分離する。=> Conveyor系の内容を整理して動かせるようにする。（済）
+
+# Mergeコンベアの描画の不安定性
+
+2026-10-14 ~ 2026-10-15
+
+## 問題
+
+MergeコンベアについてDrillに直接隣接して接続した場合に搬入されたアイテムの描画が不安定になり、
+描画されたりされなかったりする。
+
+## 原因
+
+Conveyorを介した流れでは安定して描画されるため、初期化生成されたConveyorItemの描画だけ不安定になっていると考えられる。
+調査した結果、Drillが生成したConveyorItemは currentDirectionおよびpastOutDirが BuildingDirection.Noneの状態で ConveyorTileへ搬入されていた。
+そのためMerge系の描画処理で 方向情報を利用した分岐に入れず、 Exceptionが発生していた。
+
+## 対応方針
+
+ConveyorやConveyorMergeなどの方向分岐のSwitch文やif文の分岐で設計上あり得ない落ちてはいけない分岐にはVector2.Zeroやとりあえずの位置を返すのではなくExceptionを
+出るようにして原因がわかりやすくなるようにする。
+ConveyorTileにDrillからアイテムを搬入した際にDraw()でcurrentOutDirやpastOutDirを描画に利用するのだが、その初期化が間に合っていない
+ことが原因でBuildingDirection.Noneになってしまい異常な描画がされてしまうようだった。
+IItemAccepterのTryAcceptに方向の初期化をまとめて行うようにし、同時にConveyorTileのTryAcceptも方向の初期化がアイテムの移動とともに行われるように変更した。
+
+## 進行中メモ
+
+なし
+
+## 次回作業用メモ
+
+- 搬送方向の初期化処理はTryAccept()が今後担う

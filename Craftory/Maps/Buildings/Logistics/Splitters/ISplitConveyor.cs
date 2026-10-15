@@ -4,6 +4,5 @@ namespace Craftory.Maps.Buildings.Logistics.Splitters
 {
     public interface ISplitConveyor
     {
-        IEnumerable<Point> GetNextPositions();
     }
 }

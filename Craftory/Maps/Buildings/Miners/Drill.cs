@@ -52,7 +52,7 @@ namespace Craftory.Maps.Buildings.Miners
             var itemType = ResourceToItemConvertor.Convert(type);
 
             if(bufferItem == null)
-                bufferItem = new ConveyorItem { Type = itemType };
+                bufferItem = ConveyorItem.Create(itemType);
 
 
             foreach (var tilePos in GetOccupiedTiles())
@@ -66,9 +66,10 @@ namespace Craftory.Maps.Buildings.Miners
                     {
                         if(bufferItem != null)
                         {
+                            bufferItem.InitializeDirections(dir.dir, dir.dir);
+
                             if (TryOutputFair(bufferItem))
                             {
-                                bufferItem.pastOutDir = dir.dir;
                                 bufferItem = null;
                             }
                         }
@@ -82,6 +83,7 @@ namespace Craftory.Maps.Buildings.Miners
             if (bufferItem == null)
                 return;
 
+            
             if (TryOutputFair(bufferItem))
                 bufferItem = null;
         }

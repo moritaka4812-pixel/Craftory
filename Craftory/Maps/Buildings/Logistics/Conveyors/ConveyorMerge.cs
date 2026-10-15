@@ -1,66 +1,16 @@
 ﻿using Point = Microsoft.Xna.Framework.Point;
 using Color = Microsoft.Xna.Framework.Color;
 using Craftory.Core;
+using System.Diagnostics;
 
 namespace Craftory.Maps.Buildings.Logistics.Conveyors
 {
     public class ConveyorMerge : Conveyor, IItemAcceptor, IMergeConveyor, IPureConveyor
     {
-        public ConveyorMerge(BuildType type, Point pos, BuildingDirection outDir)
-            : base(type, pos, outDir)
+        public ConveyorMerge(BuildType type, Point pos, BuildingDirection dir)
+            : base(type, pos, dir)
         {
         }
-
-        public override void UpdateLogic(GameTime gameTime)
-        {
-            if (UpdateConstructingState(gameTime))
-                return;
-
-            TileLogic.UpdateMerge(gameTime);
-        }
-
-        public void InitializeMergeTileStart()
-        {
-            TileLogic.InitializeMergeTileStart();
-        }
-
-        public override void InitializeConnections()
-        {
-            base.InitializeConnections();
-
-            var backs = new List<ConveyorTile>();
-
-            foreach(var pos in GetBackPosition())
-            {
-                var tile = GameCore.Instance.MapManager.Map.GetTile(pos.X, pos.Y);
-                if(tile?.Occupant is Conveyor c)
-                {
-                    backs.Add(c.TileLogic);
-                    c.TileLogic.InitializeTileStart();
-                }
-            }
-
-            TileLogic.SetBackTiles(backs);
-            TileLogic.InitializeMergeTileStart();
-
-
-        }
-
-        public new IEnumerable<Point> GetBackPosition()
-        {
-            foreach (var Indir in info.ReceivedDirections[buildingDirection])
-            {
-                yield return Indir switch
-                {
-                    BuildingDirection.Right => new Point(TilePosition.X + 1, TilePosition.Y),
-                    BuildingDirection.Left => new Point(TilePosition.X - 1, TilePosition.Y),
-                    BuildingDirection.Up => new Point(TilePosition.X, TilePosition.Y -1),
-                    BuildingDirection.Down => new Point(TilePosition.X, TilePosition.Y + 1),
-                    _ => TilePosition
-                };
-            }
-        }
-
         public override Vector2 GetItemPosition(Vector2 worldPos, float local, ConveyorItem item)
         {
             const float tileSize = 32f;
@@ -75,14 +25,14 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
 
             float angleOffset = traveled / radius;
 
-            if (item.pastOutDir == info.OutputDirections[buildingDirection][0])
+            if (item.pastOutDir == GetPort("MainInput").Direction.GetOpposite())
             {
                 return DefaultCalculate(worldPos, local, item.pastOutDir);
             }
 
-            if (item.pastOutDir == info.ReceivedDirections[buildingDirection][2].GetOpposite()) //右回り
+            if (item.pastOutDir == GetPort("RightInput").Direction.GetOpposite()) //右回り
             {
-                Vector2 center = info.ReceivedDirections[buildingDirection][2] switch
+                Vector2 center = GetPort("RightInput").Direction switch
                 {
                     BuildingDirection.Down => worldPos + new Vector2(tileSize, tileSize),
                     BuildingDirection.Right => worldPos + new Vector2(tileSize, 0),
@@ -90,7 +40,7 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
                     BuildingDirection.Left => worldPos + new Vector2(0, tileSize),
                 };
 
-                float startAngle = info.ReceivedDirections[buildingDirection][2] switch
+                float startAngle = GetPort("RightInput").Direction switch
                 {
                     BuildingDirection.Down => MathF.PI * 1f,
                     BuildingDirection.Left => MathF.PI * 1.5f,
@@ -108,9 +58,9 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
                 return arcCenterPos - new Vector2(itemSize / 2, itemSize / 2);
             }
 
-            if (item.pastOutDir == info.ReceivedDirections[buildingDirection][1].GetOpposite()) //左回り
+            if (item.pastOutDir == GetPort("LeftInput").Direction.GetOpposite()) //左回り
             {
-                Vector2 center = info.ReceivedDirections[buildingDirection][1] switch
+                Vector2 center = GetPort("LeftInput").Direction switch
                 { 
                     BuildingDirection.Down => worldPos + new Vector2(0, tileSize),
                     BuildingDirection.Right => worldPos + new Vector2(tileSize, tileSize),
@@ -118,7 +68,7 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
                     BuildingDirection.Left => worldPos + new Vector2(0, 0)
                 };
 
-                float startAngle = info.ReceivedDirections[buildingDirection][1] switch
+                float startAngle = GetPort("LeftInput").Direction switch
                 {
                     BuildingDirection.Down => 0,
                     BuildingDirection.Left => MathF.PI * 0.5f,
@@ -136,7 +86,7 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
                 return arcCenterPos - new Vector2(itemSize / 2, itemSize / 2);
             }
 
-            return Vector2.Zero;
+            throw new Exception("No draw merge candidate in ConveyorMerge GetItemPosition()");
         }
     }
 }

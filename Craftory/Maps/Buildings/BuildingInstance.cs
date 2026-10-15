@@ -16,6 +16,7 @@ namespace Craftory.Maps.Buildings
     public class BuildingInstance : ITileOccupant
     {
         protected int outputIndex = 0; //出力方向のラウンドロビンキャッシュ
+        public int OutputIndex => outputIndex; //読み取り専用
         public BuildType Type { get; private set; }     // 建物の種類
         public Point TilePosition { get; private set; } //タイル座標
         public Point SizeInTiles { get; private set; }  //タイル単位の大きさ
@@ -26,6 +27,9 @@ namespace Craftory.Maps.Buildings
         public float BuildProgress { get; private set; }
         public float BuildTime { get; private set; }
         public BuildingDirection buildingDirection; //入出力に寄らない建物の向き (画像準拠)
+        public List<BuildingPort> Ports { get; private set; }
+        public List<BuildingPort> InputPorts { get; } = new List<BuildingPort>();
+        public List<BuildingPort> OutputPorts { get; } = new List<BuildingPort>();
 
         public TileAnimation Anim;
         public BuildingInfo info;
@@ -54,6 +58,16 @@ namespace Craftory.Maps.Buildings
             }
 
             buildingDirection = dir;
+
+            Ports = BuildingPortFactory.CreatePorts(this, info, buildingDirection);
+            foreach(var port in Ports)
+            {
+                if (port.Pattern == PortPattern.Input || port.Pattern == PortPattern.InputOutput)
+                    InputPorts.Add(port);
+
+                if (port.Pattern == PortPattern.Output || port.Pattern == PortPattern.InputOutput)
+                    OutputPorts.Add(port);
+            }
 
             State = BuildState.Constructing;
             BuildProgress = 0f;
@@ -149,54 +163,27 @@ namespace Craftory.Maps.Buildings
             }
         }
 
-
-        protected List<(IItemAcceptor acceptor, BuildingDirection fromDir)> GetOutputAcceptors()
-        {
-            var list = new List<(IItemAcceptor, BuildingDirection)>();
-
-            var outputOffsets =
-            info.OutputTileOffsetsByDirection[buildingDirection];
-
-            var outputDirections =
-            info.OutputDirections[buildingDirection];
-
-            foreach (var offset in outputOffsets)
-            {
-                var outputTile = TilePosition + offset;
-
-                foreach (var dir in outputDirections)
-                {
-                    var nextPos = outputTile + dir.GetPoint();
-
-                    var tile = GameCore.Instance.MapManager.Map.GetTile(
-                    nextPos.X,
-                    nextPos.Y);
-
-                    if (tile?.Occupant is IItemAcceptor acceptor)
-                    {
-                        list.Add((acceptor, dir.GetOpposite()));
-                    }
-                }
-            }
-
-            return list;
-        }
-
         protected bool TryOutputFair(ConveyorItem item)
-        {
-            var outputs = GetOutputAcceptors();
-
-            if (outputs.Count == 0)
+        {　
+            if (OutputPorts.Count == 0)
                 return false;
 
-            int count = outputs.Count;
+            int count = OutputPorts.Count;
 
             for(int i=0; i< count; i++)
             {
                 var idx = (outputIndex + i) % count;
-                var (acceptor, dir) = outputs[idx];
+                var candidatePort = OutputPorts[idx];
 
-                if(acceptor.TryAccept(item, dir))
+                var targetBuilding = candidatePort.ConnectedPort?.Owner;
+
+                if (targetBuilding is not IItemAcceptor acceptor)
+                    continue;
+
+                if (!acceptor.CanAccept(item))
+                    continue;
+
+                if (acceptor.TryAccept(item, candidatePort.Direction))
                 {
                     outputIndex = (idx + 1) % count;
                     return true;
@@ -204,6 +191,11 @@ namespace Craftory.Maps.Buildings
             }
 
             return false;
+        }
+
+        public BuildingPort? GetPort(string name)
+        {
+            return Ports.FirstOrDefault(p => p.Name == name);
         }
     }
 }

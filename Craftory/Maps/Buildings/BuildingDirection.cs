@@ -25,6 +25,30 @@ namespace Craftory.Maps.Buildings
             };
         }
 
+        public static BuildingDirection RotateClockWise(this BuildingDirection dir)
+        {
+            return dir switch
+            {
+                BuildingDirection.Right => BuildingDirection.Down,
+                BuildingDirection.Down => BuildingDirection.Left,
+                BuildingDirection.Left => BuildingDirection.Up,
+                BuildingDirection.Up => BuildingDirection.Right,
+                _ => BuildingDirection.None
+            };
+        }
+
+        public static BuildingDirection RotateCounterClockWise(this BuildingDirection dir)
+        {
+            return dir switch
+            {
+                BuildingDirection.Right => BuildingDirection.Up,
+                BuildingDirection.Up => BuildingDirection.Left,
+                BuildingDirection.Left => BuildingDirection.Down,
+                BuildingDirection.Down => BuildingDirection.Right,
+                _ => BuildingDirection.None
+            };
+        }
+
         public static Point GetPoint(this BuildingDirection dir)
         {
             switch (dir)
