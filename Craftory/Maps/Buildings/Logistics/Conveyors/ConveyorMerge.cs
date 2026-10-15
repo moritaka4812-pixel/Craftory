@@ -1,6 +1,7 @@
 ﻿using Point = Microsoft.Xna.Framework.Point;
 using Color = Microsoft.Xna.Framework.Color;
 using Craftory.Core;
+using System.Diagnostics;
 
 namespace Craftory.Maps.Buildings.Logistics.Conveyors
 {
@@ -85,7 +86,7 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
                 return arcCenterPos - new Vector2(itemSize / 2, itemSize / 2);
             }
 
-            return Vector2.Zero;
+            throw new Exception("No draw merge candidate in ConveyorMerge GetItemPosition()");
         }
     }
 }

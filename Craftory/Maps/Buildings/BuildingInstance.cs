@@ -183,7 +183,7 @@ namespace Craftory.Maps.Buildings
                 if (!acceptor.CanAccept(item))
                     continue;
 
-                if (acceptor.TryAccept(item))
+                if (acceptor.TryAccept(item, candidatePort.Direction))
                 {
                     outputIndex = (idx + 1) % count;
                     return true;

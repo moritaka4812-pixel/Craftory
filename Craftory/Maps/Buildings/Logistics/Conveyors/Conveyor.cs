@@ -1,6 +1,7 @@
 ﻿using Craftory.Core;
 using Point = Microsoft.Xna.Framework.Point;
 using Color = Microsoft.Xna.Framework.Color;
+using System.Diagnostics;
 
 namespace Craftory.Maps.Buildings.Logistics.Conveyors
 {
@@ -16,7 +17,9 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
 
         public virtual BuildingDirection GetDirectionForItem(ConveyorItem item)
         {
-            return GetPort("Output").Direction;
+            var outputPort = GetPort("Output").Direction;
+
+            return outputPort;
         }
 
         public override void UpdateLogic(GameTime gameTime)
@@ -77,7 +80,7 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
                     worldPos.Y + pos * tileSize
                 ),
 
-                _ => worldPos + new Vector2(tileSize / 2f, tileSize / 2f)
+                _ => throw new Exception($"undefined direction in Conveyor DefaultCalculat. dir = {dir}")
             };
 
             var drawPos = centerPos - new Vector2(itemSize / 2f, itemSize / 2f);
@@ -90,9 +93,9 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
             return TileLogic.CanAcceptItem();
         }
 
-        public virtual bool TryAccept(ConveyorItem item)
+        public virtual bool TryAccept(ConveyorItem item, BuildingDirection dir)
         {
-            return TileLogic.TryAccept(item);
+            return TileLogic.TryAccept(item, dir);
         }
 
         public bool HasSpace()

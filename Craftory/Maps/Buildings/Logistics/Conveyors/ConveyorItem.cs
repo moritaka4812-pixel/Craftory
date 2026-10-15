@@ -24,5 +24,11 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
                 arrivalTime = null
             };
         }
+
+        public void InitializeDirections(BuildingDirection currentDirection, BuildingDirection pastOutDir)
+        {
+            this.currentDirection = currentDirection;
+            this.pastOutDir = pastOutDir;
+        }
     }
 }

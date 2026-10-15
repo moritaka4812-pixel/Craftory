@@ -56,9 +56,9 @@ namespace Craftory.Maps.Buildings.Logistics.Splitters
         }
 
         // ConveyorTile の nextTile は使わないのでそのまま受け入れ
-        public override bool TryAccept(ConveyorItem item)
+        public override bool TryAccept(ConveyorItem item, BuildingDirection dir)
         {
-            return TileLogic.TryAccept(item);
+            return TileLogic.TryAccept(item, dir);
         }
 
 
