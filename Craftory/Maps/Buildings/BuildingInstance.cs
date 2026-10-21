@@ -163,10 +163,10 @@ namespace Craftory.Maps.Buildings
             }
         }
 
-        protected bool TryOutputFair(ConveyorItem item)
+        protected BuildingPort? TryOutputFair(ConveyorItem item)
         {　
             if (OutputPorts.Count == 0)
-                return false;
+                return null;
 
             int count = OutputPorts.Count;
 
@@ -180,17 +180,17 @@ namespace Craftory.Maps.Buildings
                 if (targetBuilding is not IItemAcceptor acceptor)
                     continue;
 
-                if (!acceptor.CanAccept(item))
+                if (!acceptor.CanAccept(item, candidatePort))
                     continue;
 
-                if (acceptor.TryAccept(item, candidatePort.Direction))
+                if (acceptor.TryAccept(item, candidatePort))
                 {
                     outputIndex = (idx + 1) % count;
-                    return true;
+                    return candidatePort;
                 }
             }
 
-            return false;
+            return null;
         }
 
         public BuildingPort? GetPort(string name)

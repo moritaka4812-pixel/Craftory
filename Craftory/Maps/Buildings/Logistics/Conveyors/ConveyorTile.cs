@@ -104,9 +104,9 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
                     }
                 }
 
-                var outDir = ownerConveyor.OutputPorts[ownerConveyor.OutputIndex].Direction;
+                var outPort = ownerConveyor.OutputPorts[ownerConveyor.OutputIndex];
 
-                if (NextOut != null && NextOut.TryAccept(first, outDir))
+                if (NextOut != null && NextOut.TryAccept(first, outPort))
                 {
                     ownerConveyor.SetOutDir(first);
                 }
@@ -119,7 +119,7 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
             }
         }
 
-        public bool TryAccept(ConveyorItem item, BuildingDirection dir)
+        public bool TryAccept(ConveyorItem item, BuildingPort senderPort)
         {
             if (Items.Count >= 2)
             {
@@ -130,7 +130,7 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
             if (Items.Count == 1 && Items[0].LocalPosition < 0.5f) //まだアイテムが半分を過ぎていない
                 return false;
 
-            item.InitializeDirections(dir, dir);
+            item.InitializeDirections(senderPort.Direction, senderPort.Direction);
             item.currentDirection = ownerConveyor.GetDirectionForItem(item);
             item.pastTile = item.CurrentTile;
             item.pastTile?.Items.Remove(item);
@@ -190,7 +190,7 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
             return true;
         }
 
-        public bool CanPreviewAccept(ConveyorItem item)
+        public bool CanPreviewAccept(ConveyorItem item, BuildingPort senderPort)
         {
             return HasSpace();
         }

@@ -68,7 +68,7 @@ namespace Craftory.Maps.Buildings.Miners
                         {
                             bufferItem.InitializeDirections(dir.dir, dir.dir);
 
-                            if (TryOutputFair(bufferItem))
+                            if (TryOutputFair(bufferItem) != null)
                             {
                                 bufferItem = null;
                             }
@@ -84,7 +84,7 @@ namespace Craftory.Maps.Buildings.Miners
                 return;
 
             
-            if (TryOutputFair(bufferItem))
+            if (TryOutputFair(bufferItem) != null)
                 bufferItem = null;
         }
     }

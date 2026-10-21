@@ -88,14 +88,14 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
         }
 
         //IItemAcceptorの実装
-        public virtual bool CanAccept(ConveyorItem item)
+        public virtual bool CanAccept(ConveyorItem item, BuildingPort senderPort)
         {
             return TileLogic.CanAcceptItem();
         }
 
-        public virtual bool TryAccept(ConveyorItem item, BuildingDirection dir)
+        public virtual bool TryAccept(ConveyorItem item, BuildingPort senderPort)
         {
-            return TileLogic.TryAccept(item, dir);
+            return TileLogic.TryAccept(item, senderPort);
         }
 
         public bool HasSpace()
@@ -108,9 +108,9 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
             return TileLogic.IsFull;
         }
 
-        public virtual bool CanPreviewAccept(ConveyorItem item)
+        public virtual bool CanPreviewAccept(ConveyorItem item, BuildingPort senderPort)
         {
-            return TileLogic.CanPreviewAccept(item);
+            return TileLogic.CanPreviewAccept(item, senderPort);
         }
     }
 }
