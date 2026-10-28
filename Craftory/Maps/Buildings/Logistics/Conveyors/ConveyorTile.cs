@@ -92,7 +92,15 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
                 if (first.arrivalTime == null)
                     first.arrivalTime = GameCore.Instance.Time;
 
-                var NextOut = OutputTiles[ownerConveyor.OutputIndex];
+                int? idx = ownerConveyor.PeekOutputIndex();
+
+                if(idx == null)
+                {
+                    first.LocalPosition = tileEnd;
+                    return;
+                }
+
+                var NextOut = OutputTiles[(int)idx];
 
                 if (NextOut?.ownerConveyor is IMergeConveyor)
                 {
@@ -104,11 +112,12 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
                     }
                 }
 
-                var outPort = ownerConveyor.OutputPorts[ownerConveyor.OutputIndex];
+                var outPort = ownerConveyor.OutputPorts[(int)idx];
 
                 if (NextOut != null && NextOut.TryAccept(first, outPort))
                 {
-                    ownerConveyor.SetOutDir(first);
+                    first.currentDirection = outPort.Direction;
+                    ownerConveyor.AdvanceOutputIndex((int)idx);
                 }
                 else
                 {

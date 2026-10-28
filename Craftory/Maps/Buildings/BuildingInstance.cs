@@ -16,7 +16,6 @@ namespace Craftory.Maps.Buildings
     public class BuildingInstance : ITileOccupant
     {
         protected int outputIndex = 0; //出力方向のラウンドロビンキャッシュ
-        public int OutputIndex => outputIndex; //読み取り専用
         public BuildType Type { get; private set; }     // 建物の種類
         public Point TilePosition { get; private set; } //タイル座標
         public Point SizeInTiles { get; private set; }  //タイル単位の大きさ
@@ -164,7 +163,7 @@ namespace Craftory.Maps.Buildings
             }
         }
 
-        protected BuildingPort? TryOutputFair(ConveyorItem item)
+        public BuildingPort? TryOutputFair(ConveyorItem item)
         {　
             if (OutputPorts.Count == 0)
                 return null;
@@ -192,6 +191,48 @@ namespace Craftory.Maps.Buildings
             }
 
             return null;
+        }
+
+        public BuildingPort? PeekOutputPort(ConveyorItem item = null)
+        {
+            var idx = FindOutputIndex(item);
+
+            return idx == null ? null : OutputPorts[idx.Value];
+        }
+
+        public int? PeekOutputIndex(ConveyorItem item = null)
+        {
+            return FindOutputIndex(item);
+        }
+
+        protected virtual int? FindOutputIndex(ConveyorItem? item)
+        {
+            item ??= new();
+
+            if (OutputPorts.Count == 0)
+                return null;
+
+            int count = OutputPorts.Count;
+
+            for (int i = 0; i < count; i++)
+            {
+                var idx = (outputIndex + i) % count;
+                var port = OutputPorts[idx];
+
+                var target = port.ConnectedPort?.Owner;
+
+                if (target is not IItemAcceptor acceptor)
+                    continue;
+
+                if (acceptor.CanAccept(item, port))
+                    return idx;
+            }
+
+            return null;
+        }
+
+        public virtual void AdvanceOutputIndex(int selectedIndex)
+        {
         }
 
         public BuildingPort? GetPort(string name)

@@ -46,11 +46,6 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
             return DefaultCalculate(worldPos, local, item.currentDirection);
         }
 
-        public virtual void SetOutDir(ConveyorItem item)
-        {
-            item.pastOutDir = GetPort("Output").Direction;
-        }
-
         public Vector2 DefaultCalculate(Vector2 worldPos, float pos, BuildingDirection dir)
         {
             const float tileSize = 32f;

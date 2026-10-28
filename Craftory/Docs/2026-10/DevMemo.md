@@ -1,6 +1,6 @@
 ﻿# タイトル
 
-yyyy-mm-dd ~ yyyy-mm-dd
+2026-10-28 ~ 2026-10-28
 
 ## 追加内容
 
@@ -14,7 +14,9 @@ BuildingInstanceに標準で実装されているTryOutputFair(item)を利用し
 
 ## 進行中メモ
 
-
+BuildingInstanceの標準で実装されているTryOutputFair()だけでは情報の取得できる関数として不足していたので、PeekOutputPort()を
+実装とPeekOutputIndex()を実装した。他にもBuildingInstanceの派生先でOutputIndexを利用した処理ができるように
+AdvanceOutputIndexを空実装した。SplitterではAdvanceOutputIndexをOverrideしてOutputIndexを進める実装をした。
 
 ## 次回作業用メモ
 

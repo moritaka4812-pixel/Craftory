@@ -11,6 +11,7 @@ namespace Craftory.Maps.Buildings.Logistics.Splitters
     {
         private float blinkTimer = 0f;
         private bool isBlinking = false;
+        private BuildingDirection blinkDir;
 
         public Splitter(string id, Point pos, BuildingDirection dir)
             : base(id, pos, dir)
@@ -37,22 +38,18 @@ namespace Craftory.Maps.Buildings.Logistics.Splitters
         // アイテムの方向決定
         public override BuildingDirection GetDirectionForItem(ConveyorItem item)
         {
-            if (item.LocalPosition < 0.5f)
-                return item.currentDirection;
-
-            // TryOutputFair が内部で outputIndex を進めるのでここでは参照だけ
-            return OutputPorts[outputIndex % OutputPorts.Count].Direction;
+            return item.currentDirection;
         }
 
 
         // 出力方向を進める + 点滅開始
-        public override void SetOutDir(ConveyorItem item)
+        public override void AdvanceOutputIndex(int selectedIndex)
         {
-            isBlinking = true;
             blinkTimer = 0.15f;
+            isBlinking = true;
+            blinkDir = OutputPorts[selectedIndex].Direction;
 
-            // 公平な出力処理を呼ぶ
-            TryOutputFair(item);
+            outputIndex = (selectedIndex + 1) % OutputPorts.Count;
         }
 
         // ConveyorTile の nextTile は使わないのでそのまま受け入れ
@@ -72,48 +69,54 @@ namespace Craftory.Maps.Buildings.Logistics.Splitters
             // Active（黄色部分）
             if (isBlinking)
             {
-                var outDir = buildingDirection; // 仮代入
                 sb.Draw(
-                    info.CachedActiveTextures[outDir],
+                    info.CachedActiveTextures[blinkDir],
                     worldPos,
                     Color.White
                 );
             }
         }
 
-        // Splitter の排出口は直線だと不自然なのでカーブ補正を入れる
         public override Vector2 GetItemPosition(Vector2 worldPos, float local, ConveyorItem item)
         {
-            return GetCurvedPosition(worldPos, local, item.currentDirection);
+            return SplitCalculate(worldPos, local, item.currentDirection);
         }
 
-        private Vector2 GetCurvedPosition(Vector2 worldPos, float local, BuildingDirection dir)
+        public Vector2 SplitCalculate(Vector2 worldPos, float pos, BuildingDirection dir)
         {
             const float tileSize = 32f;
             const float itemSize = 24f;
+            const float centerOffset = (tileSize - itemSize) / 2f; //タイル中央への補正
 
-            Vector2 center = worldPos + new Vector2(tileSize / 2f, tileSize / 2f);
-
-            float radius = tileSize / 2f;
-            float angle = local * (MathF.PI / 2f);
-
-            float baseAngle = dir switch
+            pos = MathF.Min(pos, 0.5f);
+            // アイテム中心を返す
+            Vector2 centerPos = dir switch
             {
-                BuildingDirection.Up => MathF.PI,
-                BuildingDirection.Right => MathF.PI * 1.5f,
-                BuildingDirection.Down => 0f,
-                BuildingDirection.Left => MathF.PI * 0.5f,
-                _ => 0f
+                BuildingDirection.Right => new Vector2(
+                    worldPos.X + pos * tileSize,
+                    worldPos.Y + tileSize / 2f
+                ),
+
+                BuildingDirection.Left => new Vector2(
+                    worldPos.X + (1 - pos) * tileSize,
+                    worldPos.Y + tileSize / 2f
+                ),
+
+                BuildingDirection.Up => new Vector2(
+                    worldPos.X + tileSize / 2f,
+                    worldPos.Y + (1 - pos) * tileSize
+                ),
+
+                BuildingDirection.Down => new Vector2(
+                    worldPos.X + tileSize / 2f,
+                    worldPos.Y + pos * tileSize
+                ),
+
+                _ => throw new Exception($"undefined")
             };
 
-            float finalAngle = baseAngle + angle;
-
-            Vector2 pos = new Vector2(
-                center.X + MathF.Cos(finalAngle) * radius,
-                center.Y + MathF.Sin(finalAngle) * radius
-            );
-
-            return pos - new Vector2(itemSize / 2f, itemSize / 2f);
+            var drawPos = centerPos - new Vector2(itemSize / 2f, itemSize / 2f);
+            return drawPos;
         }
     }
 }
