@@ -25,10 +25,10 @@ namespace Craftory.Controller.BuildMode
             dragConveyorDirection = null;
         }
 
-        public void OnClick(Point p, Tile tile, Vector2 worldPos, BuildType type, BuildingDirection direction)
+        public void OnClick(Point p, Tile tile, Vector2 worldPos, string BuildingId, BuildingDirection direction)
         {
-            var info = BuildingRegistry.Data[type];
-            var candidate = new BuildCandidate { Origin = p, Type = type, Direction = direction };
+            var info = BuildingRegistry.Data[BuildingId];
+            var candidate = new BuildCandidate { Origin = p, BuildingId = BuildingId, Direction = direction };
 
             preview.AddPreview(p, candidate, info);
 
@@ -36,15 +36,15 @@ namespace Craftory.Controller.BuildMode
             dragConveyorDirection = null;
         }
 
-        public void OnDrag(Point p, Tile tile, Vector2 worldPos, BuildType type, BuildingDirection direction)
+        public void OnDrag(Point p, Tile tile, Vector2 worldPos, string BuildingId, BuildingDirection direction)
         {
-            if (type == BuildType.Conveyor)
+            if (BuildingId == "Conveyor_Straight")
             {
                 HandleConveyorDrag(p);
             }
             else
             {
-                HandleNormalDrag(p, type, direction);
+                HandleNormalDrag(p, BuildingId, direction);
             }
         }
 
@@ -88,23 +88,23 @@ namespace Craftory.Controller.BuildMode
                 var candidate = new BuildCandidate
                 {
                     Origin = p,
-                    Type = BuildType.Conveyor,
+                    BuildingId = "Conveyor_Straight",
                     Direction = dir
                 };
 
-                var info = BuildingRegistry.Data[BuildType.Conveyor];
+                var info = BuildingRegistry.Data["Conveyor_Straight"];
                 preview.AddPreview(p, candidate, info);
             }
 
             lastDragOrigin = current;
         }
 
-        private void HandleNormalDrag(Point p, BuildType type, BuildingDirection direction)
+        private void HandleNormalDrag(Point p, string BuildingId, BuildingDirection direction)
         {
             if (lastDragOrigin == p) return;
 
-            var info = BuildingRegistry.Data[type];
-            var candidate = new BuildCandidate { Origin = p, Type = type, Direction = direction };
+            var info = BuildingRegistry.Data[BuildingId];
+            var candidate = new BuildCandidate { Origin = p, BuildingId = BuildingId, Direction = direction };
 
             preview.AddPreview(p, candidate, info);
 

@@ -9,12 +9,12 @@ namespace Craftory.Maps.Buildings
     public static class BuildingRegistry
     {
 
-        public static Dictionary<BuildType, BuildingInfo> Data =
+        public static Dictionary<string, BuildingInfo> Data =
             new()
             {
                 //Miners
                 {
-                    BuildType.Drill,
+                    "Drill",
                     new BuildingInfo()
                     {
                         TexturePaths = new()
@@ -68,12 +68,12 @@ namespace Craftory.Maps.Buildings
                         WorkSpeed = 0.25f,
                         BuildTime = 0,
                         AnimationMode = Tiles.TileAnimationMode.None,
-                        Create = (pos, dir) => new Drill(BuildType.Drill, pos)
+                        Create = (pos, dir) => new Drill("Drill", pos)
                     }
                 },
                 //Logistics.Conveyors
                 {
-                    BuildType.Conveyor,
+                    "Conveyor_Straight",
                     new BuildingInfo
                     {
                         TexturePaths = new()
@@ -111,11 +111,11 @@ namespace Craftory.Maps.Buildings
                         WorkSpeed = 1.0f,
                         BuildTime = 0,
                         AnimationMode = Tiles.TileAnimationMode.Rotate,
-                        Create = (pos, dir) => new Conveyor(BuildType.Conveyor, pos, dir)
+                        Create = (pos, dir) => new Conveyor("Conveyor_Straight", pos, dir)
                     }
                 },
                 {
-                    BuildType.ConveyorRightCurve,
+                    "Conveyor_RightCurve",
                     new BuildingInfo()
                     {
                         TexturePaths = new()
@@ -126,7 +126,7 @@ namespace Craftory.Maps.Buildings
                         {
 
                         },
-                        Type = BuildType.ConveyorRightCurve,
+                        Type = BuildType.Conveyor,
                         Width = 1,
                         Height = 1,
                         FrameCount = 5,
@@ -153,11 +153,11 @@ namespace Craftory.Maps.Buildings
                         WorkSpeed = 1.0f,
                         BuildTime = 0,
                         AnimationMode = Tiles.TileAnimationMode.Rotate,
-                        Create = (pos, inDir) => new ConveyorRightCurve(BuildType.ConveyorRightCurve, pos, inDir)
+                        Create = (pos, inDir) => new ConveyorRightCurve("Conveyor_RightCurve", pos, inDir)
                     }
                 },
                 {
-                    BuildType.ConveyorLeftCurve,
+                    "Conveyor_LeftCurve",
                     new BuildingInfo()
                     {
                         TexturePaths = new()
@@ -168,7 +168,7 @@ namespace Craftory.Maps.Buildings
                         {
 
                         },
-                        Type = BuildType.ConveyorLeftCurve,
+                        Type = BuildType.Conveyor,
                         Width = 1,
                         Height = 1,
                         FrameCount = 5,
@@ -195,11 +195,11 @@ namespace Craftory.Maps.Buildings
                         WorkSpeed = 1.0f,
                         BuildTime = 0,
                         AnimationMode = Tiles.TileAnimationMode.Rotate,
-                        Create = (pos, inDir) => new ConveyorLeftCurve(BuildType.ConveyorLeftCurve, pos, inDir)
+                        Create = (pos, inDir) => new ConveyorLeftCurve("Conveyor_LeftCurve", pos, inDir)
                     }
                 },
                 {
-                    BuildType.ConveyorRightMerge,
+                    "Conveyor_RightMerge",
                     new BuildingInfo()
                     {
                         TexturePaths = new ()
@@ -210,7 +210,7 @@ namespace Craftory.Maps.Buildings
                         {
 
                         },
-                        Type = BuildType.ConveyorRightMerge,
+                        Type = BuildType.Conveyor,
                         Width = 1,
                         Height = 1,
                         FrameCount = 5,
@@ -245,11 +245,11 @@ namespace Craftory.Maps.Buildings
                         WorkSpeed = 1.0f,
                         BuildTime = 0,
                         AnimationMode = Tiles.TileAnimationMode.Rotate,
-                        Create = (pos, outDir) => new ConveyorRightMerge(BuildType.ConveyorRightMerge, pos, outDir)
+                        Create = (pos, outDir) => new ConveyorRightMerge("Conveyor_RightMerge", pos, outDir)
                     }
                 },
                 {
-                    BuildType.ConveyorLeftMerge,
+                    "Conveyor_LeftMerge",
                     new BuildingInfo()
                     {
                         TexturePaths = new ()
@@ -260,7 +260,7 @@ namespace Craftory.Maps.Buildings
                         {
 
                         },
-                        Type = BuildType.ConveyorLeftMerge,
+                        Type = BuildType.Conveyor,
                         Width = 1,
                         Height = 1,
                         FrameCount = 5,
@@ -295,12 +295,12 @@ namespace Craftory.Maps.Buildings
                         WorkSpeed = 1.0f,
                         BuildTime= 0,
                         AnimationMode = Tiles.TileAnimationMode.Rotate,
-                        Create = (pos, outDir) => new ConveyorLeftMerge(BuildType.ConveyorLeftMerge, pos, outDir)
+                        Create = (pos, outDir) => new ConveyorLeftMerge("Conveyor_LeftMerge", pos, outDir)
                     }
                 },
 
                 {
-                    BuildType.ConveyorRightLeftMerge,
+                    "Conveyor_RightLeftMerge",
                     new BuildingInfo()
                     {
                         TexturePaths = new Dictionary<BuildingDirection, string>()
@@ -311,7 +311,7 @@ namespace Craftory.Maps.Buildings
                         {
 
                         },
-                        Type =BuildType.ConveyorRightLeftMerge,
+                        Type =BuildType.Conveyor,
                         Width = 1,
                         Height = 1,
                         FrameCount = 5,
@@ -345,12 +345,12 @@ namespace Craftory.Maps.Buildings
                         WorkSpeed = 1.0f,
                         BuildTime = 0,
                         AnimationMode = Tiles.TileAnimationMode.Rotate,
-                        Create = (pos, outDir) => new ConveyorRightLeftMerge(BuildType.ConveyorRightLeftMerge, pos, outDir)
+                        Create = (pos, outDir) => new ConveyorRightLeftMerge("Conveyor_RightLeftMerge", pos, outDir)
                     }
                 },
 
                 {
-                    BuildType.ConveyorMerge,
+                    "Conveyor_Merge",
                     new BuildingInfo()
                     {
                         TexturePaths = new Dictionary<BuildingDirection, string>()
@@ -361,7 +361,7 @@ namespace Craftory.Maps.Buildings
                         {
 
                         },
-                        Type = BuildType.ConveyorMerge,
+                        Type = BuildType.Conveyor,
                         Width = 1,
                         Height = 1,
                         FrameCount = 5,
@@ -402,13 +402,13 @@ namespace Craftory.Maps.Buildings
                         WorkSpeed = 1.0f,
                         BuildTime= 0,
                         AnimationMode = Tiles.TileAnimationMode.Rotate,
-                        Create = (pos, outDir) => new ConveyorMerge(BuildType.ConveyorMerge, pos, outDir)
+                        Create = (pos, outDir) => new ConveyorMerge("Conveyor_Merge", pos, outDir)
                     }
                 },
 
                 //Logistics.Splitters
                 {
-                    BuildType.Splitter,
+                    "Splitter",
                     new BuildingInfo()
                     {
                         TexturePaths= new Dictionary<BuildingDirection, string>()
@@ -463,7 +463,7 @@ namespace Craftory.Maps.Buildings
                         WorkSpeed= 1.0f,
                         BuildTime = 0,
                         AnimationMode = Tiles.TileAnimationMode.Rotate,
-                        Create = (pos, inDir) => new Splitter(BuildType.Splitter, pos, inDir)
+                        Create = (pos, inDir) => new Splitter("Splitter", pos, inDir)
                     }
                 }
             };

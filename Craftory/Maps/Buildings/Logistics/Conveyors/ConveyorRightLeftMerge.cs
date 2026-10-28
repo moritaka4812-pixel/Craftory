@@ -6,8 +6,8 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
 {
     public class ConveyorRightLeftMerge : Conveyor, IItemAcceptor, IMergeConveyor, IPureConveyor
     {
-        public ConveyorRightLeftMerge(BuildType type, Point pos, BuildingDirection dir)
-            : base(type, pos, dir)
+        public ConveyorRightLeftMerge(string id, Point pos, BuildingDirection dir)
+            : base(id, pos, dir)
         {
         }
 

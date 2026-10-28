@@ -43,16 +43,16 @@ namespace Craftory.ScreenUI
                 screen.toolControllerManager.Reset();
             };
 
-            toolPanel.OnBuildRequested += (type) =>
+            toolPanel.OnBuildRequested += (id) =>
             {
                 if(screen.toolControllerManager.CurrentController.IsActive == false && screen.toolControllerManager.CurrentController is not BuildModeController)
                 {
-                    screen.toolControllerManager.StartBuild(type);
+                    screen.toolControllerManager.StartBuild(id);
                 }
                 else
                 {
                     var controller = (BuildModeController)(screen.toolControllerManager.CurrentController);
-                    controller.SetCurrentType(type);
+                    controller.SetCurrentType(id);
                 }
             };
 

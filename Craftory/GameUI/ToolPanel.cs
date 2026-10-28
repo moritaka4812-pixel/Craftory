@@ -13,7 +13,7 @@ namespace Craftory.GameUI
     public class ToolPanel : UIElement
     {
         public Panel panel; //UI.Elements.Panel
-        public event Action<BuildType> OnBuildRequested;
+        public event Action<string> OnBuildRequested;
         public event Action OnResetRequested;
         public event Action OnRemoveRequested;
         private Button handleButton; //取って
@@ -41,15 +41,15 @@ namespace Craftory.GameUI
             list.RelativeWidth = 1f;
             list.BackgroundColor = new Color(30, 30, 30, 200);
 
-            AddBuildButton(ui, list, "Buildings/Miners/Drill", BuildType.Drill, 32);
-            AddBuildButton(ui, list, "Buildings/Logistics/Conveyors/ConveyorStraight", BuildType.Conveyor, 32);
-            AddBuildButton(ui, list, "Buildings/Logistics/Conveyors/ConveyorRightCurve", BuildType.ConveyorRightCurve, 32);
-            AddBuildButton(ui, list, "Buildings/Logistics/Conveyors/ConveyorLeftCurve", BuildType.ConveyorLeftCurve, 32);
-            AddBuildButton(ui, list, "Buildings/Logistics/Conveyors/ConveyorRightMerge", BuildType.ConveyorRightMerge, 32);
-            AddBuildButton(ui, list, "Buildings/Logistics/Conveyors/ConveyorLeftMerge", BuildType.ConveyorLeftMerge, 32);
-            AddBuildButton(ui, list, "Buildings/Logistics/Conveyors/ConveyorRightLeftMerge", BuildType.ConveyorRightLeftMerge, 32);
-            AddBuildButton(ui, list, "Buildings/Logistics/Conveyors/ConveyorMerge", BuildType.ConveyorMerge, 32);
-            AddBuildButton(ui, list, "Buildings/Logistics/Splitters/Splitter_Idle_Up", BuildType.Splitter, 32);
+            AddBuildButton(ui, list, "Buildings/Miners/Drill", "Drill", 32);
+            AddBuildButton(ui, list, "Buildings/Logistics/Conveyors/ConveyorStraight", "Conveyor_Straight", 32);
+            AddBuildButton(ui, list, "Buildings/Logistics/Conveyors/ConveyorRightCurve", "Conveyor_RightCurve", 32);
+            AddBuildButton(ui, list, "Buildings/Logistics/Conveyors/ConveyorLeftCurve", "Conveyor_LeftCurve", 32);
+            AddBuildButton(ui, list, "Buildings/Logistics/Conveyors/ConveyorRightMerge", "Conveyor_RightMerge", 32);
+            AddBuildButton(ui, list, "Buildings/Logistics/Conveyors/ConveyorLeftMerge", "Conveyor_LeftMerge", 32);
+            AddBuildButton(ui, list, "Buildings/Logistics/Conveyors/ConveyorRightLeftMerge", "Conveyor_RightLeftMerge", 32);
+            AddBuildButton(ui, list, "Buildings/Logistics/Conveyors/ConveyorMerge", "Conveyor_Merge", 32);
+            AddBuildButton(ui, list, "Buildings/Logistics/Splitters/Splitter_Idle_Up", "Splitter", 32);
 
             panel.AddChild(list);
 
@@ -81,7 +81,7 @@ namespace Craftory.GameUI
             closedX = (float) - panel.RelativeWidth;
         }
 
-        private void AddBuildButton(UIFactory ui, ScrollMultiList list, string label, BuildType type, int size)
+        private void AddBuildButton(UIFactory ui, ScrollMultiList list, string label, string id, int size)
         {
             var btn = ui.CreateImageButtonFrame(label, new Rect(0, 0, size, size));
             btn.OnClicked += () =>
@@ -100,7 +100,7 @@ namespace Craftory.GameUI
                 btn.IsToggle = true;
                 activeButton = btn;
 
-                OnBuildRequested?.Invoke(type);
+                OnBuildRequested?.Invoke(id);
             };
             list.Add(btn);
         }

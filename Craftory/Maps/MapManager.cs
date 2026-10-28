@@ -25,9 +25,9 @@ namespace Craftory.Maps
             shadowGenerator = new MapShadowGenerator(map, graphics);
         }
 
-        public void AddBuilding(BuildType type, Point tilePos, BuildingDirection dir)
+        public void AddBuilding(string Id, Point tilePos, BuildingDirection dir)
         {
-            var building = BuildingRegistry.Data[type].Create(tilePos, dir);
+            var building = BuildingRegistry.Data[Id].Create(tilePos, dir);
             
             foreach(var pos in building.OccupiedTiles)
             {

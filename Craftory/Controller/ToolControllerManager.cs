@@ -61,10 +61,10 @@ namespace Craftory.Controller
             SetMode(GameMode.None);
         }
 
-        public void StartBuild(BuildType type)
+        public void StartBuild(string BuildingId)
         {
             SetMode(GameMode.Build);
-            Build.Start(type);
+            Build.Start(BuildingId);
         }
 
         public void StartRemove()

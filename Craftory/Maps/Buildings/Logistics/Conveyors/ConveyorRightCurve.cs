@@ -8,8 +8,8 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
 {
     public class ConveyorRightCurve : Conveyor, IItemAcceptor, IPureConveyor
     {
-        public ConveyorRightCurve(BuildType type, Point pos, BuildingDirection dir)
-            :base(type, pos, dir)
+        public ConveyorRightCurve(string id, Point pos, BuildingDirection dir)
+            :base(id, pos, dir)
         {
         }
 

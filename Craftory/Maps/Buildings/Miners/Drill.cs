@@ -9,8 +9,8 @@ namespace Craftory.Maps.Buildings.Miners
     {
         private ConveyorItem bufferItem = null;
 
-        public Drill(BuildType type, Point pos) :
-            base(type, pos, BuildingDirection.None)
+        public Drill(string id, Point pos) :
+            base(id, pos, BuildingDirection.None)
         {
         }
 

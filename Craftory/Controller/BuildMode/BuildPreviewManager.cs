@@ -89,12 +89,12 @@ namespace Craftory.Controller.BuildMode
 
         public void ReplacePreview(Point origin, BuildingDirection newDir)
         {
-            var info = BuildingRegistry.Data[BuildType.Conveyor];
+            var info = BuildingRegistry.Data["Conveyor_Straight"];
 
             var oldCandidate = new BuildCandidate
             {
                 Origin = origin,
-                Type = BuildType.Conveyor,
+                BuildingId = "Conveyor_Straight",
                 Direction = BuildingDirection.Up // 旧方向は不要、RemovePreview が処理する
             };
 
@@ -103,7 +103,7 @@ namespace Craftory.Controller.BuildMode
             var newCandidate = new BuildCandidate
             {
                 Origin = origin,
-                Type = BuildType.Conveyor,
+                BuildingId = "Conveyor_Straight",
                 Direction = newDir
             };
 
@@ -113,16 +113,16 @@ namespace Craftory.Controller.BuildMode
         public void Draw(SpriteBatch sb)
         {
             foreach (var c in buildTargets)
-                BuildingRegistry.Data[c.Type].DrawPreview(sb, c.Origin, c.Direction, Color.White * 0.5f);
+                BuildingRegistry.Data[c.BuildingId].DrawPreview(sb, c.Origin, c.Direction, Color.White * 0.5f);
 
             foreach (var c in invalidTargets)
-                BuildingRegistry.Data[c.Type].DrawPreview(sb, c.Origin, c.Direction, Color.Red * 0.5f);
+                BuildingRegistry.Data[c.BuildingId].DrawPreview(sb, c.Origin, c.Direction, Color.Red * 0.5f);
         }
 
         public void ApplyToMap(MapManager mapManager)
         {
             foreach (var c in buildTargets)
-                mapManager.AddBuilding(c.Type, c.Origin, c.Direction);
+                mapManager.AddBuilding(c.BuildingId, c.Origin, c.Direction);
         }
     }
 }

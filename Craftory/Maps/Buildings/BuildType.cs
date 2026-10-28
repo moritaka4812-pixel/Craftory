@@ -8,12 +8,6 @@ namespace Craftory.Maps.Buildings
         Drill,
         //Logistics.Conveyors
         Conveyor,
-        ConveyorRightCurve,
-        ConveyorLeftCurve,
-        ConveyorRightMerge,
-        ConveyorLeftMerge,
-        ConveyorRightLeftMerge,
-        ConveyorMerge,
         //Logistics.Splitters
         Splitter,
 

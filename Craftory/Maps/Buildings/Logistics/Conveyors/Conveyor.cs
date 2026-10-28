@@ -9,8 +9,8 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
     {
         public ConveyorTile TileLogic { get; private set; }
 
-        public Conveyor(BuildType type, Point pos, BuildingDirection dir) : 
-            base(type, pos, dir)
+        public Conveyor(string id, Point pos, BuildingDirection dir) : 
+            base(id, pos, dir)
         {
             TileLogic = new ConveyorTile(WorkSpeed, this);
         }

@@ -12,8 +12,8 @@ namespace Craftory.Maps.Buildings.Logistics.Splitters
         private float blinkTimer = 0f;
         private bool isBlinking = false;
 
-        public Splitter(BuildType type, Point pos, BuildingDirection dir)
-            : base(type, pos, dir)
+        public Splitter(string id, Point pos, BuildingDirection dir)
+            : base(id, pos, dir)
         {
         }
 
