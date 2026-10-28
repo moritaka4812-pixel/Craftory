@@ -7,8 +7,8 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
 {
     public class ConveyorMerge : Conveyor, IItemAcceptor, IMergeConveyor, IPureConveyor
     {
-        public ConveyorMerge(BuildType type, Point pos, BuildingDirection dir)
-            : base(type, pos, dir)
+        public ConveyorMerge(string id, Point pos, BuildingDirection dir)
+            : base(id, pos, dir)
         {
         }
         public override Vector2 GetItemPosition(Vector2 worldPos, float local, ConveyorItem item)

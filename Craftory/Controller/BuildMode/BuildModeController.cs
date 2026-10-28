@@ -15,7 +15,7 @@ using Craftory.UI.Core;
 public struct BuildCandidate
 {
     public Point Origin;
-    public BuildType Type;
+    public string BuildingId;
     public BuildingDirection Direction;
 }
 
@@ -35,7 +35,7 @@ namespace Craftory.Controller.BuildMode
         private BuildPreviewManager preview;
         private BuildPlacementController placement;
 
-        private BuildType currentBuildType;
+        private string currentBuildId;
         private BuildingDirection direction;
 
         private Vector2 confirmButtonWorldPos;
@@ -75,16 +75,16 @@ namespace Craftory.Controller.BuildMode
             confirmPanel.AddChild(rotateButton);
         }
 
-        public void SetCurrentType(BuildType type)
+        public void SetCurrentType(string Id)
         {
-            currentBuildType = type;
+            currentBuildId = Id;
             placement.Reset();
         }
 
-        public void Start(BuildType type)
+        public void Start(string Id)
         {
             IsActive = true;
-            currentBuildType = type;
+            currentBuildId = Id;
 
             preview.ResetAll();
             placement.Reset();
@@ -127,13 +127,13 @@ namespace Craftory.Controller.BuildMode
 
             if (mouse.LeftClicked())
             {
-                placement.OnClick(p, tile, worldPos, currentBuildType, direction);
+                placement.OnClick(p, tile, worldPos, currentBuildId, direction);
                 confirmButtonWorldPos = worldPos + new Vector2(10, 10);
             }
 
             if (mouse.LeftDragging())
             {
-                placement.OnDrag(p, tile, worldPos, currentBuildType, direction);
+                placement.OnDrag(p, tile, worldPos, currentBuildId, direction);
                 confirmButtonWorldPos = worldPos + new Vector2(10, 10);
             }
             

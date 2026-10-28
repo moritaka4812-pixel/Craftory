@@ -9,8 +9,8 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
     {
         public ConveyorTile TileLogic { get; private set; }
 
-        public Conveyor(BuildType type, Point pos, BuildingDirection dir) : 
-            base(type, pos, dir)
+        public Conveyor(string id, Point pos, BuildingDirection dir) : 
+            base(id, pos, dir)
         {
             TileLogic = new ConveyorTile(WorkSpeed, this);
         }
@@ -44,11 +44,6 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
         public virtual Vector2 GetItemPosition(Vector2 worldPos, float local, ConveyorItem item)
         {
             return DefaultCalculate(worldPos, local, item.currentDirection);
-        }
-
-        public virtual void SetOutDir(ConveyorItem item)
-        {
-            item.pastOutDir = GetPort("Output").Direction;
         }
 
         public Vector2 DefaultCalculate(Vector2 worldPos, float pos, BuildingDirection dir)
@@ -88,14 +83,14 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
         }
 
         //IItemAcceptorの実装
-        public virtual bool CanAccept(ConveyorItem item)
+        public virtual bool CanAccept(ConveyorItem item, BuildingPort senderPort)
         {
             return TileLogic.CanAcceptItem();
         }
 
-        public virtual bool TryAccept(ConveyorItem item, BuildingDirection dir)
+        public virtual bool TryAccept(ConveyorItem item, BuildingPort senderPort)
         {
-            return TileLogic.TryAccept(item, dir);
+            return TileLogic.TryAccept(item, senderPort);
         }
 
         public bool HasSpace()
@@ -108,9 +103,9 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
             return TileLogic.IsFull;
         }
 
-        public virtual bool CanPreviewAccept(ConveyorItem item)
+        public virtual bool CanPreviewAccept(ConveyorItem item, BuildingPort senderPort)
         {
-            return TileLogic.CanPreviewAccept(item);
+            return TileLogic.CanPreviewAccept(item, senderPort);
         }
     }
 }

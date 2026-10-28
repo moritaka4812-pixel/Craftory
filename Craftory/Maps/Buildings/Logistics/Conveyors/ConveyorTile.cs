@@ -92,7 +92,15 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
                 if (first.arrivalTime == null)
                     first.arrivalTime = GameCore.Instance.Time;
 
-                var NextOut = OutputTiles[ownerConveyor.OutputIndex];
+                int? idx = ownerConveyor.PeekOutputIndex();
+
+                if(idx == null)
+                {
+                    first.LocalPosition = tileEnd;
+                    return;
+                }
+
+                var NextOut = OutputTiles[(int)idx];
 
                 if (NextOut?.ownerConveyor is IMergeConveyor)
                 {
@@ -104,11 +112,12 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
                     }
                 }
 
-                var outDir = ownerConveyor.OutputPorts[ownerConveyor.OutputIndex].Direction;
+                var outPort = ownerConveyor.OutputPorts[(int)idx];
 
-                if (NextOut != null && NextOut.TryAccept(first, outDir))
+                if (NextOut != null && NextOut.TryAccept(first, outPort))
                 {
-                    ownerConveyor.SetOutDir(first);
+                    first.currentDirection = outPort.Direction;
+                    ownerConveyor.AdvanceOutputIndex((int)idx);
                 }
                 else
                 {
@@ -119,7 +128,7 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
             }
         }
 
-        public bool TryAccept(ConveyorItem item, BuildingDirection dir)
+        public bool TryAccept(ConveyorItem item, BuildingPort senderPort)
         {
             if (Items.Count >= 2)
             {
@@ -130,7 +139,7 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
             if (Items.Count == 1 && Items[0].LocalPosition < 0.5f) //まだアイテムが半分を過ぎていない
                 return false;
 
-            item.InitializeDirections(dir, dir);
+            item.InitializeDirections(senderPort.Direction, senderPort.Direction);
             item.currentDirection = ownerConveyor.GetDirectionForItem(item);
             item.pastTile = item.CurrentTile;
             item.pastTile?.Items.Remove(item);
@@ -190,7 +199,7 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
             return true;
         }
 
-        public bool CanPreviewAccept(ConveyorItem item)
+        public bool CanPreviewAccept(ConveyorItem item, BuildingPort senderPort)
         {
             return HasSpace();
         }

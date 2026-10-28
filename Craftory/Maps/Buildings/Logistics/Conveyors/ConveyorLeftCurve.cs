@@ -5,8 +5,8 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
 {
     public class ConveyorLeftCurve : Conveyor, IItemAcceptor, IPureConveyor
     {
-        public ConveyorLeftCurve(BuildType type, Point pos, BuildingDirection dir)
-            : base (type, pos, dir)
+        public ConveyorLeftCurve(string id, Point pos, BuildingDirection dir)
+            : base (id, pos, dir)
         {
         }
 
