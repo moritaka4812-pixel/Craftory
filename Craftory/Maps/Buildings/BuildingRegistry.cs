@@ -413,10 +413,7 @@ namespace Craftory.Maps.Buildings
                     {
                         TexturePaths= new Dictionary<BuildingDirection, string>()
                         {
-                            { BuildingDirection.Up, "Buildings/Logistics/Splitters/Splitter_Idle_Up" },
-                            { BuildingDirection.Left, "Buildings/Logistics/Splitters/Splitter_Idle_Left" },
-                            { BuildingDirection.Down, "Buildings/Logistics/Splitters/Splitter_Idle_Down" },
-                            { BuildingDirection.Right, "Buildings/Logistics/Splitters/Splitter_Idle_Right" }
+                            { BuildingDirection.None, "Buildings/Logistics/Splitters/Splitter_Idle_Right"}
                         },
                         ActiveTexturePaths = new Dictionary<BuildingDirection, string>()
                         {
@@ -465,7 +462,7 @@ namespace Craftory.Maps.Buildings
                         },
                         WorkSpeed= 1.0f,
                         BuildTime = 0,
-                        AnimationMode = Tiles.TileAnimationMode.Flip,
+                        AnimationMode = Tiles.TileAnimationMode.Rotate,
                         Create = (pos, inDir) => new Splitter(BuildType.Splitter, pos, inDir)
                     }
                 }

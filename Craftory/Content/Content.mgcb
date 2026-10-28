@@ -145,30 +145,6 @@
 /processorParam:TextureFormat=Color
 /build:Buildings/Logistics/Splitters/Splitter_Active_Up.png
 
-#begin Buildings/Logistics/Splitters/Splitter_Idle_Down.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Buildings/Logistics/Splitters/Splitter_Idle_Down.png
-
-#begin Buildings/Logistics/Splitters/Splitter_Idle_Left.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Buildings/Logistics/Splitters/Splitter_Idle_Left.png
-
 #begin Buildings/Logistics/Splitters/Splitter_Idle_Right.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -180,18 +156,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Buildings/Logistics/Splitters/Splitter_Idle_Right.png
-
-#begin Buildings/Logistics/Splitters/Splitter_Idle_Up.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Buildings/Logistics/Splitters/Splitter_Idle_Up.png
 
 #begin Buildings/Miners/Drill.png
 /importer:TextureImporter

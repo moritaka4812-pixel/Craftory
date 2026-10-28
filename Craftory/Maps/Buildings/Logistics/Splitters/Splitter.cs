@@ -67,12 +67,7 @@ namespace Craftory.Maps.Buildings.Logistics.Splitters
         {
             var worldPos = TilePosition.ToVector2() * 32f;
 
-            // Idle（黒い本体）
-            sb.Draw(
-                info.CachedTextures[buildingDirection],
-                worldPos,
-                Color.White
-            );
+            base.Draw(sb, camera);
 
             // Active（黄色部分）
             if (isBlinking)
