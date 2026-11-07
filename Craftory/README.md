@@ -16,7 +16,7 @@ MonoGameで開発している 工場自動化シミュレーションゲーム�
 ## GamePlay
 
 コンベアでアイテムを搬送する様子。
-![GamePlay](./docs/GIF/gameplay.gif)
+![GamePlay](./Docs/GIF/gameplay.gif)
 
 ##  プロジェクト概要
 
