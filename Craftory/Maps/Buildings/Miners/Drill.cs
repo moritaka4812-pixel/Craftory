@@ -7,7 +7,21 @@ namespace Craftory.Maps.Buildings.Miners
 {
     public class Drill : BuildingInstance
     {
+
         private ConveyorItem bufferItem = null;
+        public override BuildingVisualState VisualState
+        {
+            get
+            {
+
+                return State switch
+                {
+                    BuildState.Constructing => BuildingVisualState.Constructing,
+                    BuildState.Deconstructing => BuildingVisualState.Deconstructing,
+                    _ => BuildingVisualState.Working
+                };
+            }
+        }
 
         public Drill(string id, Point pos) :
             base(id, pos, BuildingDirection.None)

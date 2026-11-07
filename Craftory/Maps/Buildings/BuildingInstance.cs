@@ -13,6 +13,18 @@ namespace Craftory.Maps.Buildings
         Deconstructing
     }
 
+    public enum  BuildingVisualState
+    {
+        Constructing,
+        Idle,
+        Starting,
+        Stopping,
+        Working,
+        Blocked,
+        NoPower,
+        Deconstructing
+    }
+
     public class BuildingInstance : ITileOccupant
     {
         protected int outputIndex = 0; //出力方向のラウンドロビンキャッシュ
@@ -23,6 +35,17 @@ namespace Craftory.Maps.Buildings
         public float WorkSpeed { get; private set; }    //採掘速度など、タイプ依存の性能値
         public List<Point> OccupiedTiles { get; private set; }
         public BuildState State { get; private set; }
+        public virtual BuildingVisualState VisualState 
+        {
+            get
+            {
+                return State switch { 
+                    BuildState.Constructing => BuildingVisualState.Constructing,
+                    BuildState.Deconstructing => BuildingVisualState.Deconstructing,
+                    _ => BuildingVisualState.Working
+                };
+            }
+        }
         public float BuildProgress { get; private set; }
         public float BuildTime { get; private set; }
         public BuildingDirection buildingDirection; //入出力に寄らない建物の向き (画像準拠)
@@ -104,22 +127,54 @@ namespace Craftory.Maps.Buildings
 
         public virtual void UpdateVisual(GameTime gameTime)
         {
-            if(!IsActive) return;
-            Anim.Update(gameTime);
+            switch(VisualState)
+            {
+                case BuildingVisualState.Working:
+                    Anim.Update(gameTime);
+                    break;
+
+                case BuildingVisualState.Starting:
+                    Anim.Update(gameTime);
+                    break;
+
+                case BuildingVisualState.Stopping:
+                    Anim.Update(gameTime);
+                    break;
+
+                default:
+                    throw new Exception($"BuildingInstance.UpdateVisual: VisualState {VisualState} is not handled.");
+            }
         }
 
         public virtual void Draw(SpriteBatch sb, Camera camera)
         {
             var worldPos = TilePosition.ToVector2() * 32;
 
-            if(State == BuildState.Constructing)
+            switch (VisualState)
             {
-                //建設中の建物の表示アニメーション
-                return;
-                
+                case BuildingVisualState.Idle:
+                    Anim.Draw(sb, worldPos);
+                    break;
+
+                case BuildingVisualState.Constructing:
+                    Anim.Draw(sb, worldPos);
+                    break;
+
+                case BuildingVisualState.Working:
+                    Anim.Draw(sb, worldPos);
+                    break;
+
+                case BuildingVisualState.Blocked:
+                    Anim.Draw(sb, worldPos);
+                    break;
+
+                case BuildingVisualState.NoPower:
+                    Anim.Draw(sb, worldPos);
+                    break;
+
+                default:
+                    throw new Exception($"BuildingInstance.Draw: VisualState {VisualState} is not handled.");
             }
-            // 建物のスプライト描画
-            Anim.Draw(sb, worldPos);
         }
 
         public virtual void DrawRotated(SpriteBatch sb, Point tilePos, Color tint) //標準回転描画(buildingDirection基準)
