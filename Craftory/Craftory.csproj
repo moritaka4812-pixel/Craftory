@@ -18,9 +18,8 @@
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.263" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Content\Buildings\Processor\" />
-    <Folder Include="Content\Buildings\Storage\" />
     <Folder Include="Content\Buildings\Core\" />
+    <Folder Include="Content\Buildings\Storage\" />
     <Folder Include="Content\Buildings\Utility\" />
     <Folder Include="Content\Items\Item\" />
     <Folder Include="Content\Items\Ingot\" />

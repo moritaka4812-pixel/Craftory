@@ -35,6 +35,7 @@ namespace Craftory.Maps.Buildings
         public float WorkSpeed { get; private set; }    //採掘速度など、タイプ依存の性能値
         public List<Point> OccupiedTiles { get; private set; }
         public BuildState State { get; private set; }
+        //継承先でオーバーライドして、建物の状態に応じたビジュアルを返す
         public virtual BuildingVisualState VisualState 
         {
             get
@@ -42,12 +43,23 @@ namespace Craftory.Maps.Buildings
                 return State switch { 
                     BuildState.Constructing => BuildingVisualState.Constructing,
                     BuildState.Deconstructing => BuildingVisualState.Deconstructing,
-                    _ => BuildingVisualState.Working
+                    _ when IsStarting => BuildingVisualState.Starting,
+                    _ when IsStopping => BuildingVisualState.Stopping,
+                    _ when IsReallyBlocked => BuildingVisualState.Blocked,
+                    _ when IsWorking => BuildingVisualState.Working,
+                    _ => BuildingVisualState.Idle
                 };
             }
         }
+        public virtual bool IsWorking => false;
+        public virtual bool IsBlocked => false;
+        public virtual bool IsStarting => false;
+        public virtual bool IsStopping => false;
+        public bool IsReallyBlocked => blockedTime > 0.3f; 
+        public bool IsIdle => !IsWorking && !IsBlocked;
         public float BuildProgress { get; private set; }
         public float BuildTime { get; private set; }
+        protected float blockedTime = 0f; //Blocked状態の継続時間を計測するタイマー
         public BuildingDirection buildingDirection; //入出力に寄らない建物の向き (画像準拠)
         public List<BuildingPort> Ports { get; private set; }
         public List<BuildingPort> InputPorts { get; } = new List<BuildingPort>();
@@ -102,6 +114,15 @@ namespace Craftory.Maps.Buildings
             if (UpdateConstructingState(gameTime)) return;
             
             //稼働中の通常ロジック（継承先で実装）
+            UpdateBlockedTime(IsBlocked, (float)gameTime.ElapsedGameTime.TotalSeconds);
+        }
+
+        protected void UpdateBlockedTime(bool blocked, float dt)
+        {
+            if (blocked)
+                blockedTime += dt;
+            else
+                blockedTime = 0f;
         }
 
         protected bool UpdateConstructingState(GameTime gameTime)
@@ -142,7 +163,7 @@ namespace Craftory.Maps.Buildings
                     break;
 
                 default:
-                    throw new Exception($"BuildingInstance.UpdateVisual: VisualState {VisualState} is not handled.");
+                    break;
             }
         }
 

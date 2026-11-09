@@ -9,31 +9,21 @@ namespace Craftory.Maps.Buildings.Miners
     {
 
         private ConveyorItem bufferItem = null;
-        public override BuildingVisualState VisualState
-        {
-            get
-            {
+        public override bool IsWorking => IsActive && tile.Resource != Resource.TileResourceType.None;
+        public override bool IsBlocked => IsActive && bufferItem != null;
 
-                return State switch
-                {
-                    BuildState.Constructing => BuildingVisualState.Constructing,
-                    BuildState.Deconstructing => BuildingVisualState.Deconstructing,
-                    _ => BuildingVisualState.Working
-                };
-            }
-        }
-
+        public Tiles.Tile tile;
         public Drill(string id, Point pos) :
             base(id, pos, BuildingDirection.None)
         {
+            tile = GameCore.Instance.MapManager.Map.GetTile(TilePosition.X, TilePosition.Y);
         }
 
         public override void UpdateLogic(GameTime gameTime)
         {
-            if (UpdateConstructingState(gameTime))
-                return;
+            base.UpdateLogic(gameTime);
 
-            if(!IsActive) return;
+            if (!IsActive) return;
 
             TryFlushBuffer();
 
@@ -42,8 +32,6 @@ namespace Craftory.Maps.Buildings.Miners
             if (timer >= 1f / WorkSpeed)
             {
                 timer -= 1f / WorkSpeed;
-
-                var tile = GameCore.Instance.MapManager.Map.GetTile(TilePosition.X, TilePosition.Y);
 
                 if (tile.Resource != Resource.TileResourceType.None)
                 {

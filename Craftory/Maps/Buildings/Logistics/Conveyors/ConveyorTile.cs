@@ -13,6 +13,7 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
         public List<ConveyorTile> InputTiles { get; private set; } = new List<ConveyorTile>(); 
         public List<ConveyorTile> OutputTiles { get; private set; } = new List<ConveyorTile>(); 
         public bool IsFull { get; private set; } = false;
+        public bool IsBlocked => Items.Count == 2 && Items.First().LocalPosition >= 1f && Items[1].LocalPosition >= 0.5f;
         public float speed;
 
         float minDistance = 0.5f;

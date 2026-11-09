@@ -8,7 +8,8 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
     public class Conveyor : BuildingInstance, IItemAcceptor, IPureConveyor
     {
         public ConveyorTile TileLogic { get; private set; }
-
+        public override bool IsWorking => IsActive;
+        public override bool IsBlocked => IsActive && TileLogic.IsBlocked;
         public Conveyor(string id, Point pos, BuildingDirection dir) : 
             base(id, pos, dir)
         {
@@ -24,8 +25,7 @@ namespace Craftory.Maps.Buildings.Logistics.Conveyors
 
         public override void UpdateLogic(GameTime gameTime)
         {
-            if (UpdateConstructingState(gameTime)) 
-                return;
+            base.UpdateLogic(gameTime);
 
             TileLogic.Update(gameTime);
         }
