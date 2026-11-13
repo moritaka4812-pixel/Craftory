@@ -25,6 +25,7 @@
     <Folder Include="Content\Items\Ingot\" />
     <Folder Include="Data\CSV\" />
     <Folder Include="Docs\GIF\" />
+    <Folder Include="Maps\Buildings\Processor\" />
   </ItemGroup>
   <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
     <Message Text="Restoring dotnet tools" Importance="High" />
