@@ -43,13 +43,6 @@ namespace Craftory.Maps.Buildings.Miners
 
         private void TryOutputToAcceptor(Resource.TileResourceType type)
         {
-            var dirs = new (int x, int y, BuildingDirection dir)[]
-            {
-                (1,0, BuildingDirection.Right),
-                (-1,0, BuildingDirection.Left),
-                (0,1, BuildingDirection.Down), 
-                (0,-1, BuildingDirection.Up)
-            };
 
             var itemType = ResourceToItemConvertor.Convert(type);
 
@@ -57,23 +50,20 @@ namespace Craftory.Maps.Buildings.Miners
                 bufferItem = ConveyorItem.Create(itemType);
 
 
-            foreach (var tilePos in GetOccupiedTiles())
+            foreach (var Port in OutputPorts)
             {
-                foreach (var dir in dirs)
+                var nextPos = new Point(TilePosition.X + Port.Offset.X + Port.Direction.GetPoint().X, TilePosition.Y + Port.Offset.Y + Port.Direction.GetPoint().Y);
+                var tile = GameCore.Instance.MapManager.Map.GetTile(nextPos.X, nextPos.Y);
+
+                if (tile?.Occupant is IItemAcceptor acceptor)
                 {
-                    var nextPos = new Point(TilePosition.X + dir.x, TilePosition.Y + dir.y);
-                    var tile = GameCore.Instance.MapManager.Map.GetTile(nextPos.X, nextPos.Y);
-
-                    if (tile?.Occupant is IItemAcceptor acceptor)
+                    if(bufferItem != null)
                     {
-                        if(bufferItem != null)
-                        {
-                            bufferItem.InitializeDirections(dir.dir, dir.dir);
+                        bufferItem.InitializeDirections(Port.Direction, Port.Direction);
 
-                            if (TryOutputFair(bufferItem) != null)
-                            {
+                        if (TryOutputFair(bufferItem) != null)
+                        {
                                 bufferItem = null;
-                            }
                         }
                     }
                 }
