@@ -5,6 +5,7 @@ namespace Craftory.Item
     {
         Ore,
         Ingot,
+        Brick,
         Component,
         Fuel,
         Misc

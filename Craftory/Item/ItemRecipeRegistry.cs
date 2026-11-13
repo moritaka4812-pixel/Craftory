@@ -8,12 +8,10 @@ namespace Craftory.Item
             {
                 new ItemRecipe()
                 {
-                    Input = new (){ (ItemType.CopperOre, 1) },
-                    Output = new (){(ItemType.CopperIngot, 1) },
+                    Input = new (){ (ItemType.CopperOre, 5) },
+                    Output = new (){(ItemType.CopperBrick, 1) },
                     Time = 1.5f
                 }
             };
     }
-
-
 }

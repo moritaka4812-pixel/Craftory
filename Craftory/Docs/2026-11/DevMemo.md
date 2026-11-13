@@ -23,6 +23,9 @@ BuildingInstanceの派生先でそれぞれの状態に応じてoverrideする�
 がうまく動作しない。
 原因はConveyor側でUpdaateBlockedTime()を呼んでいないことでIsReallyBlockedが正しく更新されていないことだった。
 継承元のBuildingInstanceでUpdateBlockedTime()を呼ぶようにして、継承先でBaseを呼ぶようにした。
+アイテムの加工についてだが、圧縮機で鉱石をパウダーにするよりかはBrick（ブロック状のアイテム）にすることで色だけでなく、
+模様などで識別ができるようにして、似たような色味のアイテムを区別しやすくする。
+
 
 ## 次回作業用メモ
 

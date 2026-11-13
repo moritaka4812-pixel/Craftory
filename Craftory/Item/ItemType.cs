@@ -5,6 +5,7 @@ namespace Craftory.Item
     {
         None,
         CopperOre,
+        CopperBrick,
         CopperIngot
     }
 }

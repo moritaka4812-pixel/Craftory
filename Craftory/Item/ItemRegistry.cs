@@ -15,6 +15,16 @@ namespace Craftory.Item
                         TexturePath = "Items/Ore/CopperOre"
                     }
                 },
+
+                {
+                    ItemType.CopperBrick,
+                    new ItemData
+                    {
+                        Type = ItemType.CopperBrick,
+                        Category = ItemCategory.Brick,
+                        TexturePath = "Items/Brick/CopperBrick"
+                    }
+                }
                 /*
                 {
                     ItemType.CopperIngot,
