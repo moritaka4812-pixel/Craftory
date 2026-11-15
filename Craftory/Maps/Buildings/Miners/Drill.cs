@@ -23,8 +23,6 @@ namespace Craftory.Maps.Buildings.Miners
         {
             base.UpdateLogic(gameTime);
 
-            if (!IsActive) return;
-
             TryFlushBuffer();
 
             timer += (float)gameTime.ElapsedGameTime.TotalSeconds;

@@ -113,8 +113,11 @@ namespace Craftory.Maps.Buildings
         {
             if (UpdateConstructingState(gameTime)) return;
             
-            //稼働中の通常ロジック（継承先で実装）
             UpdateBlockedTime(IsBlocked, (float)gameTime.ElapsedGameTime.TotalSeconds);
+
+            if(!IsActive) return;
+
+            //稼働中の通常ロジック（継承先で実装）
         }
 
         protected void UpdateBlockedTime(bool blocked, float dt)

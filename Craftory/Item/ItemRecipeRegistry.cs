@@ -8,6 +8,7 @@ namespace Craftory.Item
             {
                 new ItemRecipe()
                 {
+                    Id = "CopperBrick",
                     Input = new (){ (ItemType.CopperOre, 5) },
                     Output = new (){(ItemType.CopperBrick, 1) },
                     Time = 1.5f
