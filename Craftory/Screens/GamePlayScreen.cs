@@ -25,16 +25,17 @@ namespace Craftory.Screens
     public class GamePlayScreen : ScreenBase
     {
         private Texture2D pixel; //Draw用のテクスチャ
-        public Tile selectedTile = null; //選択したタイルを格納
         Camera camera; //画面表示用のカメラ
         CameraController cameraController;
         CameraSystem cameraSystem; //カメラを管理するインスタンス
         TileSelectionController tileSelectionController; //タイル選択を処理
         TileSelectionSystem tileSelectionSystem;
         TileSelectionRenderer tileSelectionRenderer;
+        UIFactory ui; //UIを生成するインスタンス
         Button settingsButton; //セッティングボタン
         ToolPanel toolPanel; //左に表示されるツールパネル
         InformationPanel informationPanel; //右に表示される情報パネル
+        InspectorPanel inspectorPanel; //右下に表示される選択タイルの情報パネル
         public ToolControllerManager toolControllerManager;
 
         public GamePlayScreen(Game1 game) : base(game)
@@ -52,11 +53,11 @@ namespace Craftory.Screens
         public override bool IsTransparent => true;
         public override void LoadContent()
         {
-            var ui = new UIFactory(game); //UIを生成するインスタンス
+            ui = new UIFactory(game); //UIを生成するインスタンス
             GameCore.Instance.MapManager.Map.LoadContent(game.Content); //マップをロード
 
-            var builder = new GamePlayUIScreenBuilder(game, this, camera);
-            (settingsButton, toolPanel, informationPanel) = builder.BuildUI();
+            var builder = new GamePlayUIScreenBuilder(game, ui, this, tileSelectionSystem, camera);
+            (settingsButton, toolPanel, informationPanel, inspectorPanel) = builder.BuildUI();
 
             toolControllerManager = new ToolControllerManager(GameCore.Instance.MapManager, toolPanel, game, camera, this);
 
@@ -76,6 +77,7 @@ namespace Craftory.Screens
             uiConsumed |= toolPanel.Update(game.Input.Mouse);
             uiConsumed |= settingsButton.Update(game.Input.Mouse);
             uiConsumed |= informationPanel.Update(game.Input.Mouse);
+            uiConsumed |= inspectorPanel.Update(game.Input.Mouse);
 
             uiConsumed |= toolControllerManager.Update(game.Input.Mouse, uiConsumed);
 
@@ -137,6 +139,7 @@ namespace Craftory.Screens
             toolPanel.Draw(sb);
             settingsButton.Draw(sb);
             informationPanel.Draw(sb);
+            inspectorPanel.Draw(sb);
 
             sb.End();
 

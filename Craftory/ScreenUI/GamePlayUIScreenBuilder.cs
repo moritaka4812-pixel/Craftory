@@ -9,6 +9,7 @@ using Craftory.Maps.Buildings;
 using Craftory.Core;
 using Craftory.Maps.Resource;
 using Craftory.Controller.BuildMode;
+using Craftory.System;
 
 namespace Craftory.ScreenUI
 {
@@ -18,16 +19,18 @@ namespace Craftory.ScreenUI
         private UIFactory ui;
         private WorldUIFactory worldui;
         private GamePlayScreen screen;
+        private TileSelectionSystem tileSelectionSystem;
 
-        public GamePlayUIScreenBuilder(Game1 game, GamePlayScreen screen, Camera camera)
+        public GamePlayUIScreenBuilder(Game1 game, UIFactory ui,GamePlayScreen screen, TileSelectionSystem system, Camera camera)
         {
             this.game = game;
-            this.ui = new UIFactory(game);
+            this.ui = ui;
             this.screen = screen;
+            this.tileSelectionSystem = system;
             this.worldui = new WorldUIFactory(game, camera);
         }
 
-        public (Button settingsButton, ToolPanel toolPanel, InformationPanel informationPanel) BuildUI() //GamePlayScreenのUI
+        public (Button settingsButton, ToolPanel toolPanel, InformationPanel informationPanel, InspectorPanel inspectorPanel) BuildUI() //GamePlayScreenのUI
         {
             var settingsButton = ui.CreateImageButton("UI/Gear", 760, 20, 32, 32);
             settingsButton.SetBackgroundColor(Color.White);
@@ -64,7 +67,9 @@ namespace Craftory.ScreenUI
 
             var informationPanel = new InformationPanel(ui);
 
-            return (settingsButton, toolPanel, informationPanel);
+            var inspectorPanel = new InspectorPanel(tileSelectionSystem, ui);
+
+            return (settingsButton, toolPanel, informationPanel, inspectorPanel);
         }
     }
 }

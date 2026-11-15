@@ -176,6 +176,13 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/MyFont.spritefont
 
+#begin Fonts/MySmallFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/MySmallFont.spritefont
+
 #begin Items/Brick/CopperBrick.png
 /importer:TextureImporter
 /processor:TextureProcessor

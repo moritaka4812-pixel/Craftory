@@ -2,6 +2,7 @@
 using Craftory.Maps.Tiles;
 using Craftory.Input;
 using Craftory.Maps;
+using System.Diagnostics;
 
 namespace Craftory.Controller
 {
@@ -16,7 +17,7 @@ namespace Craftory.Controller
 
         public TileSelectionResult SelectTile(MouseInput mouse, Camera camera) //選択されたタイルを返す
         {
-            if(!mouse.LeftClicked()) return new TileSelectionResult(TileSelectionResultType.None, null); //マウスが押されていない
+            if (!mouse.LeftClicked()) return new TileSelectionResult(TileSelectionResultType.None, null); //マウスが押されていない
 
             Vector2 screenPos = mouse.Current.Position.ToVector2(); //マウスの位置を取得
             Matrix inverse = Matrix.Invert(camera.GetViewMatrix()); //カメラの逆行列を取得

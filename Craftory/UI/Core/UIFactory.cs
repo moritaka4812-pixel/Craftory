@@ -12,11 +12,13 @@ namespace Craftory.UI.Core
     {
         private readonly Game1 game;
         private SpriteFont defaultFont;
+        private SpriteFont smallFont;
 
         public UIFactory(Game1 game)
         {
             this.game = game;
             defaultFont = game.Content.Load<SpriteFont>("Fonts/MyFont"); //デフォルトフォント
+            smallFont = game.Content.Load<SpriteFont>("Fonts/MySmallFont"); //小さいフォント
         }
 
         public void ChangeFont(string file) //フォント変更
@@ -53,6 +55,16 @@ namespace Craftory.UI.Core
                 new rect(x, y, width, height),
                 text);
         }
+
+        public Button CreateSmallTextButton(string text, int x, int y, int width, int height)
+        {
+            return new Button(
+                game.GraphicsDevice,
+                smallFont,
+                new rect(x, y, width, height),
+                text);
+        }
+
         public Button CreateRelativeImageButton( //基本的にx,y,width,heightは無視
             string file,
             float? relX = null, float? relY = null,
@@ -94,7 +106,28 @@ namespace Craftory.UI.Core
             return btn;
         }
 
-        public TextLabel CreateRelativeTextLabel( //基本的にx,t,width,heightは無視
+        public Button CreateRelativeSmallTextButton( //基本的にx,y,width,heightは無視
+        string text,
+        float? relX = null, float? relY = null,
+        float? relW = null, float? relH = null,
+        int x = 0, int y = 0,
+        int width = 1, int height = 1
+        )
+        {
+            var btn = new Button(
+                game.GraphicsDevice,
+                smallFont,
+                new rect(x, y, width, height),
+                text);
+
+            btn.RelativeX = relX;
+            btn.RelativeY = relY;
+            btn.RelativeWidth = relW;
+            btn.RelativeHeight = relH;
+            return btn;
+        }
+
+        public TextLabel CreateRelativeTextLabel( //基本的にx,y,width,heightは無視
             string text,
             float? relX = null, float? relY = null,
             float? relW = null, float? relH = null,
@@ -103,6 +136,22 @@ namespace Craftory.UI.Core
             )
         {
             var label = new TextLabel(defaultFont, text, new rect(x, y, width, height));
+            label.RelativeX = relX;
+            label.RelativeY = relY;
+            label.RelativeWidth = relW;
+            label.RelativeHeight = relH;
+            return label;
+        }
+
+        public TextLabel CreateRelativeSmallTextLabel( //基本的にx,y,width,heightは無視
+        string text,
+        float? relX = null, float? relY = null,
+        float? relW = null, float? relH = null,
+        int x = 0, int y = 0,
+        int width = 1, int height = 1
+        )
+        {
+            var label = new TextLabel(smallFont, text, new rect(x, y, width, height));
             label.RelativeX = relX;
             label.RelativeY = relY;
             label.RelativeWidth = relW;
